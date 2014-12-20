@@ -50,9 +50,9 @@ public enum Mark {
 			return 0;
 		} else if (this == X) {
 			return 1;
-		} else {
+		} else if (this == O){
 			return 2;
-		}
+		} else{System.out.println("error"); return 20;}
 	}
 
 }

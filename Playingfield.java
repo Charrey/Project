@@ -31,7 +31,7 @@ public class Playingfield {
 	public int play(int column, Player player, boolean test) {
 		for (int i = 0; i < height; i++) {
 			if (layout[column][i] == 0) {
-				layout[column][i] = player.getMark().getNo();
+				layout[column][i] = (player.getMark()).getNo();
 				if (test == false && checkWin(column, i)) {
 					won=true;
 				}

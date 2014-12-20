@@ -42,7 +42,10 @@ public class GameView {
 		if (playingfield.getWon()) {
 			System.out.println("The game has been won by "
 					+player.getName()+"! Congratulations!");
+			System.out.println("End situation:");
+			showBoard();
 			return true;
+			
 		}
 		return false;
 	}
