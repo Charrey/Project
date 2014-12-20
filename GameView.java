@@ -21,13 +21,13 @@ public class GameView {
 		do  {
 			accepted = true;
 			if(!validInput(pickstring)) {
-				System.out.println("Please tick an integer between 0 and 6.");
+				System.out.println("Please tick an integer.");
 				pickstring = a.nextLine();
 				accepted = false;
 				pickstring = a.nextLine();
 			}else if (Integer.parseInt(pickstring) < 0 || Integer.parseInt(pickstring) > 6
 				|| playingfield.play(Integer.parseInt(pickstring), player, false) == -1) {
-			System.out.println("No valid move");
+			System.out.println("That is not a possible play!");
 			accepted = false;
 			pickstring = a.nextLine();
 		}
@@ -55,8 +55,9 @@ public class GameView {
 	}
 	
 	public boolean validInput(String input) {
-		if (input.length()!=1 && !Character.isDigit(input.charAt(0))) {
+		if (input.length()!=1 || !Character.isDigit(input.charAt(0))) {
 			return false;
+			
 		}
 		return true;
 	}
