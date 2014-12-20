@@ -1,10 +1,10 @@
 package Project;
 
-public class AI {
+public class AI-ToBeReplaced {
 
 	Playingfield field;
 
-	public AI(Playingfield field) {
+	public AI-ToBeReplaced(Playingfield field) {
 		this.field = field;
 	}
 

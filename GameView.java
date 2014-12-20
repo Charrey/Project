@@ -10,7 +10,7 @@ public class GameView {
 		this.playingfield = playingfield;
 	}
 
-	public int getColumnChoice(int player) {
+	/*public int getColumnChoice(int player) {
 		System.out.println("Which column would you like to pick, player "
 				+ player + "?");
 		Scanner a = new Scanner(System.in);
@@ -33,16 +33,28 @@ public class GameView {
 		}
 		
 	} while (!accepted);
-		return Integer.parseInt(pickstring);}
+		return Integer.parseInt(pickstring);}*/
 
-	public boolean GameendHandler(int player) {
+	
+	
+	
+	public boolean GameendHandler(Player player) {
 		if (playingfield.getWon()) {
-			System.out.println("The game has been won by player "
-					+player+"! Congratulations!");
+			System.out.println("The game has been won by "
+					+player.getName()+"! Congratulations!");
 			return true;
 		}
 		return false;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	public boolean GameendQuestionairre() {
 		String answer;
@@ -54,13 +66,7 @@ public class GameView {
 		return answer.equals("y");
 	}
 	
-	public boolean validInput(String input) {
-		if (input.length()!=1 || !Character.isDigit(input.charAt(0))) {
-			return false;
-			
-		}
-		return true;
-	}
+	
 
 	public void showBoard() {
 		int width = playingfield.getWidth();

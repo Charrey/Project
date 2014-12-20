@@ -28,10 +28,10 @@ public class Playingfield {
 		return height;
 	}
 
-	public int play(int column, int player, boolean test) {
+	public int play(int column, Player player, boolean test) {
 		for (int i = 0; i < height; i++) {
 			if (layout[column][i] == 0) {
-				layout[column][i] = player;
+				layout[column][i] = player.getMark().getNo();
 				if (test == false && checkWin(column, i)) {
 					won=true;
 				}
@@ -114,6 +114,14 @@ public class Playingfield {
 			if (getValue(i, getHeight()-1)==0) {
 				return false;
 			}
+		}
+		return true;
+	}
+	
+	public static boolean validInput(String input) {
+		if (input.length()!=1 || !Character.isDigit(input.charAt(0))) {
+			return false;
+			
 		}
 		return true;
 	}
