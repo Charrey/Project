@@ -17,7 +17,7 @@ public class HumanPlayer extends Player {
 		
 		while(processing){
 			pick = Integer.parseInt(a.nextLine());
-			if(pick >= 0 && pick < playingfield.width && playingfield.columnFree(pick)){
+			if(pick >= 0 && pick < playingfield.getWidth() && playingfield.columnFree(pick)){
 				//playingfield.putMark(pick, this.getMark());
 				processing = false;
 				return pick;

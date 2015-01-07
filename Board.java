@@ -4,8 +4,8 @@ public class Board {
 	
 	Mark[][] board;
 	
-	int width;
-	int height;
+	private int width;
+	private int height;
 	
 	boolean win;
 	
@@ -102,6 +102,19 @@ public class Board {
 	
 	public void putMark(int width, int height, Mark m){
 		board[width][height] = m;
+	}
+	
+	public boolean isValidInput(int column){
+		return(column>=0&&column<width);
+	}
+	
+	public int emptySlotCount(int column){
+		int count = 0;
+		for(int i = 0; i<this.height; i++){
+			if(board[column][i].equals(Mark.EMPTY)){
+				count ++;
+			}
+		}return count;
 	}
 	
 	public int getWidth(){
