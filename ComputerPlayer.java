@@ -1,5 +1,8 @@
 package Project;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ComputerPlayer extends Player {
 
@@ -41,12 +44,12 @@ public class ComputerPlayer extends Player {
 	
 	
 	//als tegenstander op zijne gooit hij volgende beurt kan winnen
-	else if(oneAheadChecker(board)>=0){
+	else if(getSafeSpots(board).contains(oneAheadChecker(board))){
 		return oneAheadChecker(board);
 	}
 	//TODO AI must not "help" opponent with random move
 	else{
-		return (int)(Math.random() * board.getWidth());
+		return getRandomSafeSpot(board);
 		}
 	}
 	
@@ -67,7 +70,9 @@ public class ComputerPlayer extends Player {
 				b.putMark(i, height, Mark.EMPTY);
 				return i;
 			}
-			b.putMark(i, height, Mark.EMPTY);
+			if(height!=-1){
+				b.putMark(i, height, Mark.EMPTY);
+			}
 		}
 		return -1;
 		
@@ -99,5 +104,32 @@ public class ComputerPlayer extends Player {
 		}
 		return -1;
 	}
+	
+	public List<Integer> getSafeSpots(Board board){
+		List<Integer> lijst = new ArrayList<Integer>();
+		int height;
+		Board b = new Board(board.getWidth(), board.getHeight());
+		b = board.copy();
+		for(int i = 0; i<b.getWidth(); i++){
+			height = b.putMark(i, mark);
+			if(!(winMove(b, mark.other())>=0)){
+				lijst.add(i);
+			}
+			b.putMark(i, height, Mark.EMPTY);
+		}
+		System.err.println(lijst);
+		
+		return lijst;
+	}
+	
+	public int getRandomSafeSpot(Board board){
+		List<Integer> lijst = getSafeSpots(board);
+		return lijst.get((int)(Math.random() * (lijst.size()-1) ));
+	}
+	
+	
+	
+	
+	
 	
 }
