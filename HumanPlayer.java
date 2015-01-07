@@ -9,29 +9,24 @@ public class HumanPlayer extends Player {
 	}
 
 	@Override
-	public int determineMove(Playingfield playingfield) {
+	public int determineMove(Board playingfield) {
 		System.out.println("Which column would you like to pick, "+ this.getName() + "?");
 		Scanner a = new Scanner(System.in);
-		String pickstring;
-		pickstring = a.nextLine();
-		boolean accepted;
+		int pick;
+		boolean processing = true;
 		
-		do  {
-			accepted = true;
-			if(!Playingfield.validInput(pickstring)) {
-				System.out.println("Please tick an integer.");
-				pickstring = a.nextLine();
-				accepted = false;
-				pickstring = a.nextLine();
-			}else if (Integer.parseInt(pickstring) < 0 || Integer.parseInt(pickstring) > 6
-				|| playingfield.play(Integer.parseInt(pickstring), this, false) == -1) {
-			System.out.println("That is not a possible play!");
-			accepted = false;
-			pickstring = a.nextLine();
-		}
+		while(processing){
+			pick = Integer.parseInt(a.nextLine());
+			if(pick >= 0 && pick < playingfield.width && playingfield.columnFree(pick)){
+				//playingfield.putMark(pick, this.getMark());
+				processing = false;
+				return pick;
+			}
+			System.out.println("Not a valid input, try antoher set");
+		}return -1;
 		
-	} while (!accepted);
-		return Integer.parseInt(pickstring);
+		
+
 	}
 	
 

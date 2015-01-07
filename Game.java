@@ -1,68 +1,76 @@
 package Project;
 
+import java.util.Scanner;
+
+
+
 public class Game {
 
-	static Player[] players;
+	private Player[] players;
+	private static final int NUMBER_PLAYERS = 2;
+	private int current;
+	private Board board;
+	private boolean running;
+	private TUI tui;
 	
+    public Game(Player s0, Player s1) {
+        board = new Board();
+        players = new Player[NUMBER_PLAYERS];
+        players[0] = s0;
+        players[1] = s1;
+        current = 0;
+        tui = new TUI(board);
+    }
 	
-	public static int other(int player) {
-		if (player == 1) {
-			return 0;
-		}
-		return 1;
-	}
-
-	public static void main(String[] args) {
-		
-		String[] names = new String[2];
-		Player[] players = new Player[2];
-		for (int i=0; i<2; i++) {		
-		if (args.length!=2) {
-			names[i] = "Default player "+(i+1);
-			System.out.println("bad");
-		}
-		else{
-			System.out.println(i);
-			System.out.println(args[i]);
-			if (args[i].equals("random")) {
-				players[i]=new ComputerPlayer(Mark.X);
-				names[i]=players[i].getName();
-				System.out.println("new ai");
-			}
-			else if (args[i].equals("oneahead")) {
-				players[i]=new ComputerPlayer(Mark.X, new OneAhead());
-				names[i]=players[i].getName();
-				System.out.println("new ai");
-			}
-			
-			else{
-			names[i]=args[i];
-			players[i] = new HumanPlayer(names[i], Mark.X);
-			System.out.println("new man");
-		}
-		}}
-		players[0].setOtherPlayer(players[1]);
-		players[1].setOtherPlayer(players[0]);
-		boolean doorgaan = true;
-		while(doorgaan) {
-			players[1].mark = Mark.O;
-			int currentplayer = 0;
-		
-		Playingfield spel = new Playingfield(7, 6);
-		GameView view = new GameView(spel);
-		while (!view.GameendHandler(players[currentplayer])) {
-			if (spel.isFull()) {
-				System.out.println("Holy crap! A draw!");
-				break;
-			}
-			currentplayer = other(currentplayer);
-			view.showBoard();
-			players[currentplayer].determineMove(spel);
+	public void start(){
+		running = true;
+		while(running){
+			reset();
+			play();
+			running = readPlayAgain();
 			
 		}
-		doorgaan = view.GameendQuestionairre();
-
 	}
-		System.out.println("Have a nice day!");
-		}
+	
+	
+	
+    private void play() {
+    	update();
+    	while (!board.gameOver()){
+    		players[current].makeMove(board);
+    		current = (current+1)%2;
+    		update();
+    		//board.setField(players[current].makeMove(board), players[current].getMark());
+    		
+    	}
+    }
+
+
+    private void update() {
+        System.out.println("\ncurrent game situation: \n\n" + tui.showBoard()
+                + "\n");
+    }
+
+	private void reset() {
+		board.reset();
+	}
+
+	//TODO readplay again stays
+	private boolean readPlayAgain() {
+        String answer;
+
+        do {
+            System.out.print("Play again? (y/n)");
+            Scanner in = new Scanner(System.in);
+            answer = in.hasNextLine() ? in.nextLine() : null;
+        } while (answer == null || (!answer.equals("y") && !answer.equals("n")));
+        return answer.equals("y");
+	}
+
+
+
+
+
+
+
 }

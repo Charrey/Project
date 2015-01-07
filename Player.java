@@ -1,10 +1,12 @@
 package Project;
 
+
+
 public abstract class Player {
 	
 	String name;
 	Mark mark;
-	Player otherplayer;
+	//Player otherplayer;
 	
 	public Player(String name, Mark mark) {
 	this.name=name;
@@ -18,17 +20,14 @@ public abstract class Player {
 	public Mark getMark() {
         return mark;
     }
+
+
 	
-	public void setOtherPlayer(Player p){
-		otherplayer = p;
-	}
+	public abstract int determineMove(Board playingfield);
 	
-	public Player getOtherPlayer() {
-		return otherplayer;
-	}
-	
-	public abstract int determineMove(Playingfield playingfield);
-	
-    
+    public void makeMove(Board board) {
+        int keuze = determineMove(board);
+        board.putMark(keuze, getMark());
+    }
 	
 }
