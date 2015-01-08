@@ -1,4 +1,4 @@
-package Project;
+package Project.logic;
 
 import java.util.Scanner;
 

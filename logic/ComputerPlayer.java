@@ -1,4 +1,4 @@
-package Project;
+package Project.logic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +48,12 @@ public class ComputerPlayer extends Player {
 		return oneAheadChecker(board);
 	}
 	//TODO AI must not "help" opponent with random move
-	else{
-		return getRandomSafeSpot(board);
+	else if(getSafeSpots(board).size()>0){
+		return getRandomElement(getSafeSpots(board));
 		}
+	else{
+		return getRandomElement(getRemainingSpots(board));
+	}
 	}
 	
 	/**
@@ -112,20 +115,33 @@ public class ComputerPlayer extends Player {
 		b = board.copy();
 		for(int i = 0; i<b.getWidth(); i++){
 			height = b.putMark(i, mark);
-			if(!(winMove(b, mark.other())>=0)){
+			if((!(winMove(b, mark.other())>=0))&&height>=0){
 				lijst.add(i);
 			}
-			b.putMark(i, height, Mark.EMPTY);
+			if(height>=0){
+				b.putMark(i, height, Mark.EMPTY);
+			}
 		}
 		System.err.println(lijst);
 		
 		return lijst;
 	}
 	
-	public int getRandomSafeSpot(Board board){
-		List<Integer> lijst = getSafeSpots(board);
+	public int getRandomElement(List<Integer> lijst){
+		//List<Integer> lijst = getSafeSpots(board);
 		return lijst.get((int)(Math.random() * (lijst.size()-1) ));
 	}
+	
+	public List<Integer> getRemainingSpots(Board board){
+		List<Integer> list = new ArrayList<Integer>();
+		Board b = board.copy();
+		for(int i=0; i<b.getWidth(); i++){
+			if(b.columnFree(i)){
+				list.add(i);
+			}
+		}return list;
+	}
+
 	
 	
 	
