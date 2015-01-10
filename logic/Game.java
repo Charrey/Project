@@ -2,6 +2,8 @@ package Project.logic;
 
 import java.util.Scanner;
 
+import Project.gui.Gui;
+
 
 
 public class Game {
@@ -12,6 +14,7 @@ public class Game {
 	private Board board;
 	private boolean running;
 	private TUI tui;
+	private Gui gui;
 	
     public Game(Player s0, Player s1) {
         board = new Board();
@@ -20,6 +23,7 @@ public class Game {
         players[1] = s1;
         current = 0;
         tui = new TUI(board);
+        gui = new Gui(board);
     }
 	
 	public void start(){
@@ -47,8 +51,8 @@ public class Game {
 
 
     private void update() {
-        System.out.println("\ncurrent game situation: \n\n" + tui.showBoard()
-                + "\n");
+        //System.out.println("\ncurrent game situation: \n\n" + tui.showBoard()+ "\n");
+        gui.updateBoard();
     }
 
 	private void reset() {

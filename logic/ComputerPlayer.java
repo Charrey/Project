@@ -8,9 +8,8 @@ public class ComputerPlayer extends Player {
 
 	String name = "Unbeatable";
 	Mark mark;
-	boolean masterplan = false;
-
-    /**
+   
+	/**
      * Creates a <code>ComputerPlayer</code> with the given name and mark.
      * @param name is the name given to the ComputerPlayer.
      * @param m is the mark given to the ComputerPlayer
@@ -122,7 +121,7 @@ public class ComputerPlayer extends Player {
 				b.putMark(i, height, Mark.EMPTY);
 			}
 		}
-		System.err.println(lijst);
+		//System.err.println(lijst);
 		
 		return lijst;
 	}
