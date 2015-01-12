@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class TestClass {
-
+/*
 	@Before
 	public void setUp() throws Exception {
 	}
@@ -28,5 +28,5 @@ public class TestClass {
 		//HumanPlayer p = new HumanPlayer("René", Mark.O);
 		//p.determineMove(b);
 	}
-
+*/
 }
