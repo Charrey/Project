@@ -32,6 +32,9 @@ public class Gui extends JPanel {
 				img = getIcon(b.getPlace(i, p));
 				label[i][p] = new JLabel(img);
 				mainFrame.add(label[i][p]);
+				
+				
+				
 			}
 		}
 		mainFrame.setSize(b.getWidth()*label[0][0].getIcon().getIconHeight(), b.getHeight()*label[0][0].getIcon().getIconHeight());
@@ -65,8 +68,6 @@ public class Gui extends JPanel {
 			for (int p = b.getHeight()-1; p >=0 ; p--) {
 				for (int i = 0; i < b.getWidth(); i++) {
 					label[i][p].setIcon(getIcon(b.getPlace(i, p)));
-					//mainFrame.add(label[i][p]);
-
 				}
 			}
 		}

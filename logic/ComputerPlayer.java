@@ -107,6 +107,11 @@ public class ComputerPlayer extends Player {
 		return -1;
 	}
 	
+	/**
+	 * Checks if a move is safe to play (meaning the opponent can't win next turn because of this turn)
+	 * @param board is the board where the AI is playing on. 
+	 * @return return a List of the columns that are safe to play
+	 */
 	public List<Integer> getSafeSpots(Board board){
 		List<Integer> lijst = new ArrayList<Integer>();
 		int height;
@@ -126,11 +131,21 @@ public class ComputerPlayer extends Player {
 		return lijst;
 	}
 	
+	/**
+	 * Picks a random element in a given List of integers. 
+	 * @param lijst from which the method needs to choose a random element.
+	 * @return return random integer in the given list.
+	 */
 	public int getRandomElement(List<Integer> lijst){
 		//List<Integer> lijst = getSafeSpots(board);
 		return lijst.get((int)(Math.random() * (lijst.size()-1) ));
 	}
 	
+	/**
+	 * Gets the remaining playable spots (meaning there is a empty spot in a column) of a board
+	 * @param board is the board where the AI is playing on.
+	 * @return returns a list of the remaining spots op the board.
+	 */
 	public List<Integer> getRemainingSpots(Board board){
 		List<Integer> list = new ArrayList<Integer>();
 		Board b = board.copy();
