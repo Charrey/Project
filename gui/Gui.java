@@ -24,18 +24,38 @@ public class Gui extends JFrame implements Observer {
 	JLabel[][] label;
 	JLabel[] butlabel;
 	Board b;
+<<<<<<< HEAD
+	JFrame mainFrame;
+	JPanel board;
+=======
 	JPanel mainpanel;
+<<<<<<< HEAD
 	JPanel buttonpanel;
+=======
+>>>>>>> origin/master
+>>>>>>> origin/master
 	
 	public Gui(Board b){
 		this.b = b;	
 		
+<<<<<<< HEAD
+		mainFrame = new JFrame();
+		
+		board = new JPanel();
+		
+		
+		board.setLayout(new GridLayout(b.getHeight(), b.getWidth()));
+=======
 		mainpanel = new JPanel();
 		buttonpanel = new JPanel();
 		this.setLayout(new BorderLayout());
 		mainpanel.setLayout(new GridLayout(b.getHeight(), b.getWidth()));
+<<<<<<< HEAD
 		buttonpanel.setLayout(new GridLayout(1, b.getWidth()));
 		
+=======
+>>>>>>> origin/master
+>>>>>>> origin/master
 		Icon img;
 		
 			
@@ -45,7 +65,11 @@ public class Gui extends JFrame implements Observer {
 			for (int i = 0; i < b.getWidth(); i++) {
 				img = getIcon(b.getPlace(i, p));
 				label[i][p] = new JLabel(img);
+<<<<<<< HEAD
+				board.add(label[i][p]);
+=======
 				mainpanel.add(label[i][p]);
+<<<<<<< HEAD
 			}
 		}
 		butlabel = new JLabel[b.getWidth()];
@@ -57,12 +81,27 @@ public class Gui extends JFrame implements Observer {
 			butlabel[i].setForeground(color);
 			buttonpanel.add(butlabel[i], BorderLayout.CENTER);
 		}
+=======
+>>>>>>> origin/master
+				
+
+				
+			}
+		}
+<<<<<<< HEAD
+		board.setSize(b.getWidth()*label[0][0].getIcon().getIconHeight(), b.getHeight()*label[0][0].getIcon().getIconHeight());
+		mainFrame.setVisible(true);
+		mainFrame.add(board);
+		mainFrame.setSize(1000, 1000);
+=======
+>>>>>>> origin/master
 		mainpanel.setSize(b.getWidth()*label[0][0].getIcon().getIconHeight(), b.getHeight()*label[0][0].getIcon().getIconHeight());
 		setSize(mainpanel.getPreferredSize());
 		buttonpanel.setSize(b.getWidth()*label[0][0].getIcon().getIconHeight(), 100);
 		add(mainpanel, BorderLayout.NORTH);
 		add(buttonpanel, BorderLayout.SOUTH);
 		setVisible(true);
+>>>>>>> origin/master
 		
 		
 		//voorbeeld voor hoe je blokjes met alleen gui kan doen

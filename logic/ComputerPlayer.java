@@ -6,16 +6,16 @@ import java.util.List;
 
 public class ComputerPlayer extends Player {
 
-	String name = "Unbeatable";
-	Mark mark;
+	
+	private Mark mark;
    
 	/**
      * Creates a <code>ComputerPlayer</code> with the given name and mark.
      * @param name is the name given to the ComputerPlayer.
      * @param m is the mark given to the ComputerPlayer
      */
-	public ComputerPlayer(String name, Mark m) {
-		super(name, m);
+	public ComputerPlayer(Mark m) {
+		super("AI", m);
 		mark=m;
 	}
 	

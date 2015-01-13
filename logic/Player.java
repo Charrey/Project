@@ -4,9 +4,8 @@ package Project.logic;
 
 public abstract class Player {
 	
-	String name;
-	Mark mark;
-	//Player otherplayer;
+	private String name;
+	private Mark mark;
 	
 	public Player(String name, Mark mark) {
 	this.name=name;
