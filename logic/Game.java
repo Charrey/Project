@@ -24,6 +24,8 @@ public class Game {
         current = 0;
         tui = new TUI(board);
         gui = new Gui(board);
+        board.addObserver(gui);
+        
     }
 	
 	public void start(){
@@ -51,8 +53,8 @@ public class Game {
 
 
     private void update() {
-        //System.out.println("\ncurrent game situation: \n\n" + tui.showBoard()+ "\n");
-        gui.updateBoard();
+        System.out.println("\ncurrent game situation: \n\n" + tui.showBoard()+ "\n");
+        //gui.updateBoard();
     }
 
 	private void reset() {

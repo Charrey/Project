@@ -1,6 +1,8 @@
 package Project.logic;
 
-public class Board {
+import java.util.Observable;
+
+public class Board extends Observable {
 	
 	Mark[][] board;
 	
@@ -44,6 +46,8 @@ public class Board {
 			if(board[column][i].equals(Mark.EMPTY)){
 				board[column][i] = m;
 				win = checkWin(column, i);
+				setChanged();
+				notifyObservers();
 				return i;
 			}
 		}return -1;
