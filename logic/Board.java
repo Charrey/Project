@@ -4,12 +4,12 @@ import java.util.Observable;
 
 public class Board extends Observable {
 	
-	Mark[][] board;
+	private Mark[][] board;
 	
 	private int width;
 	private int height;
 	
-	boolean win;
+	private boolean win;
 	
 	/**
 	 * Creates a standard Board (width = 7 and height = 6).
@@ -212,6 +212,15 @@ public class Board extends Observable {
 				board[i][p] = Mark.EMPTY;
 			}
 		}
+	}
+	
+	/**
+	 * Check the play the AI would play
+	 * @param m is the mark of which the AI needs to determine the move
+	 * @return the move the AI would have made.
+	 */
+	public int hint(Mark m){
+		return new ComputerPlayer(m).determineMove(this);
 	}
 
 

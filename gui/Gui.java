@@ -19,12 +19,17 @@ public class Gui extends JPanel implements Observer {
 	JLabel[][] label;
 	Board b;
 	JFrame mainFrame;
+	JPanel board;
 	
 	public Gui(Board b){
 		this.b = b;	
 		
 		mainFrame = new JFrame();
-		mainFrame.setLayout(new GridLayout(b.getHeight(), b.getWidth()));
+		
+		board = new JPanel();
+		
+		
+		board.setLayout(new GridLayout(b.getHeight(), b.getWidth()));
 		Icon img;
 		int[] test = new int[b.getWidth()];
 		for(int x = 0; x<b.getHeight()-1; x++){
@@ -37,14 +42,16 @@ public class Gui extends JPanel implements Observer {
 			for (int i = 0; i < b.getWidth(); i++) {
 				img = getIcon(b.getPlace(i, p));
 				label[i][p] = new JLabel(img);
-				mainFrame.add(label[i][p]);
+				board.add(label[i][p]);
 				
 
 				
 			}
 		}
-		mainFrame.setSize(b.getWidth()*label[0][0].getIcon().getIconHeight(), b.getHeight()*label[0][0].getIcon().getIconHeight());
+		board.setSize(b.getWidth()*label[0][0].getIcon().getIconHeight(), b.getHeight()*label[0][0].getIcon().getIconHeight());
 		mainFrame.setVisible(true);
+		mainFrame.add(board);
+		mainFrame.setSize(1000, 1000);
 		
 		
 		//voorbeeld voor hoe je blokjes met alleen gui kan doen
