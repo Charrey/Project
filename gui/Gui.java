@@ -21,8 +21,6 @@ import java.awt.Color;
 
 public class Gui extends JFrame implements Observer {
 
-	JLabel[][] label;
-	// JLabel[] butlabel;
 	Board b;
 	GamePanel mainpanel;
 	ButtonPanel buttonpanel;
