@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Observable;
 import java.util.Observer;
+import javax.swing.JPanel;
 
 import javax.swing.*;
 
@@ -14,22 +15,19 @@ import Project.logic.Board;
 import Project.logic.Mark;
 
 
-public class Gui extends JPanel implements Observer {
+public class Gui extends JFrame implements Observer {
 	
 	JLabel[][] label;
 	Board b;
-	JFrame mainFrame;
+	JPanel mainpanel;
 	
 	public Gui(Board b){
 		this.b = b;	
 		
-		mainFrame = new JFrame();
-		mainFrame.setLayout(new GridLayout(b.getHeight(), b.getWidth()));
+		mainpanel = new JPanel();
+		mainpanel.setLayout(new GridLayout(b.getHeight(), b.getWidth()));
 		Icon img;
-		int[] test = new int[b.getWidth()];
-		for(int x = 0; x<b.getHeight()-1; x++){
-			test[x] = x;
-		}
+		
 			
 		label = new JLabel[b.getWidth()][b.getHeight()]; 
 
@@ -37,14 +35,16 @@ public class Gui extends JPanel implements Observer {
 			for (int i = 0; i < b.getWidth(); i++) {
 				img = getIcon(b.getPlace(i, p));
 				label[i][p] = new JLabel(img);
-				mainFrame.add(label[i][p]);
+				mainpanel.add(label[i][p]);
 				
 
 				
 			}
 		}
-		mainFrame.setSize(b.getWidth()*label[0][0].getIcon().getIconHeight(), b.getHeight()*label[0][0].getIcon().getIconHeight());
-		mainFrame.setVisible(true);
+		mainpanel.setSize(b.getWidth()*label[0][0].getIcon().getIconHeight(), b.getHeight()*label[0][0].getIcon().getIconHeight());
+		setSize(mainpanel.getPreferredSize());
+		add(mainpanel);
+		setVisible(true);
 		
 		
 		//voorbeeld voor hoe je blokjes met alleen gui kan doen
