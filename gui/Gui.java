@@ -42,8 +42,9 @@ public class Gui extends JFrame implements Observer {
 
 		// ADD PANELS HERE
 		// ------------------------------------------
-		add(mainpanel);
 		add(buttonpanel);
+		add(mainpanel);
+		
 		// -------------------------------------------
 
 		this.setResizable(false);
