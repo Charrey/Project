@@ -1,28 +1,49 @@
 package Project.logic;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JLabel;
 
-public class InputHandler implements MouseListener{
+import Project.gui.Slot;
+
+public class InputHandler implements MouseListener, Runnable{
 
 	private int move;
 	private boolean clicked = false;
-	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		move = Integer.parseInt((((JLabel)arg0.getSource()).getText()));
-		//clicked = true;
-		//notify();
-		
 	
-		
+	
+	@Override
+	public void run() {
+		getMove();
 	}
 	
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+			synchronized(this){
+				if(arg0.getSource() instanceof Slot){
+					move = ((Slot)arg0.getSource()).getColumn();
+				}else{
+					move = Integer.parseInt((((JLabel)arg0.getSource()).getText()));
+				}
+				clicked = true;
+				notify();
+			}
+	}
+
 	public int getMove(){
-		return move;
+		synchronized(this){
+			if(!clicked){
+				try {
+					wait();
+				} catch (InterruptedException e) {
+					System.err.println("Something went wrong");
+				}
+			}
+			clicked = false;
+			return move;
+		}
 	}
 	
 	public boolean getClicked(){
@@ -55,6 +76,11 @@ public class InputHandler implements MouseListener{
 		// TODO Auto-generated method stub
 		
 	}
+
+
+
+
+
 
 
 }

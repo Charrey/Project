@@ -1,23 +1,14 @@
 package Project.gui;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
+
 import javax.swing.BoxLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.LayoutManager;
 import java.awt.Dimension;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.JPanel;
-
 import javax.swing.*;
-
 import Project.logic.Board;
-import Project.logic.Mark;
 
-import java.awt.Color;
 
 public class Gui extends JFrame implements Observer, Runnable {
 
@@ -29,38 +20,9 @@ public class Gui extends JFrame implements Observer, Runnable {
 	public Gui(Board b, MouseListener mouseListener) {
 		this.b = b;
 		this.mouseListener = mouseListener;
-		mainpanel = new GamePanel(b);
+		mainpanel = new GamePanel(b, mouseListener);
 		buttonpanel = new ButtonPanel(b.getWidth(), mouseListener);
-		/*
-		// DECLARE PANELS HERE (include layout and size)
-		// -----------------------------------------
-		mainpanel = new GamePanel(b);
-		buttonpanel = new ButtonPanel(b.getWidth(), mouseListener);
-		// ------------------------------------------
-
-		setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-
-		// RESIZE IF NECESSARY
-		Dimension d = new Dimension(64 * b.getWidth(), 64 * b.getWidth() - 10);
-		setSize(d);
-
-		// ADD PANELS HERE
-		// ------------------------------------------
-		add(mainpanel);
-		add(buttonpanel);
-		// -------------------------------------------
-
-		this.setResizable(false);
-		setVisible(true);
-
-		// voorbeeld voor hoe je blokjes met alleen gui kan doen
-		/*
-		 * label[0][5].addMouseListener(new MouseAdapter(){ public void
-		 * mouseClicked(MouseEvent e) { b.putMark(0, Mark.O); updateBoard(); }
-		 * });
-		 */
-		
-
+	
 	}
 
 	public void updateBoard() {

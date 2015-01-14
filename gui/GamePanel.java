@@ -1,6 +1,7 @@
 package Project.gui;
 
 import java.awt.GridLayout;
+import java.awt.event.MouseListener;
 
 import javax.swing.*;
 
@@ -11,27 +12,28 @@ import Project.logic.Mark;
 public class GamePanel extends JPanel {
 
 	public Board b;
-	public JLabel[][] labels;
+	//public JLabel[][] labels;
+	public Slot[][] slots;
+
 	
 	
-	public GamePanel(Board b){
+	public GamePanel(Board b, MouseListener mouseListener){
 		this.b = b;
-		labels = new JLabel[b.getWidth()][b.getHeight()];
-		
+
+
+		slots = new Slot[b.getWidth()][b.getHeight()];
 		Icon img;
 		for (int p = b.getHeight()-1; p >=0 ; p--) {
 			for (int i = 0; i < b.getWidth(); i++) {
 				img = getIcon(b.getPlace(i, p));
-				labels[i][p] = new JLabel(img);
-				add(labels[i][p]);
-				//System.out.println("yes");
-				
+				slots[i][p] = new Slot(i);
+				slots[i][p].setIcon(img);
+				slots[i][p].addMouseListener(mouseListener);
+				add(slots[i][p]);
 			}
 		}
-		
 		setLayout(new GridLayout(b.getHeight(), b.getWidth()));
-		setSize(b.getWidth()*labels[0][0].getIcon().getIconHeight(), b.getHeight()*labels[0][0].getIcon().getIconHeight());
-		
+		setSize(b.getWidth()*slots[0][0].getIcon().getIconHeight(), b.getHeight()*slots[0][0].getIcon().getIconHeight());
 		
 		this.setVisible(true);
 	}
@@ -51,7 +53,7 @@ public class GamePanel extends JPanel {
 	public void updateBoard() {
 		for (int p = b.getHeight()-1; p >=0 ; p--) {
 			for (int i = 0; i < b.getWidth(); i++) {
-				labels[i][p].setIcon(getIcon(b.getPlace(i, p)));
+				slots[i][p].setIcon(getIcon(b.getPlace(i, p)));
 			}
 		}
 	}

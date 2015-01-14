@@ -4,16 +4,18 @@ import java.util.Scanner;
 
 public class HumanPlayer extends Player {
 	private InputHandler inputHandler;
+
 	
 	public HumanPlayer(String name, Mark mark) {
 		super(name, mark);
 		inputHandler = new InputHandler();
+		new Thread(inputHandler).start();
 		
 	}
 
 	@Override
 	public int determineMove(Board playingfield) {
-		
+		/*
 		System.out.println("Which column would you like to pick, "+ this.getName() + "?");
 		Scanner a = new Scanner(System.in);
 		int pick;
@@ -36,29 +38,10 @@ public class HumanPlayer extends Player {
 				
 			}
 		}return -1;
-			
-		
-		
-		/*
-		SHIT
-		if(!inputHandler.getClicked()){
-			try {
-				//while(!inputHandler.getClicked()){
-				System.err.println("waiting");	
-				wait();
-					
-					
-				//}
-			} catch (InterruptedException e) {
-				System.err.println("Something went wrong");
-			}
-		}
-		System.err.println(inputHandler.getMove());
-		inputHandler.setClicked(false);
-		return inputHandler.getMove();	
 		*/
 
-		
+		return inputHandler.getMove();
+
 		
 		
 

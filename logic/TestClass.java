@@ -29,5 +29,5 @@ public class TestClass {
 		//HumanPlayer p = new HumanPlayer("René", Mark.O);
 		//p.determineMove(b);
 	}
-*/
+
 }

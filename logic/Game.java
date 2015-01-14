@@ -44,23 +44,22 @@ public class Game implements Runnable {
     	while (!board.gameOver()){
     		players[current].makeMove(board);
     		current = (current+1)%2;    		
-    		update();
-    		//board.setField(players[current].makeMove(board), players[current].getMark());
-    		
+    		update();	
     	}
     }
 
 
     private void update() {
-        System.out.println("\ncurrent game situation: \n\n" + tui.showBoard()+ "\n");
+        //System.out.println("\ncurrent game situation: \n\n" + tui.showBoard()+ "\n");
         //gui.updateBoard();
     }
 
 	private void reset() {
 		board.reset();
+		board.notifyObservers();
 	}
 
-	//TODO readplay again stays
+
 	private boolean readPlayAgain() {
         String answer;
 
