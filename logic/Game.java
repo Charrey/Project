@@ -83,6 +83,10 @@ public class Game implements Runnable {
 		}
 		
 	}
+	
+	public Player getFirstPlayer(){
+		return players[0];
+	}
 
 
 

@@ -13,7 +13,7 @@ public class HumanPlayer extends Player {
 
 	@Override
 	public int determineMove(Board playingfield) {
-		/*
+		
 		System.out.println("Which column would you like to pick, "+ this.getName() + "?");
 		Scanner a = new Scanner(System.in);
 		int pick;
@@ -35,8 +35,12 @@ public class HumanPlayer extends Player {
 				System.out.println("Not a valid input, try antoher set");
 				
 			}
-			*/
+		}return -1;
+			
 		
+		
+		/*
+		SHIT
 		if(!inputHandler.getClicked()){
 			try {
 				//while(!inputHandler.getClicked()){
@@ -52,6 +56,7 @@ public class HumanPlayer extends Player {
 		System.err.println(inputHandler.getMove());
 		inputHandler.setClicked(false);
 		return inputHandler.getMove();	
+		*/
 
 		
 		

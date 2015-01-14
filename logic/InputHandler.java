@@ -15,7 +15,7 @@ public class InputHandler implements MouseListener{
 	public void mouseClicked(MouseEvent arg0) {
 		move = Integer.parseInt((((JLabel)arg0.getSource()).getText()));
 		//clicked = true;
-		notify();
+		//notify();
 		
 	
 		
