@@ -24,7 +24,7 @@ public class GamePanel extends JPanel {
 				img = getIcon(b.getPlace(i, p));
 				labels[i][p] = new JLabel(img);
 				add(labels[i][p]);
-				System.out.println("yes");
+				//System.out.println("yes");
 				
 			}
 		}

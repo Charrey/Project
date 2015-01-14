@@ -19,19 +19,23 @@ import Project.logic.Mark;
 
 import java.awt.Color;
 
-public class Gui extends JFrame implements Observer {
+public class Gui extends JFrame implements Observer, Runnable {
 
 	Board b;
 	GamePanel mainpanel;
 	ButtonPanel buttonpanel;
+	MouseListener mouseListener;
 
-	public Gui(Board b) {
+	public Gui(Board b, MouseListener mouseListener) {
 		this.b = b;
-
+		this.mouseListener = mouseListener;
+		mainpanel = new GamePanel(b);
+		buttonpanel = new ButtonPanel(b.getWidth(), mouseListener);
+		/*
 		// DECLARE PANELS HERE (include layout and size)
 		// -----------------------------------------
 		mainpanel = new GamePanel(b);
-		buttonpanel = new ButtonPanel(b.getWidth());
+		buttonpanel = new ButtonPanel(b.getWidth(), mouseListener);
 		// ------------------------------------------
 
 		setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
@@ -55,6 +59,7 @@ public class Gui extends JFrame implements Observer {
 		 * mouseClicked(MouseEvent e) { b.putMark(0, Mark.O); updateBoard(); }
 		 * });
 		 */
+		
 
 	}
 
@@ -66,6 +71,28 @@ public class Gui extends JFrame implements Observer {
 	public void update(Observable arg0, Object arg1) {
 		updateBoard();
 
+	}
+
+	@Override
+	public void run() {
+
+		// ------------------------------------------
+
+		setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+
+		// RESIZE IF NECESSARY
+		Dimension d = new Dimension(64 * b.getWidth(), 64 * b.getWidth() - 10);
+		setSize(d);
+
+		// ADD PANELS HERE
+		// ------------------------------------------
+		add(mainpanel);
+		add(buttonpanel);
+		// -------------------------------------------
+
+		this.setResizable(false);
+		setVisible(true);
+		
 	}
 
 }

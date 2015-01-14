@@ -1,12 +1,16 @@
 package Project.logic;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Scanner;
+
+import javax.swing.JLabel;
 
 import Project.gui.Gui;
 
 
 
-public class Game {
+public class Game implements Runnable {
 
 	private Player[] players;
 	private static final int NUMBER_PLAYERS = 2;
@@ -23,20 +27,15 @@ public class Game {
         players[1] = s1;
         current = 0;
         tui = new TUI(board);
-        gui = new Gui(board);
+        //gui = new Gui(board, (MouseListener)((HumanPlayer)s0).getInputHandler()));
+        gui = new Gui(board, ((HumanPlayer)s0).getInputHandler());
+        Thread guiThread = new Thread(gui);
+        guiThread.start();
         board.addObserver(gui);
+        //gui.addMouseListener(this);
         
     }
-	
-	public void start(){
-		running = true;
-		while(running){
-			reset();
-			play();
-			running = readPlayAgain();
-			
-		}
-	}
+
 	
 	
 	
@@ -44,7 +43,7 @@ public class Game {
     	update();
     	while (!board.gameOver()){
     		players[current].makeMove(board);
-    		current = (current+1)%2;
+    		current = (current+1)%2;    		
     		update();
     		//board.setField(players[current].makeMove(board), players[current].getMark());
     		
@@ -72,6 +71,20 @@ public class Game {
         } while (answer == null || (!answer.equals("y") && !answer.equals("n")));
         return answer.equals("y");
 	}
+
+	@Override
+	public void run() {
+		running = true;
+		while(running){
+			reset();
+			play();
+			running = readPlayAgain();
+			
+		}
+		
+	}
+
+
 
 
 
