@@ -6,9 +6,9 @@ public class HumanPlayer extends Player {
 	private InputHandler inputHandler;
 
 	
-	public HumanPlayer(String name, Mark mark) {
+	public HumanPlayer(String name, Mark mark, InputHandler inputHandler) {
 		super(name, mark);
-		inputHandler = new InputHandler();
+		this.inputHandler = inputHandler;
 		new Thread(inputHandler).start();
 		
 	}
