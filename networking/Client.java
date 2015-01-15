@@ -8,12 +8,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.OutputStreamWriter;
+
 import Project.logic.*;
+import Project.gui.*;
+
+import java.util.Set;
+import java.util.HashSet;
 
 public class Client {
 
 	Interpreter inter;
 	Game game;
+	Gui gui;
 
 	// Server supports:
 	Boolean sersup_chat = false;
@@ -21,11 +27,19 @@ public class Client {
 	Boolean sersup_leaderboard = false;
 	Boolean sersup_multiplayer = false;
 	Socket sock;
+	Set<String> lobby;
+	HumanPlayer player;
+	String ourname;
+	int playerno;
 
 	private BufferedReader in;
 	private BufferedWriter out;
 
-	public Client(String address, int port) {
+	int movetobemade;
+
+	public Client(String address, int port, String name) {
+		player = new HumanPlayer(name, Mark.X, new InputHandler());
+		gui = new Gui(game.getBoard(), player.getInputHandler());
 		inter = new Interpreter(this);
 		try {
 			sock = new Socket(InetAddress.getByName(address), port);
@@ -46,49 +60,99 @@ public class Client {
 			System.exit(0);
 		}
 	}
-	
-	//send a message to a ClientHandler.
-	 public void sendMessage(String msg) {
-	  try {
-	   out.write(msg);
-	   out.flush();
-	   
-	  } catch (IOException e) {
-	   e.printStackTrace();
-	  }
-	  
-	 }
-	 
-	 public void setServerMultiplayer(Boolean bool) {
-		 sersup_multiplayer = true;
-	 }
-	 
-	 public void makemove() {
-		 // ????
-	 }
-	 
-	 public void setServerLeaderboard(Boolean bool) {
-		 sersup_leaderboard = true;
-	 }	 
-	 
-	public void gamestart() {
-		game = new Game(new HumanPlayer("This_pc", Mark.X), new NetworkPlayer("That_pc", Mark.O));
+
+	// send a message to a ClientHandler.
+	public void sendMessage(String msg) {
+		try {
+			out.write(msg);
+			out.flush();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
-	
+
+	public void setServerMultiplayer(Boolean bool) {
+		sersup_multiplayer = true;
+	}
+
+	public void refreshBoard(String stringArg) {
+		String[] splitted = stringArg.split("\\s+");
+		game.getBoard().reset();
+		int teller = 0;
+		for (int p = 0; p < game.getBoard().getHeight(); p++) {
+			for (int i = 0; i < game.getBoard().getWidth(); i++) {
+				if (!splitted[teller].equals("/n")) {
+					if (Integer.parseInt(splitted[teller]) == 01) {
+						game.getBoard().putMark(i, Mark.X);
+					} else if (Integer.parseInt(splitted[teller]) != 0) {
+						game.getBoard().putMark(i, Mark.O);
+					}
+				}
+				teller++;
+
+			}
+
+		}
+		gui.updateBoard();
+	}
+
+	public void makemove() {
+		movetobemade = game.getFirstPlayer().determineMove(game.getBoard());
+		try {
+			out.write("MOVE " + movetobemade + " /n/n");
+			out.flush();
+		} catch (IOException ex) {
+			System.err.println("Could not send move to server");
+		}
+	}
+
+	public void setServerLeaderboard(Boolean bool) {
+		sersup_leaderboard = true;
+	}
+
+	public void gamestart() {
+
+		game = new Game(player, new NetworkPlayer("That_pc", Mark.O));
+	}
+
+	public void moveok() {
+		game.getBoard().putMark(movetobemade, Mark.X);
+	}
+
+	public void SetServerchat(Boolean b) {
+		sersup_chat = true;
+	}
+
+	public void SetServerCBoardSize(Boolean b) {
+		sersup_cboardsize = true;
+	}
+
+	public void setLobby(String stringArg) {
+		lobby = new HashSet<String>();
+		String[] splitted = stringArg.split("\\s+");
+		for (int i = 0; i < splitted.length; i++) {
+			lobby.add(splitted[i]);
+		}
+	}
+
 	public void run() {
-		  try {
-		  String tussenvar = in.readLine();
-		   while(tussenvar!=null){
-		    inter.whatisthatClient(this, tussenvar);
-		    tussenvar = in.readLine();
-		   }
-		  } catch (IOException e) {
-		   e.printStackTrace();
-		  }
-		  
-		 }
-	
-	
+		try {
+			String tussenvar = in.readLine();
+			while (tussenvar != null) {
+				inter.whatisthatClient(this, tussenvar);
+				tussenvar = in.readLine();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void gameend() {
+		game.gameEnd();
+	}
 
 	public void invited(String other) {
 

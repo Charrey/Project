@@ -4,25 +4,25 @@ import Project.logic.Game;
 public class Interpreter {
 
 	//SENT BY SERVER ONLY:
-	private final String kw_sendboard = "BOARD";
-	private final String kw_conn_gameend = "GAME_END";
-	private final String kw_conn_gamestart = "GAME_START";
-	private final String kw_conn_lobby = "LOBBY";
-	private final String kw_game_moveok = "MOVE_OK";
-	private final String kw_game_reqmove = "REQUEST_MOVE";
+	public final String kw_sendboard = "BOARD";
+	public final String kw_conn_gameend = "GAME_END";
+	public final String kw_conn_gamestart = "GAME_START";
+	public final String kw_conn_lobby = "LOBBY";
+	public final String kw_game_moveok = "MOVE_OK";
+	public final String kw_game_reqmove = "REQUEST_MOVE";
 	
 	//SENT BY CLIENT ONLY:
-	private final String kw_conn_chatmessage = "CHAT";
-	private final String kw_conn_requestboard = "REQUEST_BOARD";
-	private final String kw_conn_acceptconnect = "ACCEPT_CONNECT";
-	private final String kw_conn_leaderboard = "LEADERBOARD";// + <leaderboard>
+	public final String kw_conn_chatmessage = "CHAT";
+	public final String kw_conn_requestboard = "REQUEST_BOARD";
+	public final String kw_conn_acceptconnect = "ACCEPT_CONNECT";
+	public final String kw_conn_leaderboard = "LEADERBOARD";// + <leaderboard>
 
 	//SENT BY BOTH SERVER AND CLIENT:
-	private final String kw_feature_chat = "CHAT";// + <message>
-	private final String kw_feature_cBoardSize = "CUSTOM_BOARD_SIZE";
-	private final String kw_feature_leaderboard = "LEADERBOARD";
-	private final String kw_feature_multiplayer = "MULTIPLAYER";
-	private final String kw_conn_invite = "INVITE";
+	public final String kw_feature_chat = "CHAT";// + <message>
+	public final String kw_feature_cBoardSize = "CUSTOM_BOARD_SIZE";
+	public final String kw_feature_leaderboard = "LEADERBOARD";
+	public final String kw_feature_multiplayer = "MULTIPLAYER";
+	public final String kw_conn_invite = "INVITE";
 	
 	ClientHandler playerone;
 	ClientHandler playertwo;
@@ -48,7 +48,7 @@ public class Interpreter {
 		
 		if (areweserver==true) {
 			if (that.startsWith(kw_conn_chatmessage)) {
-			server.handlechatmessage(source);
+			server.handlechatmessage(source, that.substring(5));
 			}
 			else if (that.startsWith(kw_conn_requestboard)) {
 			server.sendBoard(source);
@@ -75,7 +75,7 @@ public class Interpreter {
 			server.setfLeaderboard(source, true);
 			}
 			else if (that.startsWith(kw_conn_invite)) {
-			server.invite(that.substring(8, source));
+			server.invite(that.substring(8), source);
 			}			
 		else{
 			System.err.println("interpreter wrongly constructed");

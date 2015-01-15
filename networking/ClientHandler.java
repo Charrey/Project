@@ -37,6 +37,10 @@ public class ClientHandler extends Thread {
 		shutdown();
 	}
 	
+	public void sendMessage(String source) {
+		
+	}
+	
 	public void shutdown() {
 		try {
 			sock.close();

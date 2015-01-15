@@ -58,6 +58,10 @@ public class Game implements Runnable {
 		board.reset();
 		board.notifyObservers();
 	}
+	
+	public Board getBoard() {
+		return board;
+	}
 
 
 	private boolean readPlayAgain() {
