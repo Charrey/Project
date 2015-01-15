@@ -22,7 +22,7 @@ public class ButtonPanel extends JPanel {
 		}
 		setLayout(new GridLayout(1, labels.length));
 		setSize(labels.length * 64, 100);
-		this.setVisible(true);
+		//this.setVisible(true);
 	}
 
 }

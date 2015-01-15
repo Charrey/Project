@@ -16,12 +16,14 @@ public class Gui extends JFrame implements Observer, Runnable {
 	GamePanel mainpanel;
 	ButtonPanel buttonpanel;
 	MouseListener mouseListener;
+	GameSelectPanel selectPanel;
 
 	public Gui(Board b, MouseListener mouseListener) {
 		this.b = b;
 		this.mouseListener = mouseListener;
 		mainpanel = new GamePanel(b, mouseListener);
 		buttonpanel = new ButtonPanel(b.getWidth(), mouseListener);
+		selectPanel = new GameSelectPanel(this);
 	
 	}
 
@@ -48,8 +50,10 @@ public class Gui extends JFrame implements Observer, Runnable {
 
 		// ADD PANELS HERE
 		// ------------------------------------------
-		add(mainpanel);
-		add(buttonpanel);
+		//add(mainpanel);
+		//add(buttonpanel);
+		add(selectPanel);
+		
 		// -------------------------------------------
 
 		this.setResizable(false);

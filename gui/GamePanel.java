@@ -35,7 +35,7 @@ public class GamePanel extends JPanel {
 		setLayout(new GridLayout(b.getHeight(), b.getWidth()));
 		setSize(b.getWidth()*slots[0][0].getIcon().getIconHeight(), b.getHeight()*slots[0][0].getIcon().getIconHeight());
 		
-		this.setVisible(true);
+		//this.setVisible(true);
 	}
 	
 	
