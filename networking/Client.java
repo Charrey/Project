@@ -26,7 +26,7 @@ public class Client {
 	Boolean sersup_cboardsize = false;
 	Boolean sersup_leaderboard = false;
 	Boolean sersup_multiplayer = false;
-	
+
 	Socket sock;
 	Set<String> lobby;
 	HumanPlayer player;
@@ -37,33 +37,32 @@ public class Client {
 	private BufferedWriter out;
 
 	int movetobemade;
-	
-	public static void main(String[] args) {
-		Client client = new Client("127.0.0.1",49999,"Pim");
-	}
-	
 
-	//Constructor, obviously
+	public static void main(String[] args) {
+		Client client = new Client("127.0.0.1", 49999, "Pim");
+		client.sendMessage("CONNECT Pim LEADERBOARD");
+		
+	}
+
+	// Constructor, obviously
 	public Client(String address, int port, String name) {
 		try {
-			Socket socket = new Socket(InetAddress.getByName("127.0.0.1"),49999);
+			sock = new Socket(InetAddress.getByName("127.0.0.1"), 49999);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			System.err.println("Could not create socket with server.");
 		}
-		game = new Game(new HumanPlayer(name, Mark.X, new InputHandler()), new HumanPlayer("other_pc", Mark.O, new NetworkedInputHandler()));
-		player = (HumanPlayer)game.getFirstPlayer();
-		gui = new Gui(game.getBoard(), player.getInputHandler());
+		game = new Game(
+				new HumanPlayer(name, Mark.X, new InputHandler()),
+				new HumanPlayer("other_pc", Mark.O, new NetworkedInputHandler()));
+		player = (HumanPlayer) game.getFirstPlayer();
 		inter = new Interpreter(this);
-		try {
-			sock = new Socket(InetAddress.getByName(address), port);
-		} catch (UnknownHostException e) {
-			System.err.println("ERROR: unknown host");
-			System.exit(0);
-		} catch (IOException e) {
-			System.err.println("Connection failed");
-			System.exit(0);
-		}
+		/*
+		 * try { sock = new Socket(InetAddress.getByName(address), port); }
+		 * catch (UnknownHostException e) {
+		 * System.err.println("ERROR: unknown host"); System.exit(0); } catch
+		 * (IOException e) { System.err.println("Connection failed");
+		 * System.exit(0); }
+		 */
 		try {
 			in = new BufferedReader(
 					new InputStreamReader(sock.getInputStream()));
@@ -78,20 +77,27 @@ public class Client {
 	// send a message to a ClientHandler of someone else's implementation.
 	public void sendMessage(String msg) {
 		try {
+			System.out.println("Sending message to server ("+sock.getInetAddress()+") : " + msg);
 			out.write(msg);
+			out.newLine();
 			out.flush();
+			System.out.println("Sent message to server ("+sock.getInetAddress()+") : " + msg);
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("Could not send command ("+msg+") to server.");
 		}
 
 	}
-	
-	public void connectionAccepted(String features) {
-	String[] splitted = features.split("\\s+");
-	for (int i = 0; i<splitted.length; i++) {
-	inter.whatisthatClient(this, splitted[i]);
+
+	public void askLobby() {
+		sendMessage("REQUEST_LOBBY");
 	}
+
+	public void connectionAccepted(String features) {
+		String[] splitted = features.split("\\s+");
+		for (int i = 0; i < splitted.length; i++) {
+			inter.whatisthatClient(this, splitted[i]);
+		}
 	}
 
 	public void setServerMultiplayer(Boolean bool) {
@@ -100,14 +106,14 @@ public class Client {
 
 	public void refreshBoard(String stringArg) {
 		String[] splitted = stringArg.split("\\s+");
-		game.getBoard().reset();
+		game.getBoard().reset(Integer.parseInt(splitted[0]), Integer.parseInt(splitted[1]));
 		int teller = 0;
 		for (int p = 0; p < game.getBoard().getHeight(); p++) {
 			for (int i = 0; i < game.getBoard().getWidth(); i++) {
-				if (!splitted[teller].equals("/n")) {
-					if (Integer.parseInt(splitted[teller]) == 01) {
+				if (!splitted[teller+2].equals("/n")) {
+					if (Integer.parseInt(splitted[teller+2]) == 01) {
 						game.getBoard().putMark(i, Mark.X);
-					} else if (Integer.parseInt(splitted[teller]) != 0) {
+					} else if (Integer.parseInt(splitted[teller+2]) != 0) {
 						game.getBoard().putMark(i, Mark.O);
 					}
 				}
@@ -135,8 +141,9 @@ public class Client {
 
 	public void gamestart() {
 
-		game = new Game(player, new HumanPlayer("That_pc", Mark.O, new NetworkedInputHandler()));
-		//HumanPlayer met networked handler!!!!
+		game = new Game(player, new HumanPlayer("That_pc", Mark.O,
+				new NetworkedInputHandler()));
+		// HumanPlayer met networked handler!!!!
 	}
 
 	public void moveok() {
@@ -167,7 +174,7 @@ public class Client {
 				tussenvar = in.readLine();
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("Could not read from server.");
 		}
 
 	}

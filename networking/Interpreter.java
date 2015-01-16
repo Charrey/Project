@@ -38,15 +38,15 @@ public class Interpreter {
 	}
 	
 	//IF WE'RE A SERVER
-	public Interpreter(ClientHandler a,ClientHandler b, Game game) {
-		playerone = a;
-		playertwo = b;
-		this.game = game;
+	public Interpreter(Server server) {
+		//playerone = a;
+		//playertwo = b;
+		//this.game = game;
+		this.server = server;
 		areweserver = true;
 	}
 	
-	public void whatisthatServer(String that, ClientHandler source) {
-		
+	public void whatisthatServer(String that, ClientHandler source, Boolean subcommand) {
 		if (areweserver==true) {
 			if (that.startsWith(kw_conn_chatmessage)) {
 			server.handlechatmessage(source, that.substring(5));
@@ -57,7 +57,7 @@ public class Interpreter {
 			else if (that.startsWith(kw_conn_requestboard)) {
 			server.sendBoard(source);
 			}
-			else if (that.startsWith(kw_conn_leaderboard)) {
+			else if (that.startsWith(kw_conn_leaderboard) && subcommand==false) {
 			server.sendLeaderboard();
 			}
 			else if (that.startsWith(kw_feature_chat)) {
@@ -76,7 +76,7 @@ public class Interpreter {
 			server.invite(that.substring(8), source);
 			}			
 		else{
-			System.err.println("interpreter wrongly constructed");
+			System.err.println("interpreter wrongly constructed. That ="+that);
 		}
 		
 	}
@@ -84,7 +84,7 @@ public class Interpreter {
 	}
 	
 	public void whatisthatClient(Client client, String that) {
-		
+		System.out.println("whatisthatclient");
 		if (areweserver==false) {
 			if (that.startsWith(kw_sendboard)) {
 			client.refreshBoard(that.substring(6));

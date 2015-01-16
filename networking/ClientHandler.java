@@ -22,21 +22,26 @@ public class ClientHandler extends Thread {
 		sock = sockArg;
 		in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 		out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
+		clientName = sock.getInetAddress().getHostName();
 	}
 
 	public void run() {
 		try {
 			String ontvangen;
 			while (!sock.isClosed()) {
+				System.out.println("Ready to read new command from "
+						+ clientName);
 				ontvangen = in.readLine();
-				server.interpreter.whatisthatServer(ontvangen, this);
-
+				System.out.println("Read new command from " + clientName + ": "
+						+ ontvangen);
+				server.interpreter.whatisthatServer(ontvangen, this, false);
 			}
 		} catch (IOException ex) {
+			System.err.println("Error while recieving command");
 		}
 		shutdown();
 	}
-	
+
 	public void sendCommand(String command) {
 		try {
 			out.write(command);
@@ -46,11 +51,21 @@ public class ClientHandler extends Thread {
 		}
 	}
 
-	
-	
+	public String getClientName() {
+		return clientName;
+	}
+
+	public Socket getSocket() {
+		return sock;
+	}
+
+	public void setClientName(String nameArg) {
+		clientName = nameArg;
+	}
+
 	public void sendMessage(String source, String message) {
 		try {
-			out.write(source + ": " + message);
+			out.write("CHAT " + message);
 			out.flush();
 		} catch (IOException ex) {
 			System.err.println("Unable to send chat message");
