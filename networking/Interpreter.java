@@ -10,6 +10,7 @@ public class Interpreter {
 	public final String kw_conn_lobby = "LOBBY";
 	public final String kw_game_moveok = "MOVE_OK";
 	public final String kw_game_reqmove = "REQUEST_MOVE";
+	public final String kw_conn_error = "ERROR";
 	
 	//SENT BY CLIENT ONLY:
 	public final String kw_conn_welcome = "CONNECT";
@@ -76,7 +77,8 @@ public class Interpreter {
 			server.invite(that.substring(8), source);
 			}			
 		else{
-			System.err.println("interpreter wrongly constructed. That ="+that);
+			System.err.println("Misunderstood command: "+that);
+			server.sendError(source, "SyntaxError");
 		}
 		
 	}
@@ -84,7 +86,6 @@ public class Interpreter {
 	}
 	
 	public void whatisthatClient(Client client, String that) {
-		System.out.println("whatisthatclient");
 		if (areweserver==false) {
 			if (that.startsWith(kw_sendboard)) {
 			client.refreshBoard(that.substring(6));
@@ -121,7 +122,14 @@ public class Interpreter {
 			}
 			else if (that.startsWith(kw_conn_invite)) {
 			client.invited(that.substring(8));
-			}			
+			}
+			else if (that.startsWith(kw_conn_error)) {
+			System.out.println("");
+			System.out.println("!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!");
+			System.out.println("ERROR RECEIVED FROM SERVER: "+that.substring(6));
+			System.out.println("!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!");
+			System.out.println("");
+			}
 		else{
 			System.err.println("interpreter wrongly constructed");
 		}

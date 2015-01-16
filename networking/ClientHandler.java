@@ -45,6 +45,7 @@ public class ClientHandler extends Thread {
 	public void sendCommand(String command) {
 		try {
 			out.write(command);
+			out.newLine();
 			out.flush();
 		} catch (IOException ex) {
 			System.err.println("Unable to send command");

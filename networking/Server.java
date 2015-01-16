@@ -21,6 +21,8 @@ public class Server {
 		Interpreter interpreter;
 		ServerSocket serversocket;
 		
+		public Map<ClientHandler, ClientHandler> invites;
+		
 		
 		
 		
@@ -46,9 +48,9 @@ public class Server {
 	}
 
 	
-public ServerSocket getServerSocket() {
+	public ServerSocket getServerSocket() {
 	return serversocket;
-}
+	}
 	
 
 	public Server(int port) throws IOException {
@@ -77,6 +79,11 @@ public ServerSocket getServerSocket() {
 		}
 		source.sendCommand(interpreter.kw_conn_acceptconnect
 				+ " CHAT CUSTOM_BOARD_SIZE");
+		sendLobby(source);
+	}
+	
+	public void sendError(ClientHandler target, String msg) {
+	target.sendCommand("ERROR "+msg);
 	}
 
 	public String sendBoard(ClientHandler source) {
@@ -84,6 +91,15 @@ public ServerSocket getServerSocket() {
 		//for(Iterator<Game> i = it; i.hasNext()) {
 		return "";	
 		}
+	
+		public void sendLobby(ClientHandler source) {
+		String result = "";
+		for (ClientHandler i : lobby.keySet()) {
+			result += " "+i.getClientName();
+		}
+		source.sendCommand(interpreter.kw_conn_lobby+result);
+		
+	}
 	
 
 	public void sendLeaderboard() {
@@ -103,6 +119,7 @@ public ServerSocket getServerSocket() {
 	}
 
 	public void invite(String target, ClientHandler source) {
-
+	invites.put(source, target);
+		
 	}
 }

@@ -1,6 +1,7 @@
 package Project.networking;
 
 import java.net.Socket;
+import java.util.Scanner;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.io.BufferedWriter;
@@ -15,11 +16,14 @@ import Project.gui.*;
 import java.util.Set;
 import java.util.HashSet;
 
-public class Client {
+import org.junit.experimental.theories.Theories;
+
+public class Client implements Runnable {
 
 	Interpreter inter;
 	Game game;
 	Gui gui;
+	String name;
 
 	// Server supports:
 	Boolean sersup_chat = false;
@@ -39,30 +43,25 @@ public class Client {
 	int movetobemade;
 
 	public static void main(String[] args) {
-		Client client = new Client("127.0.0.1", 49999, "Pim");
-		client.sendMessage("CONNECT Pim LEADERBOARD");
-		
+		/*
+		 * Scanner scanner = new Scanner(System.in);
+		 * System.out.println("What is your name?"); String name =
+		 * scanner.nextLine(); while (name.length() < 2) {
+		 * System.out.println("Longer name please."); name = scanner.nextLine();
+		 * } Client client = new Client("127.0.0.1", 49999, name);
+		 * client.start();
+		 */
 	}
 
-	// Constructor, obviously
-	public Client(String address, int port, String name) {
-		try {
-			sock = new Socket(InetAddress.getByName("127.0.0.1"), 49999);
-		} catch (IOException e1) {
-			System.err.println("Could not create socket with server.");
+	public void watchInput() {
+		Scanner scanner = new Scanner(System.in);
+		while (true) {
+			sendMessage(scanner.nextLine());
 		}
-		game = new Game(
-				new HumanPlayer(name, Mark.X, new InputHandler()),
-				new HumanPlayer("other_pc", Mark.O, new NetworkedInputHandler()));
-		player = (HumanPlayer) game.getFirstPlayer();
-		inter = new Interpreter(this);
-		/*
-		 * try { sock = new Socket(InetAddress.getByName(address), port); }
-		 * catch (UnknownHostException e) {
-		 * System.err.println("ERROR: unknown host"); System.exit(0); } catch
-		 * (IOException e) { System.err.println("Connection failed");
-		 * System.exit(0); }
-		 */
+	}
+
+	public Client(Socket sock) {
+		this.sock=sock;
 		try {
 			in = new BufferedReader(
 					new InputStreamReader(sock.getInputStream()));
@@ -72,19 +71,47 @@ public class Client {
 			System.err.println("Error while opening streams");
 			System.exit(0);
 		}
+
+		watchInput();
+	}
+
+	public Socket getSocket() {
+		return sock;
+	}
+
+	// Constructor, obviously
+	public Client(String address, int port, String name) {
+		this.name = name;
+		try {
+			sock = new Socket(InetAddress.getByName("127.0.0.1"), 49999);
+		} catch (IOException e1) {
+			System.err.println("Could not create socket with server.");
+		}
+		inter = new Interpreter(this);
+		try {
+			in = new BufferedReader(
+					new InputStreamReader(sock.getInputStream()));
+			out = new BufferedWriter(new OutputStreamWriter(
+					sock.getOutputStream()));
+		} catch (IOException alpha) {
+			System.err.println("Error while opening streams");
+			System.exit(0);
+		}
+		sendMessage("CONNECT " + this.name + " LEADERBOARD");
 	}
 
 	// send a message to a ClientHandler of someone else's implementation.
 	public void sendMessage(String msg) {
 		try {
-			System.out.println("Sending message to server ("+sock.getInetAddress()+") : " + msg);
+			System.out.println("Sending message to server ("
+					+ sock.getInetAddress() + ") : " + msg);
 			out.write(msg);
 			out.newLine();
 			out.flush();
-			System.out.println("Sent message to server ("+sock.getInetAddress()+") : " + msg);
 
 		} catch (IOException e) {
-			System.err.println("Could not send command ("+msg+") to server.");
+			System.err.println("Could not send command (" + msg
+					+ ") to server.");
 		}
 
 	}
@@ -106,14 +133,15 @@ public class Client {
 
 	public void refreshBoard(String stringArg) {
 		String[] splitted = stringArg.split("\\s+");
-		game.getBoard().reset(Integer.parseInt(splitted[0]), Integer.parseInt(splitted[1]));
+		game.getBoard().reset(Integer.parseInt(splitted[0]),
+				Integer.parseInt(splitted[1]));
 		int teller = 0;
 		for (int p = 0; p < game.getBoard().getHeight(); p++) {
 			for (int i = 0; i < game.getBoard().getWidth(); i++) {
-				if (!splitted[teller+2].equals("/n")) {
-					if (Integer.parseInt(splitted[teller+2]) == 01) {
+				if (!splitted[teller + 2].equals("/n")) {
+					if (Integer.parseInt(splitted[teller + 2]) == 01) {
 						game.getBoard().putMark(i, Mark.X);
-					} else if (Integer.parseInt(splitted[teller+2]) != 0) {
+					} else if (Integer.parseInt(splitted[teller + 2]) != 0) {
 						game.getBoard().putMark(i, Mark.O);
 					}
 				}
@@ -164,12 +192,23 @@ public class Client {
 		for (int i = 0; i < splitted.length; i++) {
 			lobby.add(splitted[i]);
 		}
+		System.out.println("***LOBBY***");
+		if (lobby.isEmpty()) {
+			System.out.println("* Empty lobby :(");
+		} else {
+			for (String i : lobby) {
+				System.out.println("* " + i);
+			}
+		}
+		System.out.println("***********");
 	}
 
 	public void run() {
 		try {
 			String tussenvar = in.readLine();
 			while (tussenvar != null) {
+				System.out
+						.println("Message received from server: " + tussenvar);
 				inter.whatisthatClient(this, tussenvar);
 				tussenvar = in.readLine();
 			}
