@@ -12,6 +12,7 @@ public class Interpreter {
 	public final String kw_game_reqmove = "REQUEST_MOVE";
 	
 	//SENT BY CLIENT ONLY:
+	public final String kw_conn_welcome = "CONNECT";
 	public final String kw_conn_chatmessage = "CHAT";
 	public final String kw_conn_requestboard = "REQUEST_BOARD";
 	public final String kw_conn_acceptconnect = "ACCEPT_CONNECT";
@@ -50,29 +51,26 @@ public class Interpreter {
 			if (that.startsWith(kw_conn_chatmessage)) {
 			server.handlechatmessage(source, that.substring(5));
 			}
+			else if (that.startsWith(kw_conn_welcome)) {
+			server.acceptConnection(source, that.substring(8));
+			}
 			else if (that.startsWith(kw_conn_requestboard)) {
 			server.sendBoard(source);
-			}
-			else if (that.startsWith(kw_conn_acceptconnect)) {
-			server.connectionAccepted();
 			}
 			else if (that.startsWith(kw_conn_leaderboard)) {
 			server.sendLeaderboard();
 			}
 			else if (that.startsWith(kw_feature_chat)) {
-			server.setfChat(source, true);
+			server.setFunction(source,kw_feature_chat, true);
 			}
 			else if (that.startsWith(kw_feature_cBoardSize)) {
-			server.setfCBoardSize(source, true);
+			server.setFunction(source,kw_feature_cBoardSize, true);
 			}
 			else if (that.startsWith(kw_feature_leaderboard)) {
-			server.setfLeaderboard(source, true);
+			server.setFunction(source,kw_feature_leaderboard, true);
 			}
 			else if (that.startsWith(kw_feature_multiplayer)) {
-			server.setfMultiplayer(source, true);
-			}
-			else if (that.startsWith(kw_feature_leaderboard)) {
-			server.setfLeaderboard(source, true);
+			server.setFunction(source,kw_feature_multiplayer, true);
 			}
 			else if (that.startsWith(kw_conn_invite)) {
 			server.invite(that.substring(8), source);
@@ -90,6 +88,9 @@ public class Interpreter {
 		if (areweserver==false) {
 			if (that.startsWith(kw_sendboard)) {
 			client.refreshBoard(that.substring(6));
+			}
+			else if (that.startsWith(kw_conn_acceptconnect)) {
+			client.connectionAccepted(that.substring(15));
 			}
 			else if (that.startsWith(kw_conn_gameend)) {
 			client.gameend();

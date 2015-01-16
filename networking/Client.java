@@ -26,6 +26,7 @@ public class Client {
 	Boolean sersup_cboardsize = false;
 	Boolean sersup_leaderboard = false;
 	Boolean sersup_multiplayer = false;
+	
 	Socket sock;
 	Set<String> lobby;
 	HumanPlayer player;
@@ -36,9 +37,22 @@ public class Client {
 	private BufferedWriter out;
 
 	int movetobemade;
+	
+	public static void main(String[] args) {
+		Client client = new Client("127.0.0.1",49999,"Pim");
+	}
+	
 
+	//Constructor, obviously
 	public Client(String address, int port, String name) {
-		player = new HumanPlayer(name, Mark.X, new InputHandler());
+		try {
+			Socket socket = new Socket(InetAddress.getByName("127.0.0.1"),49999);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		game = new Game(new HumanPlayer(name, Mark.X, new InputHandler()), new HumanPlayer("other_pc", Mark.O, new NetworkedInputHandler()));
+		player = (HumanPlayer)game.getFirstPlayer();
 		gui = new Gui(game.getBoard(), player.getInputHandler());
 		inter = new Interpreter(this);
 		try {
@@ -61,7 +75,7 @@ public class Client {
 		}
 	}
 
-	// send a message to a ClientHandler.
+	// send a message to a ClientHandler of someone else's implementation.
 	public void sendMessage(String msg) {
 		try {
 			out.write(msg);
@@ -71,6 +85,13 @@ public class Client {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public void connectionAccepted(String features) {
+	String[] splitted = features.split("\\s+");
+	for (int i = 0; i<splitted.length; i++) {
+	inter.whatisthatClient(this, splitted[i]);
+	}
 	}
 
 	public void setServerMultiplayer(Boolean bool) {
@@ -114,7 +135,8 @@ public class Client {
 
 	public void gamestart() {
 
-		game = new Game(player, new NetworkPlayer("That_pc", Mark.O));
+		game = new Game(player, new HumanPlayer("That_pc", Mark.O, new NetworkedInputHandler()));
+		//HumanPlayer met networked handler!!!!
 	}
 
 	public void moveok() {

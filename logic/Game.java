@@ -91,6 +91,10 @@ public class Game implements Runnable {
 		return players[0];
 	}
 	
+	public Player getSecondPlayer(){
+		return players[1];
+	}
+	
 	public void gameEnd(){
 		System.out.println("Game has ended");
 	}
