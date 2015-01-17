@@ -28,6 +28,22 @@ public class Game implements Runnable {
         current = 0;
         tui = new TUI(board);
         //gui = new Gui(board, (MouseListener)((HumanPlayer)s0).getInputHandler()));
+        gui = new Gui(board, ((HumanPlayer)s0).getInputHandler()); //<- TO FIX
+        Thread guiThread = new Thread(gui);
+        guiThread.start();
+        board.addObserver(gui);
+        //gui.addMouseListener(this);
+        
+    }
+    
+    public Game(Player s0, Player s1, int width, int height) {
+        board = new Board(width, height);
+        players = new Player[NUMBER_PLAYERS];
+        players[0] = s0;
+        players[1] = s1;
+        current = 0;
+        tui = new TUI(board);
+        //gui = new Gui(board, (MouseListener)((HumanPlayer)s0).getInputHandler()));
         gui = new Gui(board, ((HumanPlayer)s0).getInputHandler());
         Thread guiThread = new Thread(gui);
         guiThread.start();

@@ -36,10 +36,7 @@ public class ClientHandler extends Thread {
 						+ ontvangen);
 				server.interpreter.whatisthatServer(ontvangen, this, false);
 			}
-		} catch (IOException ex) {
-			System.err.println("Error while recieving command");
-		}
-		shutdown();
+		} catch (IOException ex) {shutdown();}
 	}
 
 	public void sendCommand(String command) {
@@ -74,6 +71,21 @@ public class ClientHandler extends Thread {
 	}
 
 	public void shutdown() {
+		
+		System.out.println("Client "+clientName+" has left the server.");
+		if (server.invites.containsKey(this)){
+			server.invites.remove(this);
+		}
+		for (ClientHandler i : server.invites.keySet()) {
+			if (server.invites.get(i)[0].equals(clientName)) {
+				server.invites.remove(i);
+				i.sendCommand("DECLINE_INVITE "+clientName);
+			}
+		}
+		server.lobby.remove(this);
+		
+		
+		
 		try {
 			sock.close();
 		} catch (IOException e) {

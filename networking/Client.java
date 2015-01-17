@@ -55,13 +55,27 @@ public class Client implements Runnable {
 
 	public void watchInput() {
 		Scanner scanner = new Scanner(System.in);
+		String gotten;
 		while (true) {
-			sendMessage(scanner.nextLine());
+			gotten = scanner.nextLine();
+			if (gotten.startsWith("accept")) {
+				String[] apart = gotten.split("\\s+");
+				sendMessage("ACCEPT_INVITE " + apart[1]);
+			}
+			else if (gotten.startsWith("decline")) {
+				String[] apart = gotten.split("\\s+");
+				sendMessage("DECLINE_INVITE " + apart[1]);
+			}
+			
+			
+			else {
+				sendMessage(gotten);
+			}
 		}
 	}
 
 	public Client(Socket sock) {
-		this.sock=sock;
+		this.sock = sock;
 		try {
 			in = new BufferedReader(
 					new InputStreamReader(sock.getInputStream()));
@@ -170,11 +184,11 @@ public class Client implements Runnable {
 	public void gamestart() {
 
 		game = new Game(player, new HumanPlayer("That_pc", Mark.O,
-				new NetworkedInputHandler()));
+				new NetworkedInputHandler(this)));
 		// HumanPlayer met networked handler!!!!
 	}
 
-	public void moveok() {
+	public void moveok(String arguments) {
 		game.getBoard().putMark(movetobemade, Mark.X);
 	}
 
@@ -223,6 +237,11 @@ public class Client implements Runnable {
 	}
 
 	public void invited(String other) {
+		String[] apart = other.split("\\s+");
+		System.out.println("You have been invited by " + apart[0]
+				+ " for a game of " + apart[1] + " by " + apart[2] + "!");
+		System.out.println("Type accept " + apart[0] + " to accept.");
+		System.out.println("Type decline " + apart[0] + " to decline.");
 
 	}
 
