@@ -117,6 +117,8 @@ public class Server {
 			lobby.get(source).add(function);
 		}
 	}
+	
+	public ClientHandler findClientHandler() throws 
 
 	public void invite(String target, ClientHandler source) {
 	invites.put(source, target);
