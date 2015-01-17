@@ -66,7 +66,7 @@ public class GameSelectPanel extends JPanel {
 				if(choice2==1){
 					player2 = new ComputerPlayer(Mark.O);
 				}
-				//new Game(player1, player2);
+				new Game(player1, player2);
 				
 			}
 		});
