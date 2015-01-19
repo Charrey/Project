@@ -28,10 +28,10 @@ public class Game implements Runnable {
         current = 0;
         tui = new TUI(board);
         //gui = new Gui(board, (MouseListener)((HumanPlayer)s0).getInputHandler()));
-        gui = new Gui(board, ((HumanPlayer)s0).getInputHandler()); //<- TO FIX
+        //gui = new Gui(board, ((HumanPlayer)s0).getInputHandler()); //<- TO FIX
         Thread guiThread = new Thread(gui);
         guiThread.start();
-        board.addObserver(gui);
+        //board.addObserver(gui);
         //gui.addMouseListener(this);
         
     }

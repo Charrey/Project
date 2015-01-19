@@ -61,14 +61,12 @@ public class Client implements Runnable {
 			if (gotten.startsWith("accept")) {
 				String[] apart = gotten.split("\\s+");
 				sendMessage("ACCEPT_INVITE " + apart[1]);
-			}
-			else if (gotten.startsWith("decline")) {
+			} else if (gotten.startsWith("decline")) {
 				String[] apart = gotten.split("\\s+");
 				sendMessage("DECLINE_INVITE " + apart[1]);
-			}
-			
-			
-			else {
+			} else if (Server.representsInt(gotten)) {
+				this.notifyAll();
+			} else {
 				sendMessage(gotten);
 			}
 		}
@@ -168,7 +166,8 @@ public class Client implements Runnable {
 	}
 
 	public void makemove() {
-		movetobemade = game.getFirstPlayer().determineMove(game.getBoard());
+		movetobemade = ((HumanPlayer) game.getFirstPlayer()).getInputHandler()
+				.getMove();
 		try {
 			out.write("MOVE " + movetobemade + " /n/n");
 			out.flush();
@@ -182,7 +181,7 @@ public class Client implements Runnable {
 	}
 
 	public void gamestart() {
-
+		player = new HumanPlayer(this.ourname, Mark.X, new InputHandler());
 		game = new Game(player, new HumanPlayer("That_pc", Mark.O,
 				new NetworkedInputHandler(this)));
 		// HumanPlayer met networked handler!!!!
@@ -220,7 +219,7 @@ public class Client implements Runnable {
 	public void run() {
 		try {
 			String tussenvar = in.readLine();
-			while (tussenvar != null) {
+			while (true/*tussenvar != null*/) {
 				System.out
 						.println("Message received from server: " + tussenvar);
 				inter.whatisthatClient(this, tussenvar);
@@ -229,6 +228,7 @@ public class Client implements Runnable {
 		} catch (IOException e) {
 			System.err.println("Could not read from server.");
 		}
+		System.err.println("CRASHED");
 
 	}
 
