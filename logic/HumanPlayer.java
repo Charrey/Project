@@ -39,8 +39,14 @@ public class HumanPlayer extends Player {
 			}
 		}return -1;
 		*/
-
-		return inputHandler.getMove();
+		int move = inputHandler.getMove();
+		while(!playingfield.columnFree(move)){
+			System.err.println("Invalid move: " + move);
+			move = inputHandler.getMove();
+		}
+		
+			
+		return move;
 
 		
 		

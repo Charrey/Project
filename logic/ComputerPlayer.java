@@ -69,7 +69,7 @@ public class ComputerPlayer extends Player {
 			height = b.putMark(i, mark);
 
 			if(b.isWin()){
-				b.putMark(i, height, Mark.EMPTY);
+				//b.putMark(i, height, Mark.EMPTY);
 				return i;
 			}
 			if(height!=-1){

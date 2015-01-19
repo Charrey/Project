@@ -63,6 +63,7 @@ public class Board extends Observable {
 	 * ensures columnFree(column == true ==> win == checkWin(column, /result); 
 	 */
 	public int putMark(int column, Mark m) {
+		if(isValidInput(column)){
 		for (int i = 0; i < this.height; i++) {
 			if (board[column][i].equals(Mark.EMPTY)) {
 				board[column][i] = m;
@@ -71,6 +72,7 @@ public class Board extends Observable {
 				notifyObservers();
 				return i;
 			}
+		}
 		}
 		return -1;
 	}

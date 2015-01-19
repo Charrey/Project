@@ -7,6 +7,7 @@ import java.util.Scanner;
 import javax.swing.JLabel;
 
 import Project.gui.Gui;
+import Project.gui.MainGui;
 
 
 
@@ -18,19 +19,22 @@ public class Game implements Runnable {
 	private Board board;
 	private boolean running;
 	private TUI tui;
-	private Gui gui;
+	private MainGui gui;
 	
-    public Game(Player s0, Player s1) {
+    public Game(Player s0, Player s1, MainGui gui) {
         board = new Board();
         players = new Player[NUMBER_PLAYERS];
+
         players[0] = s0;
         players[1] = s1;
         current = 0;
         tui = new TUI(board);
+        this.gui = gui;
+        
         //gui = new Gui(board, (MouseListener)((HumanPlayer)s0).getInputHandler()));
-        gui = new Gui(board, ((HumanPlayer)s0).getInputHandler());
-        Thread guiThread = new Thread(gui);
-        guiThread.start();
+        //gui = new Gui(board, ((HumanPlayer)s0).getInputHandler());
+        //Thread guiThread = new Thread(gui);
+        //guiThread.start();
         board.addObserver(gui);
         //gui.addMouseListener(this);
         

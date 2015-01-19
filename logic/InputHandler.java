@@ -24,11 +24,12 @@ public class InputHandler implements MouseListener, Runnable{
 			synchronized(this){
 				if(arg0.getSource() instanceof Slot){
 					move = ((Slot)arg0.getSource()).getColumn();
+					System.out.println(move + " is pressed");
 				}else{
 					move = Integer.parseInt((((JLabel)arg0.getSource()).getText()));
 				}
 				clicked = true;
-				notify();
+				notifyAll();
 			}
 	}
 
