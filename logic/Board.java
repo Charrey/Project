@@ -99,7 +99,16 @@ public class Board extends Observable {
 		setChanged();
 		notifyObservers();
 	}
+	
 
+
+	/**
+	 * @param a is the horizontal position of the stone we're checking if it's part of a connect-4.
+	 * @param b	is the vertical position of the stone we're checking if it's part of a connect-4.
+	 * @param toright is how many steps are taken right when checking the next stone. Typically -1, 0 or 1.
+	 * @param toabove is how many steps are taken up when checking the next stone. Typically -1, 0 or 1.
+	 * @return
+	 */
 	public int checkDirection(int a, int b, int toright, int toabove) {
 		Mark checking = board[a][b];
 		int testa = a;
