@@ -144,11 +144,10 @@ public class Board extends Observable {
 	 */
 	public boolean isFull() {
 		for (int i = 0; i < getWidth(); i++) {
-			if (board[i][this.height - 1].equals(Mark.EMPTY)) {
+			if(columnFree(i)){
 				return false;
 			}
-		}
-		return true;
+		}return true;
 	}
 
 	/**

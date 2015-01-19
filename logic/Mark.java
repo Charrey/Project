@@ -1,29 +1,37 @@
 package Project.logic;
 
 public enum Mark {
-	
+
 	O, X, EMPTY;
-	
-	public Mark other(){
-		if(this==O){
+
+	public Mark other() {
+		if (this == O) {
 			return X;
-		}else if(this==X){
+		} else if (this == X) {
 			return O;
-		}else{
+		} else {
 			return EMPTY;
 		}
 	}
-	
-	public String toString(){
-		if(this==O){
+
+	public static Mark fromInt(int a) {
+		if (a == 1) {
+			return X;
+		} else if (a == 2) {
+			return O;
+		} else {
+			return null;
+		}
+	}
+
+	public String toString() {
+		if (this == O) {
 			return "O";
-		}else if(this==X){
+		} else if (this == X) {
 			return "X";
-		}else{
+		} else {
 			return " ";
 		}
 	}
-	
-
 
 }
