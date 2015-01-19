@@ -16,6 +16,7 @@ public class ClientHandler extends Thread {
 	private BufferedWriter out;
 	private String clientName;
 	private HumanPlayer player;
+	private int playerno;
 
 	public ClientHandler(Server serverArg, Socket sockArg) throws IOException {
 		server = serverArg;
@@ -29,27 +30,32 @@ public class ClientHandler extends Thread {
 		try {
 			String ontvangen;
 			while (!sock.isClosed()) {
-				System.out.println("Ready to read new command from "
-						+ clientName);
+				//System.out.println("Ready to read new command from "+ clientName);
 				ontvangen = in.readLine();
-				System.out.println("Read new command from " + clientName + ": "
+				System.out.println("New command from " + clientName + ": "
 						+ ontvangen);
 				server.interpreter.whatisthatServer(ontvangen, this, false);
 			}
-		} catch (IOException ex) {
-			System.err.println("Error while recieving command");
-		}
-		shutdown();
+		} catch (IOException ex) {shutdown();}
 	}
 
 	public void sendCommand(String command) {
 		try {
+			System.out.println("Writing to "+getClientName()+": "+command);
 			out.write(command);
 			out.newLine();
 			out.flush();
 		} catch (IOException ex) {
 			System.err.println("Unable to send command");
 		}
+	}
+	
+	public int getPlayerno() {
+		return playerno;
+	}
+	
+	public void setPlayerno(int no) {
+		playerno = no;
 	}
 
 	public String getClientName() {
@@ -74,6 +80,21 @@ public class ClientHandler extends Thread {
 	}
 
 	public void shutdown() {
+		
+		System.out.println("Client "+clientName+" has left the server.");
+		if (server.invites.containsKey(this)){
+			server.invites.remove(this);
+		}
+		for (ClientHandler i : server.invites.keySet()) {
+			if (server.invites.get(i)[0].equals(clientName)) {
+				server.invites.remove(i);
+				i.sendCommand("DECLINE_INVITE "+clientName);
+			}
+		}
+		server.lobby.remove(this);
+		
+		
+		
 		try {
 			sock.close();
 		} catch (IOException e) {
