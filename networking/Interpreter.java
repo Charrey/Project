@@ -21,6 +21,7 @@ public class Interpreter {
 	public final String kw_conn_leaderboard = "LEADERBOARD";// + <leaderboard>
 	public final String kw_conn_acceptinvite = "ACCEPT_INVITE";
 	public final String kw_conn_declineinvite = "DECLINE_INVITE";
+	public final String kw_game_move = "MOVE";
 
 	// SENT BY BOTH SERVER AND CLIENT:
 	public final String kw_feature_chat = "CHAT";// + <message>
@@ -78,6 +79,8 @@ public class Interpreter {
 				server.acceptinvite(source, that);
 			} else if (that.startsWith(kw_conn_declineinvite)) {
 				server.denyinvite(source, that);
+			} else if (that.startsWith(kw_game_move)) {
+				server.nextMove(source, that.substring(kw_game_move.length()+1));
 			}
 
 			else {
