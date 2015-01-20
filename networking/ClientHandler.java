@@ -70,14 +70,14 @@ public class ClientHandler extends Thread {
 		clientName = nameArg;
 	}
 
-	public void sendMessage(String source, String message) {
+	/*public void sendMessage(String source, String message) {
 		try {
-			out.write("CHAT " + message);
+			out.write("CHAT " +source. +": "+message);
 			out.flush();
 		} catch (IOException ex) {
 			System.err.println("Unable to send chat message");
 		}
-	}
+	}*/
 
 	public void shutdown() {
 		
