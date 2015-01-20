@@ -1,5 +1,7 @@
 package Project.gui;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,8 +16,11 @@ import java.net.UnknownHostException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SpringLayout;
 
 import Project.networking.ClientHandler;
 import Project.networking.Server;
@@ -30,32 +35,61 @@ public class ServerGUI extends JFrame{
 	private String hostAdress;
 	private int portNumber;
 	private Server server;
+	private JScrollPane scrollPane;
 	
 	
 	public ServerGUI(){
+
+		JPanel topPanel = new JPanel();
+		topPanel.setLayout(new GridLayout(2, 2));
+		
+		JPanel topButPanel = new JPanel();
+		topButPanel.setLayout(new BorderLayout());
+		
 		textArea = new JTextArea();
 		hostButton = new JButton("Host");
-		portField = new JTextField("typ port");
 
+		scrollPane = new JScrollPane(textArea);
+		
+		JLabel ipLabel = new JLabel("Your IP is: ");
 		hostAdress = getIP();
-
-		System.out.println(hostAdress);
 		ipAdressLabel = new JLabel(hostAdress);
+		topPanel.add(ipLabel);
+		topPanel.add(ipAdressLabel);
 		
-		this.setLayout(new GridLayout(4, 1));
+		JLabel portLabel = new JLabel("Typ port in");
+		portField = new JTextField("");
+		topPanel.add(portLabel);
+		topPanel.add(portField);
+		//topPanel.add(new JLabel());
+		//topPanel.add(hostButton);
 		
+		topButPanel.add(topPanel, BorderLayout.LINE_START);
+		topButPanel.add(hostButton, BorderLayout.LINE_END);
+		
+		setLayout(new BorderLayout());
+		add(topButPanel, BorderLayout.PAGE_START);
+		add(scrollPane, BorderLayout.CENTER);
+		
+		
+		
+
+		
+		
+		//this.setLayout(new GridLayout(4, 1));
+		/*
 		add(ipAdressLabel);
 		add(portField);
 		add(hostButton);
-		add(textArea);
-		
+		add(scrollPane);
+		*/
 		setVisible(true);
-		setSize(this.getMinimumSize());
+		Dimension d = new Dimension(500, 800);
+		setSize(d);
 		
 		hostButton.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e){
 				portNumber = Integer.parseInt(portField.getText());
-				
 				server = new Server(portNumber);
 			}
 		});
@@ -73,6 +107,10 @@ public class ServerGUI extends JFrame{
 		}catch(Exception e){
 			return null;
 		}
+	}
+	
+	public void addMessage(String msg){
+		textArea.append(msg + "\n");
 	}
 	
 	

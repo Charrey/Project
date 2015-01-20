@@ -31,7 +31,7 @@ public class GameSelectPanel extends JPanel {
 		this.gui = gui;
 	
 		this.setLayout(new GridLayout(3,2));
-		Dimension d = new Dimension(100,50);
+		Dimension d = new Dimension(200,200);
 		JLabel newHumanPlayerLabel1 = new JLabel("Human Player");
 		newHumanPlayerLabel1.setHorizontalAlignment(SwingConstants.CENTER);
 		newHumanPlayerLabel1.setMinimumSize(d);
@@ -124,9 +124,9 @@ public class GameSelectPanel extends JPanel {
 		add(newAIPlayerLabel1);
 		add(newAIPlayerLabel2);
 		add(startGameLabel);
-		System.out.println(getPreferredSize());
+		//System.out.println(getPreferredSize());
 		//this.setSize(this.getPreferredSize());
-		setSize(gui.getSize());
+		//setSize(gui.getSize());
 
 		
 		

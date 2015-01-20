@@ -13,9 +13,12 @@ public class MainGui extends JFrame implements Observer, Runnable {
 	
 	
 	public MainGui(){
-		currentPanel = new GameSelectPanel(this);
-		add(currentPanel);
-		setSize(500,800);
+		//currentPanel = new GameSelectPanel(this);
+		currentPanel = new MainMenuPanel(this);
+		//add(currentPanel);
+		//setSize(500,800);
+		changePanel(currentPanel);
+		
 		setVisible(true);
 		
 		
