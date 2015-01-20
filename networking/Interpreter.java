@@ -5,8 +5,8 @@ import Project.logic.Game;
 public class Interpreter {
 
 	// SENT BY SERVER ONLY:
-	public final String kw_sendboard = "BOARD";
-	public final String kw_conn_gameend = "GAME_END";
+	public final String kw_game_sendboard = "BOARD";
+	public final String kw_game_gameend = "GAME_END";
 	public final String kw_conn_gamestart = "GAME_START";
 	public final String kw_conn_lobby = "LOBBY";
 	public final String kw_game_moveok = "MOVE_OK";
@@ -16,19 +16,20 @@ public class Interpreter {
 	// SENT BY CLIENT ONLY:
 	public final String kw_conn_welcome = "CONNECT";
 	public final String kw_conn_chatmessage = "CHAT";
-	public final String kw_conn_requestboard = "REQUEST_BOARD";
+	public final String kw_game_requestboard = "REQUEST_BOARD";
 	public final String kw_conn_acceptconnect = "ACCEPT_CONNECT";
-	public final String kw_conn_leaderboard = "LEADERBOARD";// + <leaderboard>
-	public final String kw_conn_acceptinvite = "ACCEPT_INVITE";
-	public final String kw_conn_declineinvite = "DECLINE_INVITE";
+	public final String kw_lobb_leaderboard = "LEADERBOARD";// + <leaderboard>
+	public final String kw_lobb_acceptinvite = "ACCEPT_INVITE";
+	public final String kw_lobb_declineinvite = "DECLINE_INVITE";
 	public final String kw_game_move = "MOVE";
+	public final String kw_lobb_request = "REQUEST_LOBBY";
 
 	// SENT BY BOTH SERVER AND CLIENT:
 	public final String kw_feature_chat = "CHAT";// + <message>
 	public final String kw_feature_cBoardSize = "CUSTOM_BOARD_SIZE";
 	public final String kw_feature_leaderboard = "LEADERBOARD";
 	public final String kw_feature_multiplayer = "MULTIPLAYER";
-	public final String kw_conn_invite = "INVITE";
+	public final String kw_lobb_invite = "INVITE";
 
 	ClientHandler playerone;
 	ClientHandler playertwo;
@@ -59,9 +60,9 @@ public class Interpreter {
 			} else if (that.startsWith(kw_conn_welcome)) {
 				server.acceptConnection(source,
 						that.substring(kw_conn_welcome.length() + 1));
-			} else if (that.startsWith(kw_conn_requestboard)) {
+			} else if (that.startsWith(kw_game_requestboard)) {
 				server.sendBoard(source);
-			} else if (that.startsWith(kw_conn_leaderboard)
+			} else if (that.startsWith(kw_lobb_leaderboard)
 					&& subcommand == false) {
 				server.sendLeaderboard();
 			} else if (that.startsWith(kw_feature_chat)) {
@@ -72,15 +73,17 @@ public class Interpreter {
 				server.setFunction(source, kw_feature_leaderboard, true);
 			} else if (that.startsWith(kw_feature_multiplayer)) {
 				server.setFunction(source, kw_feature_multiplayer, true);
-			} else if (that.startsWith(kw_conn_invite)) {
-				server.invite(that.substring(kw_conn_invite.length() + 1),
+			} else if (that.startsWith(kw_lobb_invite)) {
+				server.invite(that.substring(kw_lobb_invite.length() + 1),
 						source);
-			} else if (that.startsWith(kw_conn_acceptinvite)) {
+			} else if (that.startsWith(kw_lobb_acceptinvite)) {
 				server.acceptinvite(source, that);
-			} else if (that.startsWith(kw_conn_declineinvite)) {
+			} else if (that.startsWith(kw_lobb_declineinvite)) {
 				server.denyinvite(source, that);
 			} else if (that.startsWith(kw_game_move)) {
 				server.nextMove(source, that.substring(kw_game_move.length()+1));
+			} else if (that.startsWith(kw_lobb_request)) {
+				server.sendLobby(source);
 			}
 
 			else {
@@ -96,12 +99,12 @@ public class Interpreter {
 
 	public void whatisthatClient(Client client, String that) {
 		if (areweserver == false) {
-			if (that.startsWith(kw_sendboard)) {
+			if (that.startsWith(kw_game_sendboard)) {
 				client.refreshBoard(that.substring(6));
 			} else if (that.startsWith(kw_conn_acceptconnect)) {
 				client.connectionAccepted(that.substring(kw_conn_acceptconnect
 						.length() + 1));
-			} else if (that.startsWith(kw_conn_gameend)) {
+			} else if (that.startsWith(kw_game_gameend)) {
 				client.gameend();
 			} else if (that.startsWith(kw_conn_gamestart)) {
 				client.gamestart();
@@ -119,8 +122,8 @@ public class Interpreter {
 				client.setServerLeaderboard(true);
 			} else if (that.startsWith(kw_feature_multiplayer)) {
 				client.setServerMultiplayer(true);
-			} else if (that.startsWith(kw_conn_invite)) {
-				client.invited(that.substring(kw_conn_invite.length() + 1));
+			} else if (that.startsWith(kw_lobb_invite)) {
+				client.invited(that.substring(kw_lobb_invite.length() + 1));
 			} else if (that.startsWith(kw_conn_error)) {
 				System.out.println("");
 				System.out.println("!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!");
