@@ -22,7 +22,7 @@ public class Client implements Runnable {
 
 	Interpreter inter;
 	Game game;
-	Gui gui;
+	//Gui gui;
 	String name;
 
 	// Server supports:
@@ -95,7 +95,7 @@ public class Client implements Runnable {
 	public Client(String address, int port, String name) {
 		this.name = name;
 		try {
-			sock = new Socket(InetAddress.getByName("127.0.0.1"), 49999);
+			sock = new Socket(address, port);
 		} catch (IOException e1) {
 			System.err.println("Could not create socket with server.");
 		}
@@ -162,7 +162,7 @@ public class Client implements Runnable {
 			}
 
 		}
-		gui.updateBoard();
+		//gui.updateBoard();
 	}
 
 	public void makemove() {
