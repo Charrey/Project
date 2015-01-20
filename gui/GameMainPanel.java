@@ -24,7 +24,8 @@ public class GameMainPanel extends JPanel {
 		
 		gamePanel = new GamePanel(g);
 		namePanel = new NamePanel(g);
-		add(namePanel);
+		setLayout(new BorderLayout());
+		add(namePanel, BorderLayout.PAGE_START);
 		add(gamePanel);
 	}
 	

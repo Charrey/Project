@@ -12,7 +12,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
 
-public class Server {
+public class Server extends Thread {
 
 	// Set of string contains features
 	public Map<ClientHandler, Set<String>> lobby;
@@ -20,6 +20,8 @@ public class Server {
 	public Map<Game, Integer> gamesgames;
 	Interpreter interpreter;
 	ServerSocket serversocket;
+	private boolean running;
+	private int portNumber;
 
 	public Map<ClientHandler, String[]> invites; // First string = target,
 													// second = toString(width),
@@ -27,7 +29,7 @@ public class Server {
 
 	// public Map<ClientHandler, ClientHandler> invites; THIS DOES NOT SUPPORT
 	// CBOARDSIZE
-
+	/*
 	public static void main(String[] args) throws IOException {
 		Server server = new Server(49999);
 		while (true) {
@@ -39,6 +41,23 @@ public class Server {
 			clienthandler.start();
 		}
 
+	} */
+	
+	@Override
+	public void run(){
+		while (running) {
+			try{
+			System.out.println("Port " + portNumber +  " has been opened");
+			Socket socket = getServerSocket().accept();
+			System.out.println("Connection from " + socket.getInetAddress()
+					+ " accepted");
+			ClientHandler clienthandler = addClientHandler(socket);
+			clienthandler.start();
+			}catch(IOException e){
+				System.err.println("Something wrong went O_O");
+			}
+		}
+		
 	}
 
 	public ClientHandler addClientHandler(Socket sockArg) throws IOException {
@@ -50,12 +69,19 @@ public class Server {
 		return serversocket;
 	}
 
-	public Server(int port) throws IOException {
+	public Server(int port){
+		try{
+		portNumber = port;
 		lobby = new HashMap<ClientHandler, Set<String>>();
 		gamesgames = new HashMap<Game, Integer>();
-		serversocket = new ServerSocket(port);
+		serversocket = new ServerSocket(portNumber);
 		interpreter = new Interpreter(this);
 		invites = new HashMap<ClientHandler, String[]>();
+		running = true;
+		this.start();
+		}catch(IOException e){
+			System.err.println("Server couldn't be setup");
+		}
 	}
 
 	public void joinServer(ClientHandler client, Set<String> features) {
