@@ -100,7 +100,7 @@ public class Game implements Runnable {
 
 
     private void update() {
-        System.out.println("\ncurrent game situation: \n\n" + tui.showBoard()+ "\n");
+        //System.out.println("\ncurrent game situation: \n\n" + tui.showBoard()+ "\n");
         //gui.updateBoard();
     }
 
