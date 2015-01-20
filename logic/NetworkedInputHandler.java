@@ -38,22 +38,23 @@ public class NetworkedInputHandler extends InputHandler implements Runnable {
 	}
 
 	public void run() {
-		getMove();
+		//getMove();
 	}
-
+	/*
 	public int getMove() {
+	
 		if (monitor==null) {
 			monitor = new Object();
 		}
-		synchronized (monitor) {
+		synchronized (this) {
 			try {
-				monitor.wait();
+				wait();
 			} catch (InterruptedException e) {
 				System.err.println("ERROR: Stopped waiting on move");
 			}
 			return move;
 		}
-	}
+	} */
 	
 	public int getMove(Board board) {
 		return 5;

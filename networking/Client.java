@@ -220,10 +220,10 @@ public class Client implements Runnable {
 		try {
 			String tussenvar = in.readLine();
 			while (true/*tussenvar != null*/) {
-				System.out
-						.println("Message received from server: " + tussenvar);
+				System.out.println("Message received from server: " + tussenvar);
 				inter.whatisthatClient(this, tussenvar);
 				tussenvar = in.readLine();
+				System.err.println("line readed");
 			}
 		} catch (IOException e) {
 			System.err.println("Could not read from server.");

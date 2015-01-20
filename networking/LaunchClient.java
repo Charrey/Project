@@ -58,7 +58,7 @@ public class LaunchClient {
 		Client client = new Client(ip, intport, name);
 		Thread thread = new Thread(client);
 		thread.start();
-		new Client(client.getSocket()).watchInput();
+		client.watchInput();
 
 	}
 
