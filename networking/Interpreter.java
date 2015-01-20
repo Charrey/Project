@@ -132,7 +132,7 @@ public class Interpreter {
 				System.out.println("!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!");
 				System.out.println("");
 			} else {
-				System.err.println("interpreter wrongly constructed");
+				System.err.println("Interpreter wrongly constructed");
 			}
 
 		} else {

@@ -86,6 +86,9 @@ public class Server extends Thread {
 
 	public void joinServer(ClientHandler client, Set<String> features) {
 		lobby.put(client, features);
+		for (ClientHandler i : lobby.keySet()) {
+			sendLobby(i);
+		}
 	}
 
 	public void handlechatmessage(ClientHandler source, String message) {
@@ -122,14 +125,14 @@ public class Server extends Thread {
 					+ source.getPlayerno() + " " + Integer.parseInt(move) + " "
 					+ source.getClientName());
 			if (game.getBoard().isWin()) {
-				source.sendCommand(interpreter.kw_conn_gameend + " WIN "
+				source.sendCommand(interpreter.kw_game_gameend + " WIN "
 						+ source.getClientName());
-				opponent.sendCommand(interpreter.kw_conn_gameend + " WIN "
+				opponent.sendCommand(interpreter.kw_game_gameend + " WIN "
 						+ source.getClientName());
 				System.out.println("Game win.");
 			} else if (game.getBoard().isFull()) {
-				source.sendCommand(interpreter.kw_conn_gameend + " DRAW");
-				opponent.sendCommand(interpreter.kw_conn_gameend + " DRAW");
+				source.sendCommand(interpreter.kw_game_gameend + " DRAW");
+				opponent.sendCommand(interpreter.kw_game_gameend + " DRAW");
 				System.out.println("Game draw.");
 			} else {
 				System.out.println(opponent.getClientName());
@@ -183,7 +186,6 @@ public class Server extends Thread {
 		}
 		source.sendCommand(interpreter.kw_conn_acceptconnect
 				+ " CHAT CUSTOM_BOARD_SIZE");
-		sendLobby(source);
 	}
 
 	public void sendError(ClientHandler target, String msg) {
@@ -320,7 +322,7 @@ public class Server extends Thread {
 		} else {
 			invites.put(source, apart);
 			findClientHandler(apart[0]).sendCommand(
-					interpreter.kw_conn_invite + " " + source.getClientName()
+					interpreter.kw_lobb_invite + " " + source.getClientName()
 							+ " " + apart[1] + " " + apart[2]);
 		}
 	}
