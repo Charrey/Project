@@ -62,9 +62,9 @@ public class Game implements Runnable {
         //guiThread.start();
 
         //gui = new Gui(board, ((HumanPlayer)s0).getInputHandler()); //<- TO FIX
-        Thread guiThread = new Thread(gui);
-        guiThread.start();
-        board.addObserver(gui);
+        //Thread guiThread = new Thread(gui);
+        //guiThread.start();
+        //board.addObserver(gui);
         //gui.addMouseListener(this);
         
     }
@@ -78,10 +78,10 @@ public class Game implements Runnable {
         tui = new TUI(board);
         //gui = new Gui(board, (MouseListener)((HumanPlayer)s0).getInputHandler()));
        // gui = new Gui(board, ((HumanPlayer)s0).getInputHandler());
-        Thread guiThread = new Thread(gui);
-        guiThread.start();
+        //Thread guiThread = new Thread(gui);
+        //guiThread.start();
 
-        board.addObserver(gui);
+        //board.addObserver(gui);
         //gui.addMouseListener(this);
         
     }
@@ -100,7 +100,7 @@ public class Game implements Runnable {
 
 
     private void update() {
-        //System.out.println("\ncurrent game situation: \n\n" + tui.showBoard()+ "\n");
+        System.out.println("\ncurrent game situation: \n\n" + tui.showBoard()+ "\n");
         //gui.updateBoard();
     }
 
