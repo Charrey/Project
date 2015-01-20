@@ -26,6 +26,7 @@ public class MainGui extends JFrame implements Observer, Runnable {
 		currentPanel = panel;
 		add(currentPanel);
 		setSize(new Dimension(currentPanel.getWidth(), currentPanel.getHeight()));
+		pack();
 		revalidate();
 	}
 	

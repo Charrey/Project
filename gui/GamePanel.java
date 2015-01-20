@@ -47,6 +47,7 @@ public class GamePanel extends JPanel {
 				slots[i][p] = new Slot(i);
 				slots[i][p].setIcon(img);
 				slots[i][p].setMinimumSize(new Dimension(img.getIconWidth(), img.getIconHeight()));
+				//System.out.println("img hoogde lengte" + img.getIconHeight() + img.getIconWidth());
 				slots[i][p].addMouseListener(mouseListener);
 				add(slots[i][p]);
 			}
@@ -54,7 +55,7 @@ public class GamePanel extends JPanel {
 		setLayout(new GridLayout(b.getHeight(), b.getWidth()));
 		//setSize(b.getWidth()*slots[0][0].getIcon().getIconHeight(), b.getHeight()*slots[0][0].getIcon().getIconHeight());
 		
-		//this.setVisible(true);
+		//System.err.println(getPreferredSize());
 		setSize(this.getPreferredSize());
 	}
 	

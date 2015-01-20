@@ -9,6 +9,7 @@ import Project.logic.Board;
 import Project.logic.ComputerPlayer;
 import Project.logic.Mark;
 
+
 public class ComputerPlayerTest {
 
 	
@@ -20,7 +21,7 @@ public class ComputerPlayerTest {
 	ComputerPlayer AI = new ComputerPlayer(x);
 	
 	Board safeChecker = new Board(4,4);
-	Board certainDefeat = new Board(4,4);
+	Board certainDefeat = new Board(4,2);
 	
 	
 	
@@ -47,7 +48,30 @@ public class ComputerPlayerTest {
 		canLose.putMark(2, o);
 		canLose.putMark(2, o);
 
-	
+		safeChecker.putMark(0, x);
+		safeChecker.putMark(1, o);
+		safeChecker.putMark(2, x);
+		
+		safeChecker.putMark(0, o);
+		safeChecker.putMark(1, o);
+		safeChecker.putMark(2, o);
+		
+		safeChecker.putMark(0, o);
+		safeChecker.putMark(1, x);
+		safeChecker.putMark(2, o);
+		
+		safeChecker.putMark(0, o);
+		safeChecker.putMark(2, o);
+		
+		certainDefeat.putMark(0, x);
+		certainDefeat.putMark(1, o);
+		certainDefeat.putMark(2, x);
+		
+		
+		certainDefeat.putMark(0, o);
+		certainDefeat.putMark(1, o);
+		certainDefeat.putMark(2, o);
+		
 		
 	
 	}
@@ -57,8 +81,9 @@ public class ComputerPlayerTest {
 		ifExpected("Vol op 2 na", 2, AI.determineMove(fullBoard));
 		ifExpected("Can win", 0, AI.determineMove(canWin));
 		ifExpected("Can lose", 2, AI.determineMove(canLose));
-		ifExpected("Go for safe place", 2, AI.determineMove(canLose));
-
+		ifExpected("Go for safe place", 1, AI.determineMove(safeChecker));
+		ifExpected("Lost, last move available", 3, AI.determineMove(certainDefeat));
+		System.out.println("Test completed");
 		
 	}
 	

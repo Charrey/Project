@@ -40,13 +40,10 @@ public class ComputerPlayer extends Player {
 	else if(winMove(board, mark.other())>=0){
 		return winMove(board, mark.other());
 	}
-	
-	
 	//als tegenstander op zijne gooit hij volgende beurt kan winnen
 	else if(getSafeSpots(board).contains(oneAheadChecker(board))){
 		return oneAheadChecker(board);
 	}
-	//TODO AI must not "help" opponent with random move
 	else if(getSafeSpots(board).size()>0){
 		return getRandomElement(getSafeSpots(board));
 		}
@@ -68,8 +65,8 @@ public class ComputerPlayer extends Player {
 		for(int i = 0; i<b.getWidth(); i++){
 			height = b.putMark(i, mark);
 
-			if(b.isWin()){
-				//b.putMark(i, height, Mark.EMPTY);
+			if(b.isWin()&&height>=0){
+				b.putMark(i, height, Mark.EMPTY);
 				return i;
 			}
 			if(height!=-1){

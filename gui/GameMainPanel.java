@@ -1,6 +1,10 @@
 package Project.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 
 import javax.swing.JPanel;
 
@@ -11,11 +15,13 @@ public class GameMainPanel extends JPanel {
 
 	private GamePanel gamePanel;
 	private NamePanel namePanel;
+	private MessagePanel messagePanel;
 	//private ChatPanel chatPanel;
 	
 	
 	//TODO size shit goed regelen
 	GameMainPanel(Game g){
+		
 		gamePanel = new GamePanel(g);
 		namePanel = new NamePanel(g);
 		add(namePanel);
@@ -25,17 +31,17 @@ public class GameMainPanel extends JPanel {
 	GameMainPanel(Game g, InputHandler i){
 		gamePanel = new GamePanel(g, i);
 		namePanel = new NamePanel(g);
-		add(namePanel);
-		add(gamePanel);
+		messagePanel = new MessagePanel(g);
+		setLayout(new BorderLayout());
+
+		add(namePanel, BorderLayout.PAGE_START);
+		add(gamePanel, BorderLayout.CENTER);
+		add(messagePanel, BorderLayout.LINE_END);
 		
 		namePanel.setSize(gamePanel.getWidth(), namePanel.getHeight());
-		System.out.println(namePanel.getSize());
-		System.out.println(gamePanel.getSize());
+
 		
 
-		Dimension d = new Dimension(gamePanel.getWidth(), gamePanel.getHeight()+namePanel.getHeight());
-		System.out.println(d);
-		setSize(d);
 	}
 	
 	public GamePanel getGamePanel(){
