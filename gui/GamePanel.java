@@ -79,6 +79,9 @@ public class GamePanel extends JPanel {
 		}
 	}
 	
+	public void setSlot(int row, int column, Mark m){
+		slots[row][column].setIcon(getIcon(m));
+	}
 	
 
 }

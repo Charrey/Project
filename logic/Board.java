@@ -402,8 +402,15 @@ public class Board extends Observable {
 	 * requires ! m==null;
 	 * 
 	 */
-	public int hint(Mark m) {
-		return new ComputerPlayer(m).determineMove(this);
+	public int[] hint(Mark m) {
+		int column = new ComputerPlayer(m).determineMove(this);
+		Board b = copy();
+		int height = b.putMark(column, m);
+		int[] array = new int[2];
+		array[0] = column;
+		array[1] = height;
+		return array;
 	}
 
+	
 }

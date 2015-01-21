@@ -9,13 +9,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import Project.logic.Game;
+import Project.logic.Mark;
 
 public class InfoPanel extends JPanel {
 
 	
 	private Game g;
 	private JButton hintButton;
-	private JLabel hintLabel;
 	private JLabel hasWon;
 	private JButton resetButton;
 	private JButton backToMainMenu;
@@ -28,7 +28,6 @@ public class InfoPanel extends JPanel {
 		setLayout(new FlowLayout());
 		
 		hintButton = new JButton("Hint");
-		hintLabel = new JLabel("");
 		hasWon = new JLabel("");
 		resetButton = new JButton("Reset");
 		backToMainMenu = new JButton("Back to Menu");
@@ -36,7 +35,6 @@ public class InfoPanel extends JPanel {
 		addMouse();
 		
 		add(hintButton);
-		add(hintLabel);
 		add(hasWon);
 		add(resetButton);
 		add(backToMainMenu);
@@ -45,8 +43,12 @@ public class InfoPanel extends JPanel {
 	
 	
 	public void showHint(){
-		int move = g.getBoard().hint(g.getCurrentPlayer().getMark());
-		hintLabel.setText("" + move);
+		//TODO maybe a different slot icon for the hint???
+		gpanel.updateBoard();
+		Mark mark = g.getCurrentPlayer().getMark();
+		int[] move = g.getBoard().hint(mark);
+		gpanel.setSlot(move[0], move[1], mark);
+
 	}
 	
 	public void addMouse(){
@@ -63,6 +65,14 @@ public class InfoPanel extends JPanel {
 		});
 	
 	
+	}
+	
+	public void setWinner(String s){
+		hasWon.setText(s + " heeft gewonnen");
+	}
+	
+	public void update(){
+		hasWon.setText("");
 	}
 	
 	

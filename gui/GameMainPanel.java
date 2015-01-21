@@ -17,19 +17,23 @@ public class GameMainPanel extends JPanel {
 	private NamePanel namePanel;
 	private MessagePanel messagePanel;
 	private InfoPanel infoPanel;
+	private Game g;
 	
 	
 
 	GameMainPanel(Game g){
-		
+		this.g = g;
 		gamePanel = new GamePanel(g);
 		namePanel = new NamePanel(g);
+		infoPanel = new InfoPanel(g, gamePanel);
 		setLayout(new BorderLayout());
 		add(namePanel, BorderLayout.PAGE_START);
 		add(gamePanel);
+		add(infoPanel, BorderLayout.PAGE_END);
 	}
 	
 	GameMainPanel(Game g, InputHandler i){
+		this.g = g;
 		gamePanel = new GamePanel(g, i);
 		namePanel = new NamePanel(g);
 		messagePanel = new MessagePanel(g);
@@ -55,6 +59,13 @@ public class GameMainPanel extends JPanel {
 	public void update(){
 		gamePanel.updateBoard();
 		namePanel.update();
+		infoPanel.update();
+		if(g.getBoard().isWin()){
+			System.out.println("winner " + g.getCurrent());
+			infoPanel.setWinner(g.getCurrentPlayer().getName());
+		}
+		
 	}
+
 	
 }
