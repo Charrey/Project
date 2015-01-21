@@ -77,59 +77,70 @@ public class Interpreter {
 	public void whatisthatServer(String that, ClientHandler source,
 			Boolean subcommand) {
 		if (areweserver == true) {
-			if (that.startsWith(kw_conn_chatmessage)) {
-				if (that.length() < (kw_conn_chatmessage.length() + 2)) {
+			String[] splitted = that.split("\\s+");
+			switch (splitted[0]) {
+			case kw_conn_chatmessage:
+				if (subcommand) {
+					server.setFunction(source, kw_feature_chat, true);
+				} else if (that.length() < (kw_conn_chatmessage.length() + 2)) {
 					source.sendCommand(kw_conn_error + " SyntaxError");
 				} else {
 					server.handlechatmessage(source,
 							that.substring(kw_conn_chatmessage.length() + 1));
 				}
-			} else if (that.startsWith(kw_conn_welcome)) {
+				break;
+			case kw_conn_welcome:
 				if (that.length() < (kw_conn_welcome.length() + 2)) {
 					source.sendCommand(kw_conn_error + " SyntaxError");
 				} else {
 					server.acceptConnection(source,
 							that.substring(kw_conn_welcome.length() + 1));
 				}
-			} else if (that.startsWith(kw_game_requestboard)) {
+				break;
+			case kw_game_requestboard:
 				server.sendBoard(source);
-			} else if (that.startsWith(kw_lobb_leaderboard)
-					&& subcommand == false) {
-				server.sendLeaderboard();
-			} else if (that.startsWith(kw_feature_chat)) {
-				server.setFunction(source, kw_feature_chat, true);
-			} else if (that.startsWith(kw_feature_cBoardSize)) {
+				break;
+			case kw_lobb_leaderboard:
+				if (subcommand) {
+					server.setFunction(source, kw_feature_leaderboard, true);
+				} else {
+					server.sendLeaderboard();
+				}
+				break;
+			case kw_feature_cBoardSize:
 				server.setFunction(source, kw_feature_cBoardSize, true);
-			} else if (that.startsWith(kw_feature_leaderboard)) {
-				server.setFunction(source, kw_feature_leaderboard, true);
-			} else if (that.startsWith(kw_feature_multiplayer)) {
+				break;
+			case kw_feature_multiplayer:
 				server.setFunction(source, kw_feature_multiplayer, true);
-			} else if (that.startsWith(kw_lobb_invite)) {
+				break;
+			case kw_lobb_invite:
 				if (that.length() < (kw_lobb_invite.length() + 2)) {
 					source.sendCommand(kw_conn_error + " SyntaxError");
 				} else {
 					server.invite(that.substring(kw_lobb_invite.length() + 1),
 							source);
 				}
-			} else if (that.startsWith(kw_lobb_acceptinvite)) {
+				break;
+			case kw_lobb_acceptinvite:
 				server.acceptinvite(source, that);
-			} else if (that.startsWith(kw_lobb_declineinvite)) {
+				break;
+			case kw_lobb_declineinvite:
 				server.denyinvite(source, that);
-			} else if (that.startsWith(kw_game_move)) {
+				break;
+			case kw_game_move:
 				if (that.length() < (kw_game_move.length() + 2)) {
 					source.sendCommand(kw_conn_error + " SyntaxError");
 				} else {
 					server.nextMove(source,
 							that.substring(kw_game_move.length() + 1));
 				}
-			} else if (that.startsWith(kw_lobb_request)) {
+				break;
+			case kw_lobb_request:
 				server.sendLobby(source);
-			}
-
-			else {
+			
+			default:
 				System.err.println("Misunderstood command: " + that);
-				server.sendError(source, "SyntaxError");
-			}
+				server.sendError(source, "SyntaxError");}
 
 		} else {
 			System.err
@@ -145,49 +156,66 @@ public class Interpreter {
 	 */
 	public void whatisthatClient(String that) {
 		if (areweserver == false) {
-			if (that.startsWith(kw_game_sendboard)) {
+			String[] splitted = that.split("\\s+");
+			switch (splitted[0]) {
+			case kw_game_sendboard:
 				client.refreshBoard(that.substring(6));
-			} else if (that.startsWith(kw_conn_acceptconnect)) {
+				break;
+			case kw_conn_acceptconnect:
 				client.connectionAccepted(that.substring(kw_conn_acceptconnect
 						.length() + 1));
-			} else if (that.startsWith(kw_game_gameend)) {
+				break;
+			case kw_game_gameend:
 				client.gameend();
-			} else if (that.startsWith(kw_conn_gamestart)) {
+				break;
+			case kw_conn_gamestart:
 				client.gamestart();
-			} else if (that.startsWith(kw_conn_lobby)) {
+				break;
+			case kw_conn_lobby:
 				client.setLobby(that.substring(kw_conn_lobby.length() + 1));
-			} else if (that.startsWith(kw_game_moveok)) {
+				break;
+			case kw_game_moveok:
 				client.moveok(that.substring(kw_game_moveok.length() + 1));
-			} else if (that.startsWith(kw_game_reqmove)) {
-				// client.makemove();
-			} else if (that.startsWith(kw_feature_chat)) {
+				break;
+			case kw_game_reqmove:
+				// TODO
+				break;
+			case kw_feature_chat:
 				client.SetSerSup(kw_feature_chat, true);
-			} else if (that.startsWith(kw_feature_cBoardSize)) {
+				break;
+			case kw_feature_cBoardSize:
 				client.SetSerSup(kw_feature_cBoardSize, true);
-			} else if (that.startsWith(kw_feature_leaderboard)) {
+				break;
+			case kw_feature_leaderboard:
 				client.SetSerSup(kw_feature_leaderboard, true);
-			} else if (that.startsWith(kw_feature_multiplayer)) {
+				break;
+			case kw_feature_multiplayer:
 				client.SetSerSup(kw_feature_multiplayer, true);
-			} else if (that.startsWith(kw_lobb_invite)) {
+				break;
+			case kw_lobb_invite:
 				client.invited(that.substring(kw_lobb_invite.length() + 1));
-			} else if (that.startsWith(kw_conn_error)) {
+				break;
+			case kw_conn_error:
 				System.out.println("");
 				System.out.println("!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!");
 				System.out.println("ERROR RECEIVED FROM SERVER: "
-						+ that.substring(kw_conn_error.length()+1));
+						+ that.substring(kw_conn_error.length() + 1));
 				System.out.println("!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!");
 				System.out.println("");
-			} else if (that.startsWith(kw_lobb_acceptinvite)) {
+				break;
+			case kw_lobb_acceptinvite:
 				System.out.println("Your invite was accepted by "
 						+ that.substring(kw_lobb_acceptinvite.length() + 1)
 						+ "!");
-			} else if (that.startsWith(kw_lobb_declineinvite)) {
+				break;
+			case kw_lobb_declineinvite:
 				System.out.println("Your invite was declined by "
-						+ that.substring(kw_lobb_declineinvite.length() + 1) + "!");
-			} else {
+						+ that.substring(kw_lobb_declineinvite.length() + 1)
+						+ "!");
+				break;
+			default:
 				System.err.println("Couldn't understand: " + that);
 			}
-
 		} else {
 			System.err
 					.println("We are the server, use whatisthatClient() instead.");

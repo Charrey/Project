@@ -259,7 +259,7 @@ public class Client implements Runnable {
 	public void run() {
 		try {
 			String tussenvar = in.readLine();
-			while (!tussenvar.equals("exit")) {
+			while (!sock.isClosed()) {
 				System.out
 						.println("Message received from server: " + tussenvar);
 				inter.whatisthatClient(tussenvar);

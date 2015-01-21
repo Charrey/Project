@@ -48,7 +48,27 @@ public class Server extends Thread {
 		String gotten;
 		gotten = scanner.nextLine();
 		while (true) {
-			// doeiets
+			gui.addMessage("Read command: "+gotten);
+			String[] splitted = gotten.split("\\s+");
+			if (splitted[0].equals("kick")) {
+				try {
+					findClientHandler(gotten.substring(5)).getSocket().close();
+				} catch (IOException e) {
+					gui.addMessage("Could not kick this player.");
+				}
+			} else if (splitted[0].equals("error")) {
+				sendError(findClientHandler(splitted[1]),gotten.substring(6+splitted[1].length()));
+			} else if (splitted[0].equals("help")) {
+				gui.addMessage("----HELP--------------");
+				gui.addMessage("kick <name> -- Kick a player");
+				gui.addMessage("error <name> <error> -- Send an error");
+				gui.addMessage("hello <name> <message> -- Send a message");
+				gui.addMessage("----------------------");
+			} else if (splitted[0].equals("hello")) {
+				findClientHandler(splitted[1]).sendCommand("CHAT "+gotten.substring(6+splitted[1].length()));
+			} else {
+				gui.addMessage("Use 'help' to view console commands.");
+			}
 			gotten = scanner.nextLine();
 		}
 	}
@@ -192,7 +212,6 @@ public class Server extends Thread {
 					playing.put(opponent, false);
 					gamesgames.remove(game);
 				} else {
-					System.out.println(opponent.getClientName());
 					opponent.sendCommand(Interpreter.kw_game_reqmove);
 					gamesgames.put(game, opponent.getPlayerno());
 					gui.addMessage("Move by " + source.getClientName() + ": "

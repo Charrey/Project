@@ -25,6 +25,7 @@ import javax.swing.SpringLayout;
 
 import Project.networking.ClientHandler;
 import Project.networking.Server;
+import Project.networking.ServerConsole;
 
 public class ServerGUI extends JFrame{
 
@@ -99,6 +100,8 @@ public class ServerGUI extends JFrame{
 			public void mouseClicked(MouseEvent e){
 				portNumber = Integer.parseInt(portField.getText());
 				server = new Server(portNumber, self);
+				ServerConsole sc = new ServerConsole(server);
+				sc.start();
 			}
 		});
 		
