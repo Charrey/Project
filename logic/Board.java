@@ -364,10 +364,6 @@ public class Board extends Observable {
 		return result;
 	}
 		
-		
-		
-		
-	}
 	
 	
 	/*public String networkBoard() {

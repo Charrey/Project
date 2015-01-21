@@ -3,10 +3,7 @@ package Project.logic;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Scanner;
-
 import javax.swing.JLabel;
-
-import Project.gui.Gui;
 import Project.gui.MainGui;
 
 
@@ -93,7 +90,7 @@ public class Game implements Runnable {
     	update();
     	while (!board.gameOver()){
     		players[current].makeMove(board);
-    		current = (current+1)%2;    		
+    		current = (current+1)%2; 
     		update();	
     	}
     }
@@ -146,6 +143,9 @@ public class Game implements Runnable {
 	}
 	public Player getCurrentPlayer(){
 		return players[current];
+	}
+	public int getCurrent(){
+		return current;
 	}
 	
 	public void gameEnd(){
