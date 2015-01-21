@@ -18,11 +18,17 @@ public class ClientHandler extends Thread {
 	private HumanPlayer player;
 	private int playerno;
 
-	public ClientHandler(Server serverArg, Socket sockArg) throws IOException {
+	public ClientHandler(Server serverArg, Socket sockArg) {
 		server = serverArg;
 		sock = sockArg;
-		in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-		out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
+		try {
+			in = new BufferedReader(
+					new InputStreamReader(sock.getInputStream()));
+			out = new BufferedWriter(new OutputStreamWriter(
+					sock.getOutputStream()));
+		} catch (IOException io) {
+			this.shutdown();
+		}
 		clientName = sock.getInetAddress().getHostName();
 	}
 
@@ -30,18 +36,22 @@ public class ClientHandler extends Thread {
 		try {
 			String ontvangen;
 			while (!sock.isClosed()) {
-				//System.out.println("Ready to read new command from "+ clientName);
+				// System.out.println("Ready to read new command from "+
+				// clientName);
 				ontvangen = in.readLine();
-				server.getGUI().addMessage("New command from " + clientName + ": "
-						+ ontvangen);
+				server.getGUI().addMessage(
+						"New command from " + clientName + ": " + ontvangen);
 				server.interpreter.whatisthatServer(ontvangen, this, false);
 			}
-		} catch (IOException ex) {shutdown();}
+		} catch (IOException ex) {
+			shutdown();
+		}
 	}
 
 	public void sendCommand(String command) {
 		try {
-			server.getGUI().addMessage("Writing to "+getClientName()+": "+command);
+			server.getGUI().addMessage(
+					"Writing to " + getClientName() + ": " + command);
 			out.write(command);
 			out.newLine();
 			out.flush();
@@ -49,11 +59,11 @@ public class ClientHandler extends Thread {
 			server.getGUI().addMessage("Unable to send command");
 		}
 	}
-	
+
 	public int getPlayerno() {
 		return playerno;
 	}
-	
+
 	public void setPlayerno(int no) {
 		playerno = no;
 	}
@@ -70,31 +80,27 @@ public class ClientHandler extends Thread {
 		clientName = nameArg;
 	}
 
-	/*public void sendMessage(String source, String message) {
-		try {
-			out.write("CHAT " +source. +": "+message);
-			out.flush();
-		} catch (IOException ex) {
-			System.err.println("Unable to send chat message");
-		}
-	}*/
+	/*
+	 * public void sendMessage(String source, String message) { try {
+	 * out.write("CHAT " +source. +": "+message); out.flush(); } catch
+	 * (IOException ex) { System.err.println("Unable to send chat message"); } }
+	 */
 
 	public void shutdown() {
-		
-		server.getGUI().addMessage("Client "+clientName+" has left the server.");
-		if (server.invites.containsKey(this)){
+
+		server.getGUI().addMessage(
+				"Client " + clientName + " has left the server.");
+		if (server.invites.containsKey(this)) {
 			server.invites.remove(this);
 		}
 		for (ClientHandler i : server.invites.keySet()) {
 			if (server.invites.get(i)[0].equals(clientName)) {
 				server.invites.remove(i);
-				i.sendCommand("DECLINE_INVITE "+clientName);
+				i.sendCommand("DECLINE_INVITE " + clientName);
 			}
 		}
 		server.lobby.remove(this);
-		
-		
-		
+
 		try {
 			sock.close();
 		} catch (IOException e) {

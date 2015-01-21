@@ -31,35 +31,60 @@ public class Interpreter {
 	public final String kw_feature_multiplayer = "MULTIPLAYER";
 	public final String kw_lobb_invite = "INVITE";
 
-	ClientHandler playerone;
-	ClientHandler playertwo;
-	Game game;
 	Boolean areweserver;
+
+	// server.equals(null) <=> !client.equals(null)
+	// !server.equals(null) <=> client.equals(null)
 	Server server;
+	Client client;
 
 	// IF WE'RE JUST A CLIENT
+	/**
+	 * @param client
+	 *            is the client using this interpreter.
+	 */
 	public Interpreter(Client client) {
 		areweserver = false;
 	}
 
 	// IF WE'RE A SERVER
+	/**
+	 * @param server
+	 *            is the server using this interpreter.
+	 */
 	public Interpreter(Server server) {
-		// playerone = a;
-		// playertwo = b;
-		// this.game = game;
 		this.server = server;
 		areweserver = true;
 	}
 
+	/**
+	 * Analyzed a command from a client and executes appropiately.
+	 * 
+	 * @param that
+	 *            is the string the interpreter is to analyze.
+	 * @param source
+	 *            is the ClientHandler which send the message to be analyzed.
+	 * @param subcommand
+	 *            is false if 'that' is the first word in a line, and is 'true'
+	 *            if it's not.
+	 */
 	public void whatisthatServer(String that, ClientHandler source,
 			Boolean subcommand) {
 		if (areweserver == true) {
 			if (that.startsWith(kw_conn_chatmessage)) {
-				server.handlechatmessage(source,
-						that.substring(kw_conn_chatmessage.length() + 1));
+				if (that.length() < (kw_conn_chatmessage.length() + 2)) {
+					source.sendCommand(kw_conn_error + " SyntaxError");
+				} else {
+					server.handlechatmessage(source,
+							that.substring(kw_conn_chatmessage.length() + 1));
+				}
 			} else if (that.startsWith(kw_conn_welcome)) {
-				server.acceptConnection(source,
-						that.substring(kw_conn_welcome.length() + 1));
+				if (that.length() < (kw_conn_welcome.length() + 2)) {
+					source.sendCommand(kw_conn_error + " SyntaxError");
+				} else {
+					server.acceptConnection(source,
+							that.substring(kw_conn_welcome.length() + 1));
+				}
 			} else if (that.startsWith(kw_game_requestboard)) {
 				server.sendBoard(source);
 			} else if (that.startsWith(kw_lobb_leaderboard)
@@ -74,14 +99,23 @@ public class Interpreter {
 			} else if (that.startsWith(kw_feature_multiplayer)) {
 				server.setFunction(source, kw_feature_multiplayer, true);
 			} else if (that.startsWith(kw_lobb_invite)) {
-				server.invite(that.substring(kw_lobb_invite.length() + 1),
-						source);
+				if (that.length() < (kw_lobb_invite.length() + 2)) {
+					source.sendCommand(kw_conn_error + " SyntaxError");
+				} else {
+					server.invite(that.substring(kw_lobb_invite.length() + 1),
+							source);
+				}
 			} else if (that.startsWith(kw_lobb_acceptinvite)) {
 				server.acceptinvite(source, that);
 			} else if (that.startsWith(kw_lobb_declineinvite)) {
 				server.denyinvite(source, that);
 			} else if (that.startsWith(kw_game_move)) {
-				server.nextMove(source, that.substring(kw_game_move.length()+1));
+				if (that.length() < (kw_game_move.length() + 2)) {
+					source.sendCommand(kw_conn_error + " SyntaxError");
+				} else {
+					server.nextMove(source,
+							that.substring(kw_game_move.length() + 1));
+				}
 			} else if (that.startsWith(kw_lobb_request)) {
 				server.sendLobby(source);
 			}
@@ -97,7 +131,11 @@ public class Interpreter {
 		}
 	}
 
-	public void whatisthatClient(Client client, String that) {
+	/**
+	 * Analyzes a command from the server and executes appropiately.
+	 * @param that is the String to be analyzed.
+	 */
+	public void whatisthatClient(String that) {
 		if (areweserver == false) {
 			if (that.startsWith(kw_game_sendboard)) {
 				client.refreshBoard(that.substring(6));
@@ -113,15 +151,15 @@ public class Interpreter {
 			} else if (that.startsWith(kw_game_moveok)) {
 				client.moveok(that.substring(kw_game_moveok.length() + 1));
 			} else if (that.startsWith(kw_game_reqmove)) {
-				//client.makemove();
+				// client.makemove();
 			} else if (that.startsWith(kw_feature_chat)) {
-				client.SetServerchat(true);
+				client.SetSerSup(kw_feature_chat,true);
 			} else if (that.startsWith(kw_feature_cBoardSize)) {
-				client.SetServerCBoardSize(true);
+				client.SetSerSup(kw_feature_cBoardSize, true);
 			} else if (that.startsWith(kw_feature_leaderboard)) {
-				client.setServerLeaderboard(true);
+				client.SetSerSup(kw_feature_leaderboard,true);
 			} else if (that.startsWith(kw_feature_multiplayer)) {
-				client.setServerMultiplayer(true);
+				client.SetSerSup(kw_feature_multiplayer,true);
 			} else if (that.startsWith(kw_lobb_invite)) {
 				client.invited(that.substring(kw_lobb_invite.length() + 1));
 			} else if (that.startsWith(kw_conn_error)) {
@@ -137,7 +175,7 @@ public class Interpreter {
 
 		} else {
 			System.err
-					.println("We are n the server, use whatisthatClient() instead.");
+					.println("We are the server, use whatisthatClient() instead.");
 		}
 	}
 

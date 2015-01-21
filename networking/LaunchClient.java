@@ -5,6 +5,9 @@ import java.lang.NumberFormatException;
 
 public class LaunchClient {
 
+	/**
+	 * @param args is meaningless, but implemented for future use.
+	 */
 	public static void main(String[] args) {
 		System.out.println("Welcome to Connect-Four by René and Pim!");
 		Scanner scanner = new Scanner(System.in);
@@ -62,6 +65,13 @@ public class LaunchClient {
 
 	}
 
+	/**
+	 * Checks whether a string is a valid IPv4 address.
+	 * All credit to user prmatta on stackoverflow.com for this method.
+	 * 
+	 * @param ip
+	 * @return
+	 */
 	public static boolean validIP(String ip) {
 		try {
 			if (ip == null || ip.isEmpty()) {
