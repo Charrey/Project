@@ -139,45 +139,48 @@ public class Server extends Thread {
 	 */
 	public void nextMove(ClientHandler source, String move) {
 		Game game = getGame(source);
-		ClientHandler opponent = getOpponent(source);
-
-		if (!representsInt(move)) {
-			sendError(source, "SyntaxError");
-		} else if (game == null) {
+		if (game == null) {
 			sendError(source, "NotInGame");
-		} else if (gamesgames.get(game) != source.getPlayerno()) {
-			sendError(source, "NotUrTurn");
-		} else if (!game.getBoard().isValidInput(Integer.parseInt(move))
-				|| !game.getBoard().columnFree(Integer.parseInt(move))) {
-			sendError(source, "BadMove");
 		} else {
-			game.getBoard().putMark(Integer.parseInt(move),
-					Mark.fromInt(source.getPlayerno()));
-			source.sendCommand(interpreter.kw_game_moveok + " "
-					+ source.getPlayerno() + " " + Integer.parseInt(move) + " "
-					+ source.getClientName());
-			opponent.sendCommand(interpreter.kw_game_moveok + " "
-					+ source.getPlayerno() + " " + Integer.parseInt(move) + " "
-					+ source.getClientName());
-			if (game.getBoard().isWin()) {
-				source.sendCommand(interpreter.kw_game_gameend + " WIN "
-						+ source.getClientName());
-				opponent.sendCommand(interpreter.kw_game_gameend + " WIN "
-						+ source.getClientName());
-			} else if (game.getBoard().isFull()) {
-				source.sendCommand(interpreter.kw_game_gameend + " DRAW");
-				opponent.sendCommand(interpreter.kw_game_gameend + " DRAW");
+
+			ClientHandler opponent = getOpponent(source);
+
+			if (!representsInt(move)) {
+				sendError(source, "SyntaxError");
+			} else if (game == null) {
+				sendError(source, "NotInGame");
+			} else if (gamesgames.get(game) != source.getPlayerno()) {
+				sendError(source, "NotUrTurn");
+			} else if (!game.getBoard().isValidInput(Integer.parseInt(move))
+					|| !game.getBoard().columnFree(Integer.parseInt(move))) {
+				sendError(source, "BadMove");
 			} else {
-				System.out.println(opponent.getClientName());
-				opponent.sendCommand(interpreter.kw_game_reqmove);
-				gamesgames.put(game, opponent.getPlayerno());
-				gui.addMessage("Move by " + source.getClientName() + ": "
-						+ move);
-				// System.out.println(game.getBoard().networkBoard());
+				game.getBoard().putMark(Integer.parseInt(move),
+						Mark.fromInt(source.getPlayerno()));
+				source.sendCommand(interpreter.kw_game_moveok + " "
+						+ source.getPlayerno() + " " + Integer.parseInt(move)
+						+ " " + source.getClientName());
+				opponent.sendCommand(interpreter.kw_game_moveok + " "
+						+ source.getPlayerno() + " " + Integer.parseInt(move)
+						+ " " + source.getClientName());
+				if (game.getBoard().isWin()) {
+					source.sendCommand(interpreter.kw_game_gameend + " WIN "
+							+ source.getClientName());
+					opponent.sendCommand(interpreter.kw_game_gameend + " WIN "
+							+ source.getClientName());
+				} else if (game.getBoard().isFull()) {
+					source.sendCommand(interpreter.kw_game_gameend + " DRAW");
+					opponent.sendCommand(interpreter.kw_game_gameend + " DRAW");
+				} else {
+					System.out.println(opponent.getClientName());
+					opponent.sendCommand(interpreter.kw_game_reqmove);
+					gamesgames.put(game, opponent.getPlayerno());
+					gui.addMessage("Move by " + source.getClientName() + ": "
+							+ move);
+					// System.out.println(game.getBoard().networkBoard());
+				}
 			}
-
 		}
-
 	}
 
 	/**
@@ -278,9 +281,10 @@ public class Server extends Thread {
 	}
 
 	/**
-	 * Sends a lobby to the specified ClientHandler.	 * 
+	 * Sends a lobby to the specified ClientHandler. *
 	 * 
-	 * @param target is the ClientHanlder the lobby will be sent to.
+	 * @param target
+	 *            is the ClientHanlder the lobby will be sent to.
 	 */
 	public void sendLobby(ClientHandler target) {
 		String result = "";

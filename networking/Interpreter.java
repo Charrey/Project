@@ -48,6 +48,7 @@ public class Interpreter {
 	 *            is the client using this interpreter.
 	 */
 	public Interpreter(Client client) {
+		this.client = client;
 		areweserver = false;
 	}
 
@@ -151,7 +152,7 @@ public class Interpreter {
 			} else if (that.startsWith(kw_conn_gamestart)) {
 				client.gamestart();
 			} else if (that.startsWith(kw_conn_lobby)) {
-				client.setLobby(that.substring(6));
+				client.setLobby(that.substring(kw_conn_lobby.length()+1));
 			} else if (that.startsWith(kw_game_moveok)) {
 				client.moveok(that.substring(kw_game_moveok.length() + 1));
 			} else if (that.startsWith(kw_game_reqmove)) {
