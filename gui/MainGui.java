@@ -44,8 +44,9 @@ public class MainGui extends JFrame implements Observer, Runnable {
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
+		
 		if(currentPanel instanceof GameMainPanel){
-			((GameMainPanel)currentPanel).getGamePanel().updateBoard();
+			((GameMainPanel)currentPanel).update();
 		}
 	}
 

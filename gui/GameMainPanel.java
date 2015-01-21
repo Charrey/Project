@@ -37,7 +37,8 @@ public class GameMainPanel extends JPanel {
 
 		add(namePanel, BorderLayout.PAGE_START);
 		add(gamePanel, BorderLayout.CENTER);
-		add(messagePanel, BorderLayout.LINE_END);
+		//*********************** (Alleen voor online games) ******************
+		//add(messagePanel, BorderLayout.LINE_END);
 		
 		namePanel.setSize(gamePanel.getWidth(), namePanel.getHeight());
 
@@ -47,6 +48,11 @@ public class GameMainPanel extends JPanel {
 	
 	public GamePanel getGamePanel(){
 		return gamePanel;
+	}
+	
+	public void update(){
+		gamePanel.updateBoard();
+		namePanel.update();
 	}
 	
 }

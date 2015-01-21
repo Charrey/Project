@@ -1,6 +1,7 @@
 package Project.gui;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -10,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 import Project.logic.Board;
 import Project.logic.ComputerPlayer;
@@ -26,6 +28,8 @@ public class GameSelectPanel extends JPanel {
 	private Player player1;
 	private Player player2;
 	private MainGui gui;
+	private Font fnt = new Font("Serif", Font.BOLD, 30);
+	private EmptyBorder padding = new EmptyBorder(10,10,10,10);
 	
 	public GameSelectPanel(MainGui gui){
 		this.gui = gui;
@@ -51,6 +55,18 @@ public class GameSelectPanel extends JPanel {
 		JLabel startGameLabel = new JLabel("Start Game");
 		startGameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		startGameLabel.setMinimumSize(d);
+		
+		newHumanPlayerLabel1.setFont(fnt);
+		newHumanPlayerLabel2.setFont(fnt);
+		newAIPlayerLabel1.setFont(fnt);
+		newAIPlayerLabel2.setFont(fnt);
+		startGameLabel.setFont(fnt);
+		
+		newHumanPlayerLabel1.setBorder(padding);
+		newHumanPlayerLabel2.setBorder(padding);
+		newAIPlayerLabel1.setBorder(padding);
+		newAIPlayerLabel2.setBorder(padding);
+		startGameLabel.setBorder(padding);
 		
 		newHumanPlayerLabel1.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e){
