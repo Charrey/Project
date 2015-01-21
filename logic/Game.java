@@ -6,7 +6,6 @@ import java.util.Scanner;
 
 import javax.swing.JLabel;
 
-import Project.gui.Gui;
 import Project.gui.MainGui;
 
 
