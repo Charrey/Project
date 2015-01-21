@@ -36,10 +36,11 @@ public class ServerGUI extends JFrame{
 	private int portNumber;
 	private Server server;
 	private JScrollPane scrollPane;
+	private ServerGUI self;
 	
 	
 	public ServerGUI(){
-
+	
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new GridLayout(2, 2));
 		
@@ -86,11 +87,11 @@ public class ServerGUI extends JFrame{
 		setVisible(true);
 		Dimension d = new Dimension(500, 800);
 		setSize(d);
-		
+		self = this;
 		hostButton.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e){
 				portNumber = Integer.parseInt(portField.getText());
-				server = new Server(portNumber, this);
+				server = new Server(portNumber, self);
 			}
 		});
 		
