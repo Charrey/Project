@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 
+import Project.gui.ServerGUI;
 import Project.logic.*;
 
 import java.net.ServerSocket;
@@ -22,6 +23,7 @@ public class Server extends Thread {
 	ServerSocket serversocket;
 	private boolean running;
 	private int portNumber;
+	private ServerGUI gui;
 
 	public Map<ClientHandler, String[]> invites; // First string = target,
 													// second = toString(width),
@@ -47,14 +49,14 @@ public class Server extends Thread {
 	public void run(){
 		while (running) {
 			try{
-			System.out.println("Port " + portNumber +  " has been opened");
+			gui.addMessage("Port " + portNumber +  " has been opened");
 			Socket socket = getServerSocket().accept();
-			System.out.println("Connection from " + socket.getInetAddress()
+			gui.addMessage("Connection from " + socket.getInetAddress()
 					+ " accepted");
 			ClientHandler clienthandler = addClientHandler(socket);
 			clienthandler.start();
 			}catch(IOException e){
-				System.err.println("Something wrong went O_O");
+				gui.addMessage("Something wrong went O_O");
 			}
 		}
 		
@@ -69,8 +71,9 @@ public class Server extends Thread {
 		return serversocket;
 	}
 
-	public Server(int port){
+	public Server(int port,ServerGUI gui){
 		try{
+		this.gui=gui;
 		portNumber = port;
 		lobby = new HashMap<ClientHandler, Set<String>>();
 		gamesgames = new HashMap<Game, Integer>();
@@ -80,7 +83,7 @@ public class Server extends Thread {
 		running = true;
 		this.start();
 		}catch(IOException e){
-			System.err.println("Server couldn't be setup");
+			gui.addMessage("Server couldn't be setup");
 		}
 	}
 
@@ -96,28 +99,21 @@ public class Server extends Thread {
 	}
 
 	public void nextMove(ClientHandler source, String move) {
-		System.out.println("Start of method");
 		Game game = getGame(source);
 		ClientHandler opponent = getOpponent(source);
 
 		if (!representsInt(move)) {
-			System.out.println(move);
-			System.out.println("Not integer.");
 			source.sendCommand(interpreter.kw_conn_error + " SyntaxError");
 		} else if (game == null) {
-			System.out.println("Not in-game");
 			source.sendCommand(interpreter.kw_conn_error + " NotInGame");
 		} else if (gamesgames.get(game) != source.getPlayerno()) {
-			System.out.println("Not their turn.");
 			source.sendCommand(interpreter.kw_conn_error + " NotUrTurn");
 		} else if (!game.getBoard().isValidInput(Integer.parseInt(move))
 				|| !game.getBoard().columnFree(Integer.parseInt(move))) {
-			System.out.println("Bad move");
 			source.sendCommand(interpreter.kw_conn_error + " BadMove");
 		} else {
 			game.getBoard().putMark(Integer.parseInt(move),
 					Mark.fromInt(source.getPlayerno()));
-			System.out.println("Else.");
 			source.sendCommand(interpreter.kw_game_moveok + " "
 					+ source.getPlayerno() + " " + Integer.parseInt(move) + " "
 					+ source.getClientName());
@@ -129,28 +125,30 @@ public class Server extends Thread {
 						+ source.getClientName());
 				opponent.sendCommand(interpreter.kw_game_gameend + " WIN "
 						+ source.getClientName());
-				System.out.println("Game win.");
 			} else if (game.getBoard().isFull()) {
 				source.sendCommand(interpreter.kw_game_gameend + " DRAW");
 				opponent.sendCommand(interpreter.kw_game_gameend + " DRAW");
-				System.out.println("Game draw.");
 			} else {
 				System.out.println(opponent.getClientName());
 				opponent.sendCommand(interpreter.kw_game_reqmove);
 				gamesgames.put(game, opponent.getPlayerno());
-				System.out.println("Move by " + source.getClientName() + ": "
+				gui.addMessage("Move by " + source.getClientName() + ": "
 						+ move);
-				System.out.println(game.getBoard().networkBoard());
+				//System.out.println(game.getBoard().networkBoard());
 			}
 
 		}
 
 	}
+	
+	public ServerGUI getGUI() {
+		return gui;
+	}
 
 	public ClientHandler getOpponent(ClientHandler friend) {
 		Game game = getGame(friend);
 		if (game == null) {
-			System.err.println("critical error in getGame");
+			gui.addMessage("critical error in getGame");
 		}
 		for (ClientHandler i : lobby.keySet()) {
 			if (getGame(i).equals(game) && !i.equals(friend)) {
@@ -174,11 +172,11 @@ public class Server extends Thread {
 	}
 
 	public void acceptConnection(ClientHandler source, String features) {
-		System.out.println("Accepted connection command from "
+		gui.addMessage("Accepted connection command from "
 				+ source.getClientName());
 		String[] splitted = features.split("\\s+");
 		source.setClientName(splitted[0]);
-		System.out.println(splitted[0] + " ("
+		gui.addMessage(splitted[0] + " ("
 				+ source.getSocket().getInetAddress() + ") has connected.");
 		joinServer(source, new HashSet<String>());
 		for (int i = 1; i < splitted.length; i++) {
@@ -218,7 +216,7 @@ public class Server extends Thread {
 	}
 
 	public void setFunction(ClientHandler source, String function, Boolean bool) {
-		System.out.println("Function " + function + " set to " + bool
+		gui.addMessage("Function " + function + " set to " + bool
 				+ " for client " + source.getClientName());
 		if (lobby.get(source).contains(function) && bool == false) {
 			lobby.get(source).remove(function);
@@ -238,7 +236,6 @@ public class Server extends Thread {
 
 	public static Boolean representsInt(String thestring) {
 		char[] array = thestring.toCharArray();
-		System.out.println(array.length);
 		for (int i = 0; i < array.length; i++) {
 			if (!Character.isDigit(array[i])) {
 				return false;
@@ -292,7 +289,7 @@ public class Server extends Thread {
 			source.sendCommand(validInvite(source, arguments));
 		} else {
 			String[] apart = arguments.split("\\s+");
-			System.out.println("Invite removed due to decline: from "
+			gui.addMessage("Invite removed due to decline: from "
 					+ apart[1] + " to " + source.getClientName());
 			invites.remove(findClientHandler(apart[1]));
 		}

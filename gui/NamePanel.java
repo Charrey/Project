@@ -21,10 +21,10 @@ public class NamePanel extends JPanel {
 	private JLabel label1;
 	private JLabel label2;
 	private Font fnt = new Font("", Font.BOLD, 30);
-	private int currentPlayer = 0;
+	//private int currentPlayer = 0;
 	private JLabel arrowLabel1;
 	private JLabel arrowLabel2;
-	private JButton hintButton;
+	//private JButton hintButton;
 	
 	public NamePanel(Game g){
 		this.g = g;
@@ -37,45 +37,45 @@ public class NamePanel extends JPanel {
 		label2 = new JLabel(name2, SwingConstants.RIGHT);
 		label2.setFont(fnt);
 		label2.setForeground(Color.YELLOW);
-		hintButton = new JButton("Hint");
+		//hintButton = new JButton("Hint");
 		
 		
 		
-		arrowLabel1 = new JLabel();
+		arrowLabel1 = new JLabel("<-", SwingConstants.LEFT);
 		arrowLabel1.setFont(fnt);
-		arrowLabel2 = new JLabel();
+
+		arrowLabel2 = new JLabel("", SwingConstants.RIGHT);
 		arrowLabel2.setFont(fnt);
 
+		/*
 		hintButton.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e){
 				System.out.println(g.getBoard().hint(g.getCurrentPlayer().getMark()));
 			}
-		});
+		});*/
 		
 		
-		this.setLayout(new GridLayout(1,5));
+		this.setLayout(new GridLayout(1,4));
 		add(label1);
 		add(arrowLabel1);
-		add(hintButton);
+		//add(hintButton);
 		add(arrowLabel2);
 		add(label2);
 		
 		
 		
 
-		update();
+
 		setSize(getPreferredSize());
 	}
 
 	public void update() {
-		if(currentPlayer == 0){
+		if(g.getCurrent() == 1){
 			arrowLabel1.setText("<-");
 			arrowLabel2.setText("");
-			currentPlayer = (currentPlayer+1)%2;
-		}else{
+		}else if(g.getCurrent() == 0){
 			arrowLabel2.setText("->");
 			arrowLabel1.setText("");
-			currentPlayer = (currentPlayer+1)%2;
 		}
 		
 	}

@@ -32,7 +32,7 @@ public class ClientHandler extends Thread {
 			while (!sock.isClosed()) {
 				//System.out.println("Ready to read new command from "+ clientName);
 				ontvangen = in.readLine();
-				System.out.println("New command from " + clientName + ": "
+				server.getGUI().addMessage("New command from " + clientName + ": "
 						+ ontvangen);
 				server.interpreter.whatisthatServer(ontvangen, this, false);
 			}
@@ -41,12 +41,12 @@ public class ClientHandler extends Thread {
 
 	public void sendCommand(String command) {
 		try {
-			System.out.println("Writing to "+getClientName()+": "+command);
+			server.getGUI().addMessage("Writing to "+getClientName()+": "+command);
 			out.write(command);
 			out.newLine();
 			out.flush();
 		} catch (IOException ex) {
-			System.err.println("Unable to send command");
+			server.getGUI().addMessage("Unable to send command");
 		}
 	}
 	
@@ -81,7 +81,7 @@ public class ClientHandler extends Thread {
 
 	public void shutdown() {
 		
-		System.out.println("Client "+clientName+" has left the server.");
+		server.getGUI().addMessage("Client "+clientName+" has left the server.");
 		if (server.invites.containsKey(this)){
 			server.invites.remove(this);
 		}
@@ -98,7 +98,7 @@ public class ClientHandler extends Thread {
 		try {
 			sock.close();
 		} catch (IOException e) {
-			System.err.println("Could not close socket");
+			server.getGUI().addMessage("Could not close socket");
 		}
 	}
 

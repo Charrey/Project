@@ -90,7 +90,7 @@ public class ServerGUI extends JFrame{
 		hostButton.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e){
 				portNumber = Integer.parseInt(portField.getText());
-				server = new Server(portNumber);
+				server = new Server(portNumber, this);
 			}
 		});
 		
