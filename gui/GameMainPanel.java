@@ -16,10 +16,10 @@ public class GameMainPanel extends JPanel {
 	private GamePanel gamePanel;
 	private NamePanel namePanel;
 	private MessagePanel messagePanel;
-	//private ChatPanel chatPanel;
+	private InfoPanel infoPanel;
 	
 	
-	//TODO size shit goed regelen
+
 	GameMainPanel(Game g){
 		
 		gamePanel = new GamePanel(g);
@@ -33,10 +33,12 @@ public class GameMainPanel extends JPanel {
 		gamePanel = new GamePanel(g, i);
 		namePanel = new NamePanel(g);
 		messagePanel = new MessagePanel(g);
+		infoPanel = new InfoPanel(g, gamePanel);
 		setLayout(new BorderLayout());
 
 		add(namePanel, BorderLayout.PAGE_START);
 		add(gamePanel, BorderLayout.CENTER);
+		add(infoPanel, BorderLayout.PAGE_END);
 		//*********************** (Alleen voor online games) ******************
 		//add(messagePanel, BorderLayout.LINE_END);
 		

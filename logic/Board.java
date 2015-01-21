@@ -331,6 +331,8 @@ public class Board extends Observable {
 				board[i][p] = Mark.EMPTY;
 			}
 		}
+		setChanged();
+		notifyObservers();
 	}
 
 	public void reset(int width, int height) {

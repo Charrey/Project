@@ -87,11 +87,9 @@ public class Game implements Runnable {
 	
 	
     private void play() {
-    	update();
     	while (!board.gameOver()){
     		players[current].makeMove(board);
-    		current = (current+1)%2; 
-    		update();	
+       		current = (current+1)%2; 
     	}
     }
 
@@ -101,9 +99,8 @@ public class Game implements Runnable {
         //gui.updateBoard();
     }
 
-	private void reset() {
+	public void reset() {
 		board.reset();
-		board.notifyObservers();
 	}
 	
 	public Board getBoard() {
@@ -145,6 +142,7 @@ public class Game implements Runnable {
 		return players[current];
 	}
 	public int getCurrent(){
+		System.out.println("getCurrent: " + current);
 		return current;
 	}
 	

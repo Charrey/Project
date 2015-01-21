@@ -24,7 +24,7 @@ public class NamePanel extends JPanel {
 	//private int currentPlayer = 0;
 	private JLabel arrowLabel1;
 	private JLabel arrowLabel2;
-	//private JButton hintButton;
+	private boolean justStarted = true;
 	
 	public NamePanel(Game g){
 		this.g = g;
@@ -37,24 +37,15 @@ public class NamePanel extends JPanel {
 		label2 = new JLabel(name2, SwingConstants.RIGHT);
 		label2.setFont(fnt);
 		label2.setForeground(Color.YELLOW);
-		//hintButton = new JButton("Hint");
 		
 		
 		
-		arrowLabel1 = new JLabel("<-", SwingConstants.LEFT);
+		arrowLabel1 = new JLabel("", SwingConstants.LEFT);
 		arrowLabel1.setFont(fnt);
 
 		arrowLabel2 = new JLabel("", SwingConstants.RIGHT);
 		arrowLabel2.setFont(fnt);
 
-		/*
-		hintButton.addMouseListener(new MouseAdapter(){
-			public void mouseClicked(MouseEvent e){
-				System.out.println(g.getBoard().hint(g.getCurrentPlayer().getMark()));
-			}
-		});*/
-		
-		
 		this.setLayout(new GridLayout(1,4));
 		add(label1);
 		add(arrowLabel1);
@@ -69,11 +60,18 @@ public class NamePanel extends JPanel {
 		setSize(getPreferredSize());
 	}
 
+	
+	//TODO fix reset bug, where arrow changes while it shouldn't
 	public void update() {
-		if(g.getCurrent() == 1){
+		if(justStarted){
 			arrowLabel1.setText("<-");
 			arrowLabel2.setText("");
-		}else if(g.getCurrent() == 0){
+			justStarted=false;
+		}
+		else if(g.getCurrent() == 1){
+			arrowLabel1.setText("<-");
+			arrowLabel2.setText("");
+		}else{
 			arrowLabel2.setText("->");
 			arrowLabel1.setText("");
 		}

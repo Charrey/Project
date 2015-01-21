@@ -2,6 +2,7 @@ package Project.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -37,7 +38,7 @@ public class ServerGUI extends JFrame{
 	private Server server;
 	private JScrollPane scrollPane;
 	private ServerGUI self;
-	
+	private Font fnt = new Font("", Font.BOLD, 20);
 	
 	public ServerGUI(){
 	
@@ -48,18 +49,24 @@ public class ServerGUI extends JFrame{
 		topButPanel.setLayout(new BorderLayout());
 		
 		textArea = new JTextArea();
+		textArea.setEditable(false);
 		hostButton = new JButton("Host");
+		hostButton.setFont(fnt);
 
 		scrollPane = new JScrollPane(textArea);
 		
 		JLabel ipLabel = new JLabel("Your IP is: ");
+		ipLabel.setFont(fnt);
 		hostAdress = getIP();
 		ipAdressLabel = new JLabel(hostAdress);
+		ipAdressLabel.setFont(fnt);
 		topPanel.add(ipLabel);
 		topPanel.add(ipAdressLabel);
 		
 		JLabel portLabel = new JLabel("Typ port in");
+		portLabel.setFont(fnt);
 		portField = new JTextField("");
+		portField.setFont(fnt);
 		topPanel.add(portLabel);
 		topPanel.add(portField);
 		//topPanel.add(new JLabel());
