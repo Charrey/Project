@@ -3,7 +3,10 @@ package Project.gui;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -21,6 +24,7 @@ public class NamePanel extends JPanel {
 	private int currentPlayer = 0;
 	private JLabel arrowLabel1;
 	private JLabel arrowLabel2;
+	private JButton hintButton;
 	
 	public NamePanel(Game g){
 		this.g = g;
@@ -33,18 +37,31 @@ public class NamePanel extends JPanel {
 		label2 = new JLabel(name2, SwingConstants.RIGHT);
 		label2.setFont(fnt);
 		label2.setForeground(Color.YELLOW);
+		hintButton = new JButton("Hint");
+		
+		
 		
 		arrowLabel1 = new JLabel();
 		arrowLabel1.setFont(fnt);
 		arrowLabel2 = new JLabel();
 		arrowLabel2.setFont(fnt);
+
+		hintButton.addMouseListener(new MouseAdapter(){
+			public void mouseClicked(MouseEvent e){
+				System.out.println(g.getBoard().hint(g.getCurrentPlayer().getMark()));
+			}
+		});
 		
 		
-		this.setLayout(new GridLayout(1,4));
+		this.setLayout(new GridLayout(1,5));
 		add(label1);
 		add(arrowLabel1);
+		add(hintButton);
 		add(arrowLabel2);
 		add(label2);
+		
+		
+		
 
 		update();
 		setSize(getPreferredSize());
@@ -52,11 +69,11 @@ public class NamePanel extends JPanel {
 
 	public void update() {
 		if(currentPlayer == 0){
-			arrowLabel1.setText("<----");
+			arrowLabel1.setText("<-");
 			arrowLabel2.setText("");
 			currentPlayer = (currentPlayer+1)%2;
 		}else{
-			arrowLabel2.setText("---->");
+			arrowLabel2.setText("->");
 			arrowLabel1.setText("");
 			currentPlayer = (currentPlayer+1)%2;
 		}

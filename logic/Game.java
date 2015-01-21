@@ -144,6 +144,9 @@ public class Game implements Runnable {
 	public Player getSecondPlayer(){
 		return players[1];
 	}
+	public Player getCurrentPlayer(){
+		return players[current];
+	}
 	
 	public void gameEnd(){
 		System.out.println("Game has ended");
