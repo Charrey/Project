@@ -9,31 +9,31 @@ public class Interpreter {
 	 */
 	
 	// SENT BY SERVER ONLY:
-	public final String kw_game_sendboard = "BOARD";
-	public final String kw_game_gameend = "GAME_END";
-	public final String kw_conn_gamestart = "GAME_START";
-	public final String kw_conn_lobby = "LOBBY";
-	public final String kw_game_moveok = "MOVE_OK";
-	public final String kw_game_reqmove = "REQUEST_MOVE";
-	public final String kw_conn_error = "ERROR";
+	public static final String kw_game_sendboard = "BOARD";
+	public static final String kw_game_gameend = "GAME_END";
+	public static final String kw_conn_gamestart = "GAME_START";
+	public static final String kw_conn_lobby = "LOBBY";
+	public static final String kw_game_moveok = "MOVE_OK";
+	public static final String kw_game_reqmove = "REQUEST_MOVE";
+	public static final String kw_conn_error = "ERROR";
 
 	// SENT BY CLIENT ONLY:
-	public final String kw_conn_welcome = "CONNECT";
-	public final String kw_conn_chatmessage = "CHAT";
-	public final String kw_game_requestboard = "REQUEST_BOARD";
-	public final String kw_conn_acceptconnect = "ACCEPT_CONNECT";
-	public final String kw_lobb_leaderboard = "LEADERBOARD";// + <leaderboard>
-	public final String kw_lobb_acceptinvite = "ACCEPT_INVITE";
-	public final String kw_lobb_declineinvite = "DECLINE_INVITE";
-	public final String kw_game_move = "MOVE";
-	public final String kw_lobb_request = "REQUEST_LOBBY";
+	public static final String kw_conn_welcome = "CONNECT";
+	public static final String kw_conn_chatmessage = "CHAT";
+	public static final String kw_game_requestboard = "REQUEST_BOARD";
+	public static final String kw_conn_acceptconnect = "ACCEPT_CONNECT";
+	public static final String kw_lobb_leaderboard = "LEADERBOARD";// + <leaderboard>
+	public static final String kw_lobb_acceptinvite = "ACCEPT_INVITE";
+	public static final String kw_lobb_declineinvite = "DECLINE_INVITE";
+	public static final String kw_game_move = "MOVE";
+	public static final String kw_lobb_request = "REQUEST_LOBBY";
 
 	// SENT BY BOTH SERVER AND CLIENT:
-	public final String kw_feature_chat = "CHAT";// + <message>
-	public final String kw_feature_cBoardSize = "CUSTOM_BOARD_SIZE";
-	public final String kw_feature_leaderboard = "LEADERBOARD";
-	public final String kw_feature_multiplayer = "MULTIPLAYER";
-	public final String kw_lobb_invite = "INVITE";
+	public static final String kw_feature_chat = "CHAT";// + <message>
+	public static final String kw_feature_cBoardSize = "CUSTOM_BOARD_SIZE";
+	public static final String kw_feature_leaderboard = "LEADERBOARD";
+	public static final String kw_feature_multiplayer = "MULTIPLAYER";
+	public static final String kw_lobb_invite = "INVITE";
 
 	Boolean areweserver;
 

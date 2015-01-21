@@ -269,7 +269,6 @@ public class Client implements Runnable {
 			System.err.println("Could not read from server.");
 		}
 		System.err.println("CRASHED");
-
 	}
 
 	/**
@@ -298,7 +297,5 @@ public class Client implements Runnable {
 		}
 		System.out.println("Type accept " + apart[0] + " to accept.");
 		System.out.println("Type decline " + apart[0] + " to decline.");
-
 	}
-
 }
