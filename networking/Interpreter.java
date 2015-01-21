@@ -5,9 +5,9 @@ package Project.networking;
 public class Interpreter {
 
 	/*
-	 * Implementation should still work if these are changed! 
+	 * Implementation should still work if these are changed!
 	 */
-	
+
 	// SENT BY SERVER ONLY:
 	public static final String kw_game_sendboard = "BOARD";
 	public static final String kw_game_gameend = "GAME_END";
@@ -22,9 +22,8 @@ public class Interpreter {
 	public static final String kw_conn_chatmessage = "CHAT";
 	public static final String kw_game_requestboard = "REQUEST_BOARD";
 	public static final String kw_conn_acceptconnect = "ACCEPT_CONNECT";
-	public static final String kw_lobb_leaderboard = "LEADERBOARD";// + <leaderboard>
-	public static final String kw_lobb_acceptinvite = "ACCEPT_INVITE";
-	public static final String kw_lobb_declineinvite = "DECLINE_INVITE";
+	public static final String kw_lobb_leaderboard = "LEADERBOARD";// +
+																	// <leaderboard>
 	public static final String kw_game_move = "MOVE";
 	public static final String kw_lobb_request = "REQUEST_LOBBY";
 
@@ -34,6 +33,8 @@ public class Interpreter {
 	public static final String kw_feature_leaderboard = "LEADERBOARD";
 	public static final String kw_feature_multiplayer = "MULTIPLAYER";
 	public static final String kw_lobb_invite = "INVITE";
+	public static final String kw_lobb_acceptinvite = "ACCEPT_INVITE";
+	public static final String kw_lobb_declineinvite = "DECLINE_INVITE";
 
 	Boolean areweserver;
 
@@ -138,7 +139,9 @@ public class Interpreter {
 
 	/**
 	 * Analyzes a command from the server and executes appropiately.
-	 * @param that is the String to be analyzed.
+	 * 
+	 * @param that
+	 *            is the String to be analyzed.
 	 */
 	public void whatisthatClient(String that) {
 		if (areweserver == false) {
@@ -152,30 +155,37 @@ public class Interpreter {
 			} else if (that.startsWith(kw_conn_gamestart)) {
 				client.gamestart();
 			} else if (that.startsWith(kw_conn_lobby)) {
-				client.setLobby(that.substring(kw_conn_lobby.length()+1));
+				client.setLobby(that.substring(kw_conn_lobby.length() + 1));
 			} else if (that.startsWith(kw_game_moveok)) {
 				client.moveok(that.substring(kw_game_moveok.length() + 1));
 			} else if (that.startsWith(kw_game_reqmove)) {
 				// client.makemove();
 			} else if (that.startsWith(kw_feature_chat)) {
-				client.SetSerSup(kw_feature_chat,true);
+				client.SetSerSup(kw_feature_chat, true);
 			} else if (that.startsWith(kw_feature_cBoardSize)) {
 				client.SetSerSup(kw_feature_cBoardSize, true);
 			} else if (that.startsWith(kw_feature_leaderboard)) {
-				client.SetSerSup(kw_feature_leaderboard,true);
+				client.SetSerSup(kw_feature_leaderboard, true);
 			} else if (that.startsWith(kw_feature_multiplayer)) {
-				client.SetSerSup(kw_feature_multiplayer,true);
+				client.SetSerSup(kw_feature_multiplayer, true);
 			} else if (that.startsWith(kw_lobb_invite)) {
 				client.invited(that.substring(kw_lobb_invite.length() + 1));
 			} else if (that.startsWith(kw_conn_error)) {
 				System.out.println("");
 				System.out.println("!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!");
 				System.out.println("ERROR RECEIVED FROM SERVER: "
-						+ that.substring(6));
+						+ that.substring(kw_conn_error.length()+1));
 				System.out.println("!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!");
 				System.out.println("");
+			} else if (that.startsWith(kw_lobb_acceptinvite)) {
+				System.out.println("Your invite was accepted by "
+						+ that.substring(kw_lobb_acceptinvite.length() + 1)
+						+ "!");
+			} else if (that.startsWith(kw_lobb_declineinvite)) {
+				System.out.println("Your invite was declined by "
+						+ that.substring(kw_lobb_declineinvite.length() + 1) + "!");
 			} else {
-				System.err.println("Interpreter wrongly constructed");
+				System.err.println("Couldn't understand: " + that);
 			}
 
 		} else {

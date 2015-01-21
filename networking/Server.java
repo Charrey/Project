@@ -1,5 +1,6 @@
 package Project.networking;
 
+import java.util.Scanner;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
@@ -16,7 +17,7 @@ public class Server extends Thread {
 
 	// Set of string contains features
 	public Map<ClientHandler, Set<String>> lobby;
-
+	public Map<ClientHandler, Boolean> playing;
 	public Map<Game, Integer> gamesgames;
 	Interpreter interpreter;
 	ServerSocket serversocket;
@@ -40,6 +41,17 @@ public class Server extends Thread {
 	 * 
 	 * }
 	 */
+	Scanner scanner;
+
+	public void watchInput() {
+		scanner = new Scanner(System.in);
+		String gotten;
+		gotten = scanner.nextLine();
+		while (true) {
+			// doeiets
+			gotten = scanner.nextLine();
+		}
+	}
 
 	@Override
 	public void run() {
@@ -91,6 +103,7 @@ public class Server extends Thread {
 			this.gui = gui;
 			portNumber = port;
 			lobby = new HashMap<ClientHandler, Set<String>>();
+			playing = new HashMap<ClientHandler, Boolean>();
 			gamesgames = new HashMap<Game, Integer>();
 			serversocket = new ServerSocket(portNumber);
 			interpreter = new Interpreter(this);
@@ -113,8 +126,11 @@ public class Server extends Thread {
 	 */
 	public void joinServer(ClientHandler client, Set<String> features) {
 		lobby.put(client, features);
+		playing.put(client, false);
 		for (ClientHandler i : lobby.keySet()) {
-			sendLobby(i);
+			if (!playing.get(i)) {
+				sendLobby(i);
+			}
 		}
 	}
 
@@ -147,8 +163,6 @@ public class Server extends Thread {
 
 			if (!representsInt(move)) {
 				sendError(source, "SyntaxError");
-			} else if (game == null) {
-				sendError(source, "NotInGame");
 			} else if (gamesgames.get(game) != source.getPlayerno()) {
 				sendError(source, "NotUrTurn");
 			} else if (!game.getBoard().isValidInput(Integer.parseInt(move))
@@ -157,23 +171,29 @@ public class Server extends Thread {
 			} else {
 				game.getBoard().putMark(Integer.parseInt(move),
 						Mark.fromInt(source.getPlayerno()));
-				source.sendCommand(interpreter.kw_game_moveok + " "
+				source.sendCommand(Interpreter.kw_game_moveok + " "
 						+ source.getPlayerno() + " " + Integer.parseInt(move)
 						+ " " + source.getClientName());
-				opponent.sendCommand(interpreter.kw_game_moveok + " "
+				opponent.sendCommand(Interpreter.kw_game_moveok + " "
 						+ source.getPlayerno() + " " + Integer.parseInt(move)
 						+ " " + source.getClientName());
 				if (game.getBoard().isWin()) {
-					source.sendCommand(interpreter.kw_game_gameend + " WIN "
+					source.sendCommand(Interpreter.kw_game_gameend + " WIN "
 							+ source.getClientName());
-					opponent.sendCommand(interpreter.kw_game_gameend + " WIN "
+					opponent.sendCommand(Interpreter.kw_game_gameend + " WIN "
 							+ source.getClientName());
+					playing.put(source, false);
+					playing.put(opponent, false);
+					gamesgames.remove(game);
 				} else if (game.getBoard().isFull()) {
-					source.sendCommand(interpreter.kw_game_gameend + " DRAW");
-					opponent.sendCommand(interpreter.kw_game_gameend + " DRAW");
+					source.sendCommand(Interpreter.kw_game_gameend + " DRAW");
+					opponent.sendCommand(Interpreter.kw_game_gameend + " DRAW");
+					playing.put(source, false);
+					playing.put(opponent, false);
+					gamesgames.remove(game);
 				} else {
 					System.out.println(opponent.getClientName());
-					opponent.sendCommand(interpreter.kw_game_reqmove);
+					opponent.sendCommand(Interpreter.kw_game_reqmove);
 					gamesgames.put(game, opponent.getPlayerno());
 					gui.addMessage("Move by " + source.getClientName() + ": "
 							+ move);
@@ -181,6 +201,7 @@ public class Server extends Thread {
 				}
 			}
 		}
+
 	}
 
 	/**
@@ -289,7 +310,9 @@ public class Server extends Thread {
 	public void sendLobby(ClientHandler target) {
 		String result = "";
 		for (ClientHandler i : lobby.keySet()) {
-			result += " " + i.getClientName();
+			if (!playing.get(i)) {
+				result += " " + i.getClientName();
+			}
 		}
 		target.sendCommand(interpreter.kw_conn_lobby + result);
 
@@ -393,7 +416,15 @@ public class Server extends Thread {
 			ClientHandler invitesource = findClientHandler(apart[1]);
 			int boardwidth = Integer.parseInt(invites.get(invitesource)[2]);
 			int boardheight = Integer.parseInt(invites.get(invitesource)[2]);
-
+			invites.remove(invitesource);			
+			for (ClientHandler i : invites.keySet()) {
+				if (i.equals(source)) {
+					invites.remove(i);
+				}
+				else if (invites.get(i)[0].equals(source.getClientName())) {
+					i.sendCommand(Interpreter.kw_lobb_declineinvite+" "+source.getClientName());
+				}
+			}			
 			findClientHandler(apart[1]).sendCommand(
 					interpreter.kw_conn_gamestart + " "
 							+ source.getClientName() + " " + apart[1]);
@@ -427,7 +458,9 @@ public class Server extends Thread {
 				Mark.X, new NetworkedInputHandler(playerone)), new HumanPlayer(
 				playertwo.getClientName(), Mark.O, new NetworkedInputHandler(
 						playertwo)), width, height), 1);
-		playerone.sendCommand(interpreter.kw_game_reqmove);
+		playerone.sendCommand(Interpreter.kw_game_reqmove);
+		playing.put(playerone, true);
+		playing.put(playertwo, true);
 	}
 
 	/**
@@ -443,10 +476,16 @@ public class Server extends Thread {
 	 */
 	public void invite(String targetandxy, ClientHandler source) {
 		String[] apart = targetandxy.split("\\s+");
-		if (apart.length != 3) {
+		if (apart.length != 3 || !representsInt(apart[1])
+				|| !representsInt(apart[2])) {
 			sendError(source, "BadInviteSyntax");
+		} else if (Integer.parseInt(apart[1]) < 1
+				|| Integer.parseInt(apart[2]) < 1) {
+			sendError(source, "InvalidBounds");
 		} else if (findClientHandler(apart[0]) == null) {
 			sendError(source, "NoSuchPlayer");
+		} else if (playing.get((findClientHandler(apart[0])))) {
+			sendError(source, "AlreadyIngame");
 		} else if (apart[0].equals(source.getClientName())) {
 			sendError(source, "SelfInvite");
 		} else if (invites.containsKey(source)) {

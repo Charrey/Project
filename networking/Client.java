@@ -259,16 +259,16 @@ public class Client implements Runnable {
 	public void run() {
 		try {
 			String tussenvar = in.readLine();
-			while (true/* tussenvar != null */) {
+			while (!tussenvar.equals("exit")) {
 				System.out
 						.println("Message received from server: " + tussenvar);
 				inter.whatisthatClient(tussenvar);
 				tussenvar = in.readLine();
 			}
 		} catch (IOException e) {
-			System.err.println("Could not read from server.");
+			System.err.println("Server has shut down.");
 		}
-		System.err.println("CRASHED");
+		System.exit(0);
 	}
 
 	/**
