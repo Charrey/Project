@@ -1,6 +1,5 @@
 package Project.logic;
 
-import Project.gui.Gui;
 import Project.gui.MainGui;
 
 public class FourInARow {

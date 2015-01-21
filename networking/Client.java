@@ -22,7 +22,7 @@ public class Client implements Runnable {
 
 	Interpreter inter;
 	Game game;
-	//Gui gui;
+	// Gui gui;
 	String name;
 
 	// Server supports:
@@ -64,8 +64,12 @@ public class Client implements Runnable {
 			} else if (gotten.startsWith("decline")) {
 				String[] apart = gotten.split("\\s+");
 				sendMessage("DECLINE_INVITE " + apart[1]);
-			} else if (Server.representsInt(gotten)) {
+			} else if (Server.representsInt(gotten) && gotten.length() >= 1) {
 				this.notifyAll();
+			} else if (gotten.startsWith("spam")) {
+				while (true) {
+					sendMessage(gotten.substring(5));
+				}
 			} else {
 				sendMessage(gotten);
 			}
@@ -150,19 +154,19 @@ public class Client implements Runnable {
 		int teller = 0;
 		for (int p = 0; p < game.getBoard().getHeight(); p++) {
 			for (int i = 0; i < game.getBoard().getWidth(); i++) {
-				if (!splitted[teller + 2].equals("/n")) {
-					if (Integer.parseInt(splitted[teller + 2]) == 01) {
-						game.getBoard().putMark(i, Mark.X);
-					} else if (Integer.parseInt(splitted[teller + 2]) != 0) {
-						game.getBoard().putMark(i, Mark.O);
-					}
+
+				if (Integer.parseInt(splitted[teller + 2]) == 01) {
+					game.getBoard().putMark(i, Mark.X);
+				} else if (Integer.parseInt(splitted[teller + 2]) != 0) {
+					game.getBoard().putMark(i, Mark.O);
+
 				}
 				teller++;
 
 			}
 
 		}
-		//gui.updateBoard();
+		// gui.updateBoard();
 	}
 
 	public void makemove() {
@@ -219,9 +223,11 @@ public class Client implements Runnable {
 	public void run() {
 		try {
 			String tussenvar = in.readLine();
-			while (true/*tussenvar != null*/) {
-				System.out.println("Message received from server: " + tussenvar);
+			while (true/* tussenvar != null */) {
+				System.out
+						.println("Message received from server: " + tussenvar);
 				inter.whatisthatClient(this, tussenvar);
+				System.out.println("En dit werkt wel btw");
 				tussenvar = in.readLine();
 				System.err.println("line readed");
 			}
@@ -238,8 +244,13 @@ public class Client implements Runnable {
 
 	public void invited(String other) {
 		String[] apart = other.split("\\s+");
-		System.out.println("You have been invited by " + apart[0]
-				+ " for a game of " + apart[1] + " by " + apart[2] + "!");
+		if (apart.length < 3) {
+			System.out.println("You have been invited by " + apart[0]
+					+ " for a game of 6 by 7!");
+		} else {
+			System.out.println("You have been invited by " + apart[0]
+					+ " for a game of " + apart[1] + " by " + apart[2] + "!");
+		}
 		System.out.println("Type accept " + apart[0] + " to accept.");
 		System.out.println("Type decline " + apart[0] + " to decline.");
 

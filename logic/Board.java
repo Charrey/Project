@@ -351,6 +351,31 @@ public class Board extends Observable {
 		for (int p = 0; p < getHeight(); p++) {
 			for (int i = 0; i < getWidth(); i++) {
 				if (getPlace(i, p) == Mark.X) {
+					result += " 1";
+				} else if (getPlace(i, p) == Mark.O) {
+					result += " 2";
+				} else if (getPlace(i, p) == Mark.EMPTY) {
+					result += " 0";
+				} else {
+					System.err.println("No such mark found in networkBoard()");
+				}
+			}
+		}
+		return result;
+	}
+		
+		
+		
+		
+	}
+	
+	
+	/*public String networkBoard() {
+		String result = "BOARD";
+		result+=" "+getWidth()+" "+getHeight();
+		for (int p = 0; p < getHeight(); p++) {
+			for (int i = 0; i < getWidth(); i++) {
+				if (getPlace(i, p) == Mark.X) {
 					result += " 01";
 				} else if (getPlace(i, p) == Mark.O) {
 					result += " 02";
@@ -365,7 +390,9 @@ public class Board extends Observable {
 		result += " /n";
 		return result;
 	}
-
+	*/
+	
+	
 	/**
 	 * Check the play the AI would play
 	 * 

@@ -113,7 +113,7 @@ public class Interpreter {
 			} else if (that.startsWith(kw_game_moveok)) {
 				client.moveok(that.substring(kw_game_moveok.length() + 1));
 			} else if (that.startsWith(kw_game_reqmove)) {
-				client.makemove();
+				//client.makemove();
 			} else if (that.startsWith(kw_feature_chat)) {
 				client.SetServerchat(true);
 			} else if (that.startsWith(kw_feature_cBoardSize)) {
