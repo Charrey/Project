@@ -1,9 +1,13 @@
 package Project.networking;
 
-import Project.logic.Game;
+//import Project.logic.Game;
 
 public class Interpreter {
 
+	/*
+	 * Implementation should still work if these are changed! 
+	 */
+	
 	// SENT BY SERVER ONLY:
 	public final String kw_game_sendboard = "BOARD";
 	public final String kw_game_gameend = "GAME_END";

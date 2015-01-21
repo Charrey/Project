@@ -1,7 +1,6 @@
 package Project.networking;
 
 import java.util.Set;
-import java.util.Iterator;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
@@ -121,7 +120,7 @@ public class Server extends Thread {
 
 	/**
 	 * 
-	 * TODO
+	 * To do
 	 * 
 	 * @param source
 	 * @param message

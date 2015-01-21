@@ -2,8 +2,8 @@ package Project.networking;
 
 import java.net.Socket;
 import java.util.Scanner;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+//import java.net.InetAddress;
+//import java.net.UnknownHostException;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,12 +11,10 @@ import java.io.BufferedReader;
 import java.io.OutputStreamWriter;
 
 import Project.logic.*;
-import Project.gui.*;
+//import Project.gui.*;
 
 import java.util.Set;
 import java.util.HashSet;
-
-import org.junit.experimental.theories.Theories;
 
 public class Client implements Runnable {
 
@@ -28,11 +26,6 @@ public class Client implements Runnable {
 	// Server supports:
 	Set<String> sersup;
 
-	Boolean sersup_chat = false;
-	Boolean sersup_cboardsize = false;
-	Boolean sersup_leaderboard = false;
-	Boolean sersup_multiplayer = false;
-
 	Socket sock;
 	Set<String> lobby;
 	HumanPlayer player;
@@ -43,12 +36,13 @@ public class Client implements Runnable {
 	private BufferedWriter out;
 
 	int movetobemade;
+	private Scanner scanner;
 
 	/**
 	 * Takes console input and reacts accordingly.
 	 */
 	public void watchInput() {
-		Scanner scanner = new Scanner(System.in);
+		scanner = new Scanner(System.in);
 		String gotten;
 		while (true) {
 			gotten = scanner.nextLine();
@@ -69,7 +63,81 @@ public class Client implements Runnable {
 			}
 		}
 	}
+	
+	//****************************************
+	//USEFUL COMMANDS TO BE USED BY GUI
+	//****************************************
+	
 
+	/**
+	 * Requests the lobby from the server.
+	 */
+	public void askLobby() {
+		sendMessage(inter.kw_lobb_request);
+	}
+	
+	public void moveok(String arguments) {
+		String[] splitted = arguments.split("\\s+");
+		if (Integer.parseInt(splitted[0]) == playerno) {
+			game.getBoard().putMark(Integer.parseInt(splitted[1]), Mark.X);
+		} else {
+			game.getBoard().putMark(Integer.parseInt(splitted[1]), Mark.O);
+		}
+		//Refresh the visual board here!
+	}
+	
+	public void refreshBoard(String stringArg) {
+		String[] splitted = stringArg.split("\\s+");
+		game.getBoard().reset(Integer.parseInt(splitted[0]),
+				Integer.parseInt(splitted[1]));
+		int teller = 0;
+		for (int p = 0; p < game.getBoard().getHeight(); p++) {
+			for (int i = 0; i < game.getBoard().getWidth(); i++) {
+
+				if (Integer.parseInt(splitted[teller + 2]) == 01) {
+					game.getBoard().putMark(i, Mark.X);
+				} else if (Integer.parseInt(splitted[teller + 2]) != 0) {
+					game.getBoard().putMark(i, Mark.O);
+				}
+				teller++;
+			}
+		}
+		//Refresh the visual board here!
+	}	
+	
+		/**
+		 * Sends a command to the server.
+		 * 
+		 * @param msg
+		 *            is the message to be sent.
+		 */
+		public void sendMessage(String msg) {
+			try {
+				System.out.println("Sending message to server ("
+						+ sock.getInetAddress() + ") : " + msg);
+				out.write(msg);
+				out.newLine();
+				out.flush();
+			} catch (IOException e) {
+				System.err.println("Could not send command (" + msg
+						+ ") to server.");
+			}
+		}
+		
+		public void sendMove(int move) {
+			sendMessage(inter.kw_game_move+" "+move);
+		}
+		
+		
+		public Boolean hasFunction(String function) {
+			return sersup.contains(function);
+		}
+	
+	//**********************
+	//END OF USEFUL COMMANDS (I think)
+	//**********************
+	
+	
 	/**
 	 * Returns the socket of this Client.
 	 * 
@@ -110,34 +178,8 @@ public class Client implements Runnable {
 		sendMessage("CONNECT " + this.name + " LEADERBOARD");
 	}
 
-	// send a message to a ClientHandler of someone else's implementation.
-	/**
-	 * Sends a command to the server.
-	 * 
-	 * @param msg
-	 *            is the message to be sent.
-	 */
-	public void sendMessage(String msg) {
-		try {
-			System.out.println("Sending message to server ("
-					+ sock.getInetAddress() + ") : " + msg);
-			out.write(msg);
-			out.newLine();
-			out.flush();
+	
 
-		} catch (IOException e) {
-			System.err.println("Could not send command (" + msg
-					+ ") to server.");
-		}
-
-	}
-
-	/**
-	 * Requests the lobby from the server.
-	 */
-	public void askLobby() {
-		sendMessage("REQUEST_LOBBY");
-	}
 
 	/**
 	 * Logs the features the server supports.
@@ -153,27 +195,7 @@ public class Client implements Runnable {
 		}
 	}
 
-	public void refreshBoard(String stringArg) {
-		String[] splitted = stringArg.split("\\s+");
-		game.getBoard().reset(Integer.parseInt(splitted[0]),
-				Integer.parseInt(splitted[1]));
-		int teller = 0;
-		for (int p = 0; p < game.getBoard().getHeight(); p++) {
-			for (int i = 0; i < game.getBoard().getWidth(); i++) {
-
-				if (Integer.parseInt(splitted[teller + 2]) == 01) {
-					game.getBoard().putMark(i, Mark.X);
-				} else if (Integer.parseInt(splitted[teller + 2]) != 0) {
-					game.getBoard().putMark(i, Mark.O);
-
-				}
-				teller++;
-
-			}
-
-		}
-		// gui.updateBoard();
-	}
+	
 
 	public void makemove() {
 		movetobemade = ((HumanPlayer) game.getFirstPlayer()).getInputHandler()
@@ -193,14 +215,7 @@ public class Client implements Runnable {
 		// HumanPlayer met networked handler!!!!
 	}
 
-	public void moveok(String arguments) {
-		String[] splitted = arguments.split("\\s+");
-		if (Integer.parseInt(splitted[0]) == playerno) {
-			game.getBoard().putMark(Integer.parseInt(splitted[1]), Mark.X);
-		} else {
-			game.getBoard().putMark(Integer.parseInt(splitted[1]), Mark.O);
-		}
-	}
+	
 
 	/**
 	 * @param function

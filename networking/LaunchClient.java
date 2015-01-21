@@ -5,12 +5,15 @@ import java.lang.NumberFormatException;
 
 public class LaunchClient {
 
+	private static Scanner scanner;
+
 	/**
-	 * @param args is meaningless, but implemented for future use.
+	 * @param args
+	 *            is meaningless, but implemented for future use.
 	 */
 	public static void main(String[] args) {
 		System.out.println("Welcome to Connect-Four by René and Pim!");
-		Scanner scanner = new Scanner(System.in);
+		scanner = new Scanner(System.in);
 		System.out.println("What is your name?");
 		String name = scanner.nextLine();
 		while (name.length() < 2) {
@@ -19,7 +22,7 @@ public class LaunchClient {
 		}
 		System.out.println("Welcome, " + name
 				+ "! What is the IP of the server you'd like to connect to?");
-		System.out.println("If you feel like local playing, just type a.");
+		System.out.println("If you feel like 127.0.0.1, just type a.");
 		String ip = scanner.nextLine();
 		while (!validIP(ip) && !ip.equals("a")) {
 			System.out.println("Please give a valid input.");
@@ -30,7 +33,7 @@ public class LaunchClient {
 		}
 		System.out
 				.println("And what is the port of the server you'd like to connect to?");
-		System.out.println("If you feel like local playing, just type a.");
+		System.out.println("If you feel like 49999, just type a.");
 		int intport = 49999;
 		Boolean portokay;
 		String port;
@@ -66,11 +69,13 @@ public class LaunchClient {
 	}
 
 	/**
-	 * Checks whether a string is a valid IPv4 address.
-	 * All credit to user prmatta on stackoverflow.com for this method.
+	 * Checks whether a string is a valid IPv4 address. All credit to user
+	 * prmatta on stackoverflow.com for this method.
 	 * 
 	 * @param ip
-	 * @return
+	 *            is the String to be checked.
+	 * @return true if the given String represents a valid IPv4 address or false
+	 *         if it doesn't.
 	 */
 	public static boolean validIP(String ip) {
 		try {

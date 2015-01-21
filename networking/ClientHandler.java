@@ -1,7 +1,7 @@
 package Project.networking;
 
 import java.io.BufferedReader;
-import Project.logic.HumanPlayer;
+//import Project.logic.HumanPlayer;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -15,7 +15,7 @@ public class ClientHandler extends Thread {
 	private BufferedReader in;
 	private BufferedWriter out;
 	private String clientName;
-	private HumanPlayer player;
+	//private HumanPlayer player;
 	private int playerno;
 
 	public ClientHandler(Server serverArg, Socket sockArg) {
