@@ -288,6 +288,12 @@ public class Server extends Thread {
 		gui.addMessage("Accepted connection command from "
 				+ source.getClientName());
 		String[] splitted = features.split("\\s+");
+		for (ClientHandler i : lobby.keySet()) {
+			if (i.getClientName().equals(splitted[0])) {
+				gui.addMessage("Connection denied due to duplicate name from "+source.getClientName());
+				return;
+			}
+		}
 		source.setClientName(splitted[0]);
 		gui.addMessage(splitted[0] + " (" + source.getSocket().getInetAddress()
 				+ ") has connected.");

@@ -108,7 +108,7 @@ public class ServerGUI extends JFrame{
 		
 	}
 	
-	public String getIP(){
+	public static String getIP(){
 		try{
 		URL whatismyip = new URL("http://checkip.amazonaws.com");
 		BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));

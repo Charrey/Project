@@ -1,6 +1,8 @@
 package Project.networking;
 
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 //import java.net.InetAddress;
 //import java.net.UnknownHostException;
@@ -11,7 +13,6 @@ import java.io.BufferedReader;
 import java.io.OutputStreamWriter;
 
 import Project.logic.*;
-//import Project.gui.*;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -19,7 +20,7 @@ import java.util.HashSet;
 public class Client implements Runnable {
 
 	Interpreter inter;
-	Game game;
+	private Game game;
 	// Gui gui;
 	String name;
 
@@ -38,6 +39,11 @@ public class Client implements Runnable {
 	int movetobemade;
 	private Scanner scanner;
 
+	int boardwidth;
+	int boardheight;
+
+	Map<String, int[]> invites;
+
 	/**
 	 * Takes console input and reacts accordingly.
 	 */
@@ -48,10 +54,22 @@ public class Client implements Runnable {
 			gotten = scanner.nextLine();
 			if (gotten.startsWith("accept")) {
 				String[] apart = gotten.split("\\s+");
-				sendMessage("ACCEPT_INVITE " + apart[1]);
+				if (invites.keySet().contains(apart[1])) {
+					sendMessage("ACCEPT " + apart[1]);
+					boardwidth = invites.get(apart[1])[0];
+					boardheight = invites.get(apart[1])[1];
+				}
 			} else if (gotten.startsWith("decline")) {
 				String[] apart = gotten.split("\\s+");
-				sendMessage("DECLINE_INVITE " + apart[1]);
+				if (invites.keySet().contains(apart[1])) {
+					sendMessage("DECLINE " + apart[1]);
+					invites.remove(apart[1]);
+				}
+			} else if (gotten.startsWith("invite")) {
+				String[] apart = gotten.split("\\s+");
+				int[] array = {boardwidth,boardheight};
+				invites.put(apart[1], array);
+			
 			} else if (Server.representsInt(gotten) && gotten.length() >= 1) {
 				this.notifyAll();
 			} else if (gotten.startsWith("spam")) {
@@ -63,11 +81,10 @@ public class Client implements Runnable {
 			}
 		}
 	}
-	
-	//****************************************
-	//USEFUL COMMANDS TO BE USED BY GUI
-	//****************************************
-	
+
+	// ****************************************
+	// USEFUL COMMANDS TO BE USED BY GUI
+	// ****************************************
 
 	/**
 	 * Requests the lobby from the server.
@@ -75,7 +92,7 @@ public class Client implements Runnable {
 	public void askLobby() {
 		sendMessage(inter.kw_lobb_request);
 	}
-	
+
 	public void moveok(String arguments) {
 		String[] splitted = arguments.split("\\s+");
 		if (Integer.parseInt(splitted[0]) == playerno) {
@@ -83,9 +100,13 @@ public class Client implements Runnable {
 		} else {
 			game.getBoard().putMark(Integer.parseInt(splitted[1]), Mark.O);
 		}
-		//Refresh the visual board here!
+		// Refresh the visual board here!
 	}
-	
+
+	public Game getGame() {
+		return game;
+	}
+
 	public void refreshBoard(String stringArg) {
 		String[] splitted = stringArg.split("\\s+");
 		game.getBoard().reset(Integer.parseInt(splitted[0]),
@@ -102,42 +123,40 @@ public class Client implements Runnable {
 				teller++;
 			}
 		}
-		//Refresh the visual board here!
-	}	
-	
-		/**
-		 * Sends a command to the server.
-		 * 
-		 * @param msg
-		 *            is the message to be sent.
-		 */
-		public void sendMessage(String msg) {
-			try {
-				System.out.println("Sending message to server ("
-						+ sock.getInetAddress() + ") : " + msg);
-				out.write(msg);
-				out.newLine();
-				out.flush();
-			} catch (IOException e) {
-				System.err.println("Could not send command (" + msg
-						+ ") to server.");
-			}
+		// Refresh the visual board here!
+	}
+
+	/**
+	 * Sends a command to the server.
+	 * 
+	 * @param msg
+	 *            is the message to be sent.
+	 */
+	public void sendMessage(String msg) {
+		try {
+			System.out.println("Sending message to server ("
+					+ sock.getInetAddress() + ") : " + msg);
+			out.write(msg);
+			out.newLine();
+			out.flush();
+		} catch (IOException e) {
+			System.err.println("Could not send command (" + msg
+					+ ") to server.");
 		}
-		
-		public void sendMove(int move) {
-			sendMessage(inter.kw_game_move+" "+move);
-		}
-		
-		
-		public Boolean hasFunction(String function) {
-			return sersup.contains(function);
-		}
-	
-	//**********************
-	//END OF USEFUL COMMANDS (I think)
-	//**********************
-	
-	
+	}
+
+	public void sendMove(int move) {
+		sendMessage(inter.kw_game_move + " " + move);
+	}
+
+	public Boolean hasFunction(String function) {
+		return sersup.contains(function);
+	}
+
+	// **********************
+	// END OF USEFUL COMMANDS (I think)
+	// **********************
+
 	/**
 	 * Returns the socket of this Client.
 	 * 
@@ -175,11 +194,9 @@ public class Client implements Runnable {
 			System.exit(0);
 		}
 		sersup = new HashSet<String>();
-		sendMessage("CONNECT " + this.name + " LEADERBOARD");
+		invites = new HashMap<String, int[]>();
+		sendMessage("CONNECT " + this.name + " CUSTOM_BOARD_SIZE");
 	}
-
-	
-
 
 	/**
 	 * Logs the features the server supports.
@@ -193,9 +210,8 @@ public class Client implements Runnable {
 		for (int i = 0; i < splitted.length; i++) {
 			inter.whatisthatClient(splitted[i]);
 		}
+		System.out.println("DONE");
 	}
-
-	
 
 	public void makemove() {
 		movetobemade = ((HumanPlayer) game.getFirstPlayer()).getInputHandler()
@@ -211,11 +227,9 @@ public class Client implements Runnable {
 	public void gamestart() {
 		player = new HumanPlayer(this.ourname, Mark.X, new InputHandler());
 		game = new Game(player, new HumanPlayer("That_pc", Mark.O,
-				new NetworkedInputHandler(this)));
+				new NetworkedInputHandler(this)), boardwith, boardheight);
 		// HumanPlayer met networked handler!!!!
 	}
-
-	
 
 	/**
 	 * @param function
@@ -256,6 +270,14 @@ public class Client implements Runnable {
 		System.out.println("***********");
 	}
 
+	public BufferedReader getIn() {
+		return in;
+	}
+
+	public BufferedWriter getOut() {
+		return out;
+	}
+
 	public void run() {
 		try {
 			String tussenvar = in.readLine();
@@ -279,6 +301,10 @@ public class Client implements Runnable {
 		this.askLobby();
 	}
 
+	public void inviteDeclined() {
+
+	}
+
 	/**
 	 * Prompts the user for a reaction to being invited to a game.
 	 * 
@@ -288,13 +314,19 @@ public class Client implements Runnable {
 	 */
 	public void invited(String other) {
 		String[] apart = other.split("\\s+");
+		int[] dimensions = new int[2];
 		if (apart.length < 3) {
 			System.out.println("You have been invited by " + apart[0]
 					+ " for a game of 6 by 7!");
+			dimensions[0] = 6;
+			dimensions[1] = 7;
 		} else {
 			System.out.println("You have been invited by " + apart[0]
 					+ " for a game of " + apart[1] + " by " + apart[2] + "!");
+			dimensions[0] = Integer.parseInt(apart[1]);
+			dimensions[1] = Integer.parseInt(apart[2]);
 		}
+		invites.put(apart[0], dimensions);
 		System.out.println("Type accept " + apart[0] + " to accept.");
 		System.out.println("Type decline " + apart[0] + " to decline.");
 	}
