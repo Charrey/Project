@@ -227,7 +227,7 @@ public class Client implements Runnable {
 	public void gamestart() {
 		player = new HumanPlayer(this.ourname, Mark.X, new InputHandler());
 		game = new Game(player, new HumanPlayer("That_pc", Mark.O,
-				new NetworkedInputHandler(this)), boardwith, boardheight);
+				new NetworkedInputHandler(this)), boardwidth, boardheight);
 		// HumanPlayer met networked handler!!!!
 	}
 
