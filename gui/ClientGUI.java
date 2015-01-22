@@ -13,7 +13,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,56 +21,61 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
-
 import Project.networking.ClientHandler;
 import Project.networking.Server;
 
-public class ServerGUI extends JFrame{
+public class ClientGUI extends JFrame{
 
 	
 	private JTextArea textArea;
 	private JButton hostButton;
 	private JTextField portField;
-	private JLabel ipAdressLabel;
-	private String hostAdress;
+	private JTextField ipAdressLabel;
+	private JTextField hostAdress;
 	private int portNumber;
 	private Server server;
 	private JScrollPane scrollPane;
-	private ServerGUI self;
+	private ClientGUI self;
 	private Font fnt = new Font("", Font.BOLD, 20);
-	private boolean hosting = false;
+	private boolean connected = false;
+	private JLabel nameLabel;
+	private JTextField nameField;
 	
-	public ServerGUI(){
+	public ClientGUI(){
 	
 		JPanel topPanel = new JPanel();
-		topPanel.setLayout(new GridLayout(2, 2));
+		topPanel.setLayout(new GridLayout(3, 2));
 		
 		JPanel topButPanel = new JPanel();
 		topButPanel.setLayout(new BorderLayout());
 		
 		textArea = new JTextArea();
 		textArea.setEditable(false);
-		hostButton = new JButton("Host");
+		hostButton = new JButton("Connect");
 		hostButton.setFont(fnt);
 
 		scrollPane = new JScrollPane(textArea);
 		
-		JLabel ipLabel = new JLabel("Your IP is: ");
+		JLabel ipLabel = new JLabel("Enter IP: ");
 		ipLabel.setFont(fnt);
-		hostAdress = getIP();
-		ipAdressLabel = new JLabel(hostAdress);
+		ipAdressLabel = new JTextField();
 		ipAdressLabel.setFont(fnt);
 		topPanel.add(ipLabel);
 		topPanel.add(ipAdressLabel);
 		
-		JLabel portLabel = new JLabel("Typ port in");
+		JLabel portLabel = new JLabel("Enter port: ");
 		portLabel.setFont(fnt);
 		portField = new JTextField("");
 		portField.setFont(fnt);
 		topPanel.add(portLabel);
 		topPanel.add(portField);
-		//topPanel.add(new JLabel());
-		//topPanel.add(hostButton);
+		
+		JLabel nameLabel = new JLabel("Enter name: ");
+		nameLabel.setFont(fnt);
+		nameField= new JTextField();
+		nameField.setFont(fnt);
+		topPanel.add(nameLabel);
+		topPanel.add(nameField);
 		
 		topButPanel.add(topPanel, BorderLayout.LINE_START);
 		topButPanel.add(hostButton, BorderLayout.LINE_END);
@@ -98,19 +102,19 @@ public class ServerGUI extends JFrame{
 		self = this;
 		hostButton.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e){
-				if(!hosting){
+				if(!connected){
 					try{
 					portNumber = Integer.parseInt(portField.getText());
-					server = new Server(portNumber, self);
+					//server = new Server(portNumber, self);
 					hostButton.setText("Disconnect");
-					hosting = true;
+					connected = true;
 					}catch(NumberFormatException n){
 						addMessage("Please enter a valid portnumber");
 					}
 				}else{
 					//TODO server.shutdown
-					hostButton.setText("Host");
-					hosting = false;
+					hostButton.setText("Connect");
+					connected = false;
 				}
 			}
 		});
@@ -134,7 +138,7 @@ public class ServerGUI extends JFrame{
 	}
 	
 	public static void main(String[] args){
-		new ServerGUI();
+		new ClientGUI();
 	}
 	
 	
