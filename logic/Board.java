@@ -366,15 +366,18 @@ public class Board extends Observable {
 		return result;
 	}
 
-	public void printNetworkBoard(String nwb) {
+	public static void printNetworkBoard(String nwb) {
 		String[] apart = nwb.split("\\s+");
 		int width = Integer.parseInt(apart[1]);
-		int height = Integer.parseInt(apart[2]);
 		List<Integer> boardlist = new LinkedList<Integer>();
 		for (int i = apart.length-1; i > 2; i--) {
 			boardlist.add(Integer.parseInt(apart[i]));
 			if (boardlist.size() == width) {
-				System.out.println(boardlist);
+				String result = "|";
+				for (int p = boardlist.size()-1; p>0; p--) {
+					result+=boardlist.get(p)+"|";
+				}
+				System.out.println(result);
 				boardlist.removeAll(boardlist);
 			}
 		}

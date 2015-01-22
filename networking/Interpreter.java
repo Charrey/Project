@@ -161,7 +161,8 @@ public class Interpreter {
 			String[] splitted = that.split("\\s+");
 			switch (splitted[0]) {
 			case kw_game_sendboard:
-				client.refreshBoard(that.substring(6));
+				client.refreshBoard(that.substring(kw_game_sendboard.length()+1));
+				System.out.println(client.getGame().getBoard().networkBoard());
 				break;
 			case kw_conn_acceptconnect:
 				client.connectionAccepted(that.substring(kw_conn_acceptconnect
@@ -178,12 +179,9 @@ public class Interpreter {
 				break;
 			case kw_game_moveok:
 				client.moveok(that.substring(kw_game_moveok.length() + 1));
-				client.getGame()
-						.getBoard()
-						.printNetworkBoard(
-								client.getGame().getBoard().networkBoard());
 				break;
 			case kw_game_reqmove:
+				client.getGame().getBoard().printNetworkBoard(client.getGame().getBoard().networkBoard());
 				// TODO
 				break;
 			case kw_feature_chat:

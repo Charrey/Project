@@ -48,7 +48,7 @@ public class Server extends Thread {
 		String gotten;
 		gotten = scanner.nextLine();
 		while (true) {
-			gui.addMessage("Read command: "+gotten);
+			gui.addMessage("Read command: " + gotten);
 			String[] splitted = gotten.split("\\s+");
 			if (splitted[0].equals("kick")) {
 				try {
@@ -57,7 +57,8 @@ public class Server extends Thread {
 					gui.addMessage("Could not kick this player.");
 				}
 			} else if (splitted[0].equals("error")) {
-				sendError(findClientHandler(splitted[1]),gotten.substring(6+splitted[1].length()));
+				sendError(findClientHandler(splitted[1]),
+						gotten.substring(6 + splitted[1].length()));
 			} else if (splitted[0].equals("help")) {
 				gui.addMessage("----HELP--------------");
 				gui.addMessage("kick <name> -- Kick a player");
@@ -65,7 +66,8 @@ public class Server extends Thread {
 				gui.addMessage("hello <name> <message> -- Send a message");
 				gui.addMessage("----------------------");
 			} else if (splitted[0].equals("hello")) {
-				findClientHandler(splitted[1]).sendCommand("CHAT "+gotten.substring(6+splitted[1].length()));
+				findClientHandler(splitted[1]).sendCommand(
+						"CHAT " + gotten.substring(6 + splitted[1].length()));
 			} else {
 				gui.addMessage("Use 'help' to view console commands.");
 			}
@@ -290,7 +292,8 @@ public class Server extends Thread {
 		String[] splitted = features.split("\\s+");
 		for (ClientHandler i : lobby.keySet()) {
 			if (i.getClientName().equals(splitted[0])) {
-				gui.addMessage("Connection denied due to duplicate name from "+source.getClientName());
+				gui.addMessage("Connection denied due to duplicate name from "
+						+ source.getClientName());
 				return;
 			}
 		}
@@ -441,15 +444,15 @@ public class Server extends Thread {
 			ClientHandler invitesource = findClientHandler(apart[1]);
 			int boardwidth = Integer.parseInt(invites.get(invitesource)[2]);
 			int boardheight = Integer.parseInt(invites.get(invitesource)[2]);
-			invites.remove(invitesource);			
+			invites.remove(invitesource);
 			for (ClientHandler i : invites.keySet()) {
 				if (i.equals(source)) {
 					invites.remove(i);
+				} else if (invites.get(i)[0].equals(source.getClientName())) {
+					i.sendCommand(Interpreter.kw_lobb_declineinvite + " "
+							+ source.getClientName());
 				}
-				else if (invites.get(i)[0].equals(source.getClientName())) {
-					i.sendCommand(Interpreter.kw_lobb_declineinvite+" "+source.getClientName());
-				}
-			}			
+			}
 			findClientHandler(apart[1]).sendCommand(
 					interpreter.kw_conn_gamestart + " "
 							+ source.getClientName() + " " + apart[1]);
@@ -501,12 +504,14 @@ public class Server extends Thread {
 	 */
 	public void invite(String targetandxy, ClientHandler source) {
 		String[] apart = targetandxy.split("\\s+");
-		if (apart.length != 3 || !representsInt(apart[1])
-				|| !representsInt(apart[2])) {
-			sendError(source, "BadInviteSyntax");
-		} else if (Integer.parseInt(apart[1]) < 1
-				|| Integer.parseInt(apart[2]) < 1) {
-			sendError(source, "InvalidBounds");
+		if (apart.length != 2) {
+			if (apart.length != 3 || !representsInt(apart[1])
+					|| !representsInt(apart[2])) {
+				sendError(source, "BadInviteSyntax");
+			} else if (Integer.parseInt(apart[1]) < 1
+					|| Integer.parseInt(apart[2]) < 1) {
+				sendError(source, "InvalidBounds");
+			}
 		} else if (findClientHandler(apart[0]) == null) {
 			sendError(source, "NoSuchPlayer");
 		} else if (playing.get((findClientHandler(apart[0])))) {
@@ -518,6 +523,11 @@ public class Server extends Thread {
 
 		} else {
 			invites.put(source, apart);
+			if (apart.length == 2) {
+				findClientHandler(apart[0]).sendCommand(
+						interpreter.kw_lobb_invite + " "
+								+ source.getClientName() + " 7 6");
+			}
 			findClientHandler(apart[0]).sendCommand(
 					interpreter.kw_lobb_invite + " " + source.getClientName()
 							+ " " + apart[1] + " " + apart[2]);
