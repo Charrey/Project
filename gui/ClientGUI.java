@@ -2,6 +2,7 @@ package Project.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
@@ -13,6 +14,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,6 +23,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
+
+import Project.networking.Client;
+import Project.networking.ClientBot;
 import Project.networking.ClientHandler;
 import Project.networking.Server;
 
@@ -32,7 +37,6 @@ public class ClientGUI extends JFrame{
 	private JTextField portField;
 	private JTextField ipAdressLabel;
 	private JTextField hostAdress;
-	private int portNumber;
 	private Server server;
 	private JScrollPane scrollPane;
 	private ClientGUI self;
@@ -40,6 +44,13 @@ public class ClientGUI extends JFrame{
 	private boolean connected = false;
 	private JLabel nameLabel;
 	private JTextField nameField;
+	private JTextField commandField;
+	private JButton sentCommandButton;
+	
+	private String ip;
+	private int portNumber;
+	private String name;
+	private Client client;
 	
 	public ClientGUI(){
 	
@@ -48,6 +59,9 @@ public class ClientGUI extends JFrame{
 		
 		JPanel topButPanel = new JPanel();
 		topButPanel.setLayout(new BorderLayout());
+		
+		JPanel commandPanel = new JPanel();
+		commandPanel.setLayout(new FlowLayout());
 		
 		textArea = new JTextArea();
 		textArea.setEditable(false);
@@ -80,61 +94,101 @@ public class ClientGUI extends JFrame{
 		topButPanel.add(topPanel, BorderLayout.LINE_START);
 		topButPanel.add(hostButton, BorderLayout.LINE_END);
 		
+		
+		commandField = new JTextField(30);
+		sentCommandButton = new JButton("Sent");
+		commandPanel.add(commandField);
+		commandPanel.add(sentCommandButton);
+		
 		setLayout(new BorderLayout());
 		add(topButPanel, BorderLayout.PAGE_START);
 		add(scrollPane, BorderLayout.CENTER);
+		add(commandPanel, BorderLayout.PAGE_END);
 		
 		
-		
-
-		
-		
-		//this.setLayout(new GridLayout(4, 1));
-		/*
-		add(ipAdressLabel);
-		add(portField);
-		add(hostButton);
-		add(scrollPane);
-		*/
 		setVisible(true);
 		Dimension d = new Dimension(500, 800);
 		setSize(d);
 		self = this;
+		
+		
+		
+		
 		hostButton.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e){
 				if(!connected){
 					try{
 					portNumber = Integer.parseInt(portField.getText());
-					//server = new Server(portNumber, self);
+					ip = ipAdressLabel.getText();
+					name = nameField.getText();
+					if(name.equals(ClientBot.NAME)){
+						client = new ClientBot(ip, portNumber, ClientBot.NAME);
+					}else{
+						client = new Client(ip, portNumber, name);
+					}
+					Thread thread = new Thread(client);
+					thread.start();
+					client.watchInput();
+
 					hostButton.setText("Disconnect");
 					connected = true;
 					}catch(NumberFormatException n){
 						addMessage("Please enter a valid portnumber");
 					}
 				}else{
-					//TODO server.shutdown
+					//TODO client.shutdown
 					hostButton.setText("Connect");
 					connected = false;
 				}
 			}
 		});
 		
+		sentCommandButton.addMouseListener(new MouseAdapter(){
+			public void mouseClicked(MouseEvent e){
+				
+			}
+		});
 		
-	}
-	
-	public String getIP(){
-		try{
-		URL whatismyip = new URL("http://checkip.amazonaws.com");
-		BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
-		String ip = in.readLine();
-		return ip;
-		}catch(Exception e){
-			return null;
-		}
 	}
 	
 	public void addMessage(String msg){
 		textArea.append(msg + "\n");
+	}
+	
+	/**
+	 * Checks whether a string is a valid IPv4 address. All credit to user
+	 * prmatta on stackoverflow.com for this method.
+	 * 
+	 * @param ip
+	 *            is the String to be checked.
+	 * @return true if the given String represents a valid IPv4 address or false
+	 *         if it doesn't.
+	 */
+	public static boolean validIP(String ip) {
+		try {
+			if (ip == null || ip.isEmpty()) {
+				return false;
+			}
+
+			String[] parts = ip.split("\\.");
+			if (parts.length != 4) {
+				return false;
+			}
+
+			for (String s : parts) {
+				int i = Integer.parseInt(s);
+				if ((i < 0) || (i > 255)) {
+					return false;
+				}
+			}
+			if (ip.endsWith(".")) {
+				return false;
+			}
+
+			return true;
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
 	}
 	
 	public static void main(String[] args){
