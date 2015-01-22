@@ -29,7 +29,7 @@ import Project.networking.ClientBot;
 import Project.networking.ClientHandler;
 import Project.networking.Server;
 
-public class ClientGUI extends JFrame{
+public class ClientGUI extends JFrame {
 
 	
 	private JTextArea textArea;
@@ -128,6 +128,7 @@ public class ClientGUI extends JFrame{
 					}
 					Thread thread = new Thread(client);
 					thread.start();
+					
 					client.watchInput();
 
 					hostButton.setText("Disconnect");
@@ -194,6 +195,6 @@ public class ClientGUI extends JFrame{
 	public static void main(String[] args){
 		new ClientGUI();
 	}
-	
+
 	
 }

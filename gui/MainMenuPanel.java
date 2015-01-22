@@ -59,6 +59,11 @@ public class MainMenuPanel extends JPanel {
 		clientLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
 		clientLabel.setFont(fnt);
 		clientLabel.setBorder(padding);
+		clientLabel.addMouseListener(new MouseAdapter(){
+			public void mouseClicked(MouseEvent e){
+				new ClientGUI();
+			}
+		});
 		
 		add(serverLabel);
 		serverLabel.setAlignmentX(Component.CENTER_ALIGNMENT);

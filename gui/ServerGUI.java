@@ -103,6 +103,8 @@ public class ServerGUI extends JFrame{
 					try{
 					portNumber = Integer.parseInt(portField.getText());
 					server = new Server(portNumber, self);
+					ServerConsole sc = new ServerConsole(server);
+					sc.start();
 					hostButton.setText("Disconnect");
 					hosting = true;
 					}catch(NumberFormatException n){
@@ -113,10 +115,6 @@ public class ServerGUI extends JFrame{
 					hostButton.setText("Host");
 					hosting = false;
 				}
-				portNumber = Integer.parseInt(portField.getText());
-				server = new Server(portNumber, self);
-				ServerConsole sc = new ServerConsole(server);
-				sc.start();
 			}
 		});
 		
