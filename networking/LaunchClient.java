@@ -3,6 +3,8 @@ package Project.networking;
 import java.util.Scanner;
 import java.lang.NumberFormatException;
 
+import Project.gui.ServerGUI;
+
 public class LaunchClient {
 
 	private static Scanner scanner;
@@ -15,21 +17,25 @@ public class LaunchClient {
 		System.out.println("Welcome to Connect-Four by René and Pim!");
 		scanner = new Scanner(System.in);
 		System.out.println("What is your name?");
+		System.out.println("If you're an AI, type a.");
 		String name = scanner.nextLine();
-		while (name.length() < 2) {
+		while (name.length() < 2 && !name.equals("a")) {
 			System.out.println("Longer name please.");
 			name = scanner.nextLine();
 		}
+		if (name.equals("a")) {
+			name = ClientBot.NAME;
+		}
 		System.out.println("Welcome, " + name
 				+ "! What is the IP of the server you'd like to connect to?");
-		System.out.println("If you feel like 127.0.0.1, just type a.");
+		System.out.println("If you feel like local, just type a.");
 		String ip = scanner.nextLine();
 		while (!validIP(ip) && !ip.equals("a")) {
 			System.out.println("Please give a valid input.");
 			ip = scanner.nextLine();
 		}
-		if (ip.equals("1")) {
-			ip = "127.0.0.1";
+		if (ip.equals("a")) {
+			ip = ServerGUI.getIP();
 		}
 		System.out
 				.println("And what is the port of the server you'd like to connect to?");
@@ -59,10 +65,20 @@ public class LaunchClient {
 		if (port.equals("a")) {
 			intport = 49999;
 		}
-		// 65535
 
-		Client client = new Client(ip, intport, name);
+		Client client;
+		if (name.equals(ClientBot.NAME)) {
+			client = new ClientBot(ip, intport, name);
+		} else {
+			client = new Client(ip, intport, name);
+		}
 		Thread thread = new Thread(client);
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		thread.start();
 		client.watchInput();
 

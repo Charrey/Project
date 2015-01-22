@@ -99,8 +99,12 @@ public class ClientHandler extends Thread {
 				i.sendCommand("DECLINE_INVITE " + clientName);
 			}
 		}
-		server.lobby.remove(this);
-
+		server.lobby.remove(this);		
+		if (server.playing.get(this)) {
+			server.getOpponent(this).sendCommand(Interpreter.kw_game_gameend + " DISCONNECT"+" "+server.getOpponent(this).getClientName());
+			server.gamesgames.remove(server.getGame(this));
+		}
+		server.playing.remove(this);
 		try {
 			sock.close();
 		} catch (IOException e) {

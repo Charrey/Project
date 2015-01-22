@@ -18,8 +18,8 @@ public class Game implements Runnable {
 	private TUI tui;
 	private MainGui gui;
 	
-    public Game(Player s0, Player s1, MainGui gui) {
-        board = new Board();
+    public Game(Player s0, Player s1, MainGui gui, int width, int height) {
+        board = new Board(width, height);
         players = new Player[NUMBER_PLAYERS];
 
         players[0] = s0;

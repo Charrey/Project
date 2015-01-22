@@ -25,6 +25,7 @@ import javax.swing.SpringLayout;
 
 import Project.networking.ClientHandler;
 import Project.networking.Server;
+import Project.networking.ServerConsole;
 
 public class ServerGUI extends JFrame{
 
@@ -112,13 +113,17 @@ public class ServerGUI extends JFrame{
 					hostButton.setText("Host");
 					hosting = false;
 				}
+				portNumber = Integer.parseInt(portField.getText());
+				server = new Server(portNumber, self);
+				ServerConsole sc = new ServerConsole(server);
+				sc.start();
 			}
 		});
 		
 		
 	}
 	
-	public String getIP(){
+	public static String getIP(){
 		try{
 		URL whatismyip = new URL("http://checkip.amazonaws.com");
 		BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
