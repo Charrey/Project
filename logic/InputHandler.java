@@ -8,16 +8,13 @@ import javax.swing.JLabel;
 
 import Project.gui.game.Slot;
 
-public class InputHandler implements MouseListener, Runnable{
+public class InputHandler implements MouseListener{
 
 	private int move;
 	private boolean clicked = false;
 	
 	
-	@Override
-	public void run() {
-		getMove();
-	}
+
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {

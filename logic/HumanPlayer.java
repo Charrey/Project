@@ -9,7 +9,7 @@ public class HumanPlayer extends Player {
 	public HumanPlayer(String name, Mark mark, InputHandler inputHandler) {
 		super(name, mark);
 		this.inputHandler = inputHandler;
-		new Thread(inputHandler).start();
+		
 		
 	}
 
