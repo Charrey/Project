@@ -31,16 +31,14 @@ public class Server extends Thread {
 
 	// public Map<ClientHandler, ClientHandler> invites; THIS DOES NOT SUPPORT
 	// CBOARDSIZE
-	/*
-	 * public static void main(String[] args) throws IOException { Server server
-	 * = new Server(49999); while (true) {
-	 * System.out.println("Port 49999 has been opened"); Socket socket =
-	 * server.getServerSocket().accept(); System.out.println("Connection from "
-	 * + socket.getInetAddress() + " accepted"); ClientHandler clienthandler =
-	 * server.addClientHandler(socket); clienthandler.start(); }
-	 * 
-	 * }
-	 */
+
+	public static void main(int port) {
+		System.out.println("Your IP is: " + ServerGUI.getIP());
+		Server server = new Server(port);
+		ServerConsole sc = new ServerConsole(server);
+		sc.start();
+	}
+
 	Scanner scanner;
 
 	public void watchInput() {
@@ -48,30 +46,38 @@ public class Server extends Thread {
 		String gotten;
 		gotten = scanner.nextLine();
 		while (true) {
-			gui.addMessage("Read command: " + gotten);
+			printMessage("Read command: " + gotten);
 			String[] splitted = gotten.split("\\s+");
 			if (splitted[0].equals("kick")) {
 				try {
 					findClientHandler(gotten.substring(5)).getSocket().close();
 				} catch (IOException e) {
-					gui.addMessage("Could not kick this player.");
+					printMessage("Could not kick this player.");
 				}
 			} else if (splitted[0].equals("error")) {
 				sendError(findClientHandler(splitted[1]),
 						gotten.substring(6 + splitted[1].length()));
 			} else if (splitted[0].equals("help")) {
-				gui.addMessage("----HELP--------------");
-				gui.addMessage("kick <name> -- Kick a player");
-				gui.addMessage("error <name> <error> -- Send an error");
-				gui.addMessage("hello <name> <message> -- Send a message");
-				gui.addMessage("----------------------");
+				printMessage("----HELP--------------");
+				printMessage("kick <name> -- Kick a player");
+				printMessage("error <name> <error> -- Send an error");
+				printMessage("hello <name> <message> -- Send a message");
+				printMessage("----------------------");
 			} else if (splitted[0].equals("hello")) {
 				findClientHandler(splitted[1]).sendCommand(
 						"CHAT " + gotten.substring(6 + splitted[1].length()));
 			} else {
-				gui.addMessage("Use 'help' to view console commands.");
+				printMessage("Use 'help' to view console commands.");
 			}
 			gotten = scanner.nextLine();
+		}
+	}
+
+	private void printMessage(String message) {
+		if (gui == null) {
+			System.out.println(message);
+		} else {
+			printMessage(message);
 		}
 	}
 
@@ -79,14 +85,14 @@ public class Server extends Thread {
 	public void run() {
 		while (running) {
 			try {
-				gui.addMessage("Port " + portNumber + " has been opened");
+				printMessage("Port " + portNumber + " has been opened");
 				Socket socket = getServerSocket().accept();
-				gui.addMessage("Connection from " + socket.getInetAddress()
+				printMessage("Connection from " + socket.getInetAddress()
 						+ " accepted");
 				ClientHandler clienthandler = addClientHandler(socket);
 				clienthandler.start();
 			} catch (IOException e) {
-				gui.addMessage("Something wrong went O_O");
+				printMessage("Something wrong went O_O");
 			}
 		}
 
@@ -113,6 +119,27 @@ public class Server extends Thread {
 	}
 
 	/**
+	 * Creates a TUI server.
+	 * 
+	 * @param port
+	 */
+	public Server(int port) {
+		try {
+			portNumber = port;
+			lobby = new HashMap<ClientHandler, Set<String>>();
+			playing = new HashMap<ClientHandler, Boolean>();
+			gamesgames = new HashMap<Game, Integer>();
+			serversocket = new ServerSocket(portNumber);
+			interpreter = new Interpreter(this);
+			invites = new HashMap<ClientHandler, String[]>();
+			running = true;
+			this.start();
+		} catch (IOException e) {
+			printMessage("Server couldn't be setup");
+		}
+	}
+
+	/**
 	 * Creates a new Server.
 	 * 
 	 * @param port
@@ -133,7 +160,7 @@ public class Server extends Thread {
 			running = true;
 			this.start();
 		} catch (IOException e) {
-			gui.addMessage("Server couldn't be setup");
+			printMessage("Server couldn't be setup");
 		}
 	}
 
@@ -216,7 +243,7 @@ public class Server extends Thread {
 				} else {
 					opponent.sendCommand(Interpreter.kw_game_reqmove);
 					gamesgames.put(game, opponent.getPlayerno());
-					gui.addMessage("Move by " + source.getClientName() + ": "
+					printMessage("Move by " + source.getClientName() + ": "
 							+ move);
 					// System.out.println(game.getBoard().networkBoard());
 				}
@@ -246,7 +273,7 @@ public class Server extends Thread {
 	public ClientHandler getOpponent(ClientHandler friend) {
 		Game game = getGame(friend);
 		if (game == null) {
-			gui.addMessage("critical error in getGame");
+			printMessage("critical error in getGame");
 		}
 		for (ClientHandler i : lobby.keySet()) {
 			if (getGame(i).equals(game) && !i.equals(friend)) {
@@ -287,18 +314,18 @@ public class Server extends Thread {
 	 *            spaces.
 	 */
 	public void acceptConnection(ClientHandler source, String features) {
-		gui.addMessage("Accepted connection command from "
+		printMessage("Accepted connection command from "
 				+ source.getClientName());
 		String[] splitted = features.split("\\s+");
 		for (ClientHandler i : lobby.keySet()) {
 			if (i.getClientName().equals(splitted[0])) {
-				gui.addMessage("Connection denied due to duplicate name from "
+				printMessage("Connection denied due to duplicate name from "
 						+ source.getClientName());
 				return;
 			}
 		}
 		source.setClientName(splitted[0]);
-		gui.addMessage(splitted[0] + " (" + source.getSocket().getInetAddress()
+		printMessage(splitted[0] + " (" + source.getSocket().getInetAddress()
 				+ ") has connected.");
 		joinServer(source, new HashSet<String>());
 		for (int i = 1; i < splitted.length; i++) {
@@ -365,7 +392,7 @@ public class Server extends Thread {
 	 *            is whether the function must be enabled or disabled.
 	 */
 	public void setFunction(ClientHandler source, String function, Boolean bool) {
-		gui.addMessage("Function " + function + " set to " + bool
+		printMessage("Function " + function + " set to " + bool
 				+ " for client " + source.getClientName());
 		if (lobby.get(source).contains(function) && bool == false) {
 			lobby.get(source).remove(function);
@@ -473,7 +500,7 @@ public class Server extends Thread {
 			source.sendCommand(validInvite(source, arguments));
 		} else {
 			String[] apart = arguments.split("\\s+");
-			gui.addMessage("Invite removed due to decline: from " + apart[1]
+			printMessage("Invite removed due to decline: from " + apart[1]
 					+ " to " + source.getClientName());
 			invites.remove(findClientHandler(apart[1]));
 		}

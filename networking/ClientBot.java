@@ -8,6 +8,11 @@ public class ClientBot extends Client {
 
 	public static final String NAME = "RoboCop";
 
+	public ClientBot(String address, int port, String name) {
+		super(address, port, NAME);
+	}
+	
+	
 	public ClientBot(String address, int port, String name, ClientGUI gui) {
 		super(address, port, NAME, gui);
 	}
