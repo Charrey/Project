@@ -1,11 +1,9 @@
-package Project.gui;
+package Project.gui.game;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseListener;
-
 import javax.swing.*;
-
 import Project.logic.Board;
 import Project.logic.Game;
 import Project.logic.Mark;
@@ -14,7 +12,6 @@ import Project.logic.Mark;
 public class GamePanel extends JPanel {
 
 	public Board b;
-	//public JLabel[][] labels;
 	public Slot[][] slots;
 
 	public GamePanel(Game g){
@@ -32,12 +29,10 @@ public class GamePanel extends JPanel {
 			}
 		}
 		setLayout(new GridLayout(b.getHeight(), b.getWidth()));
-		//setSize(b.getWidth()*slots[0][0].getIcon().getIconHeight(), b.getHeight()*slots[0][0].getIcon().getIconHeight());
 	}
 	
 	public GamePanel(Game g, MouseListener mouseListener){
 		this.b = g.getBoard();
-
 
 		slots = new Slot[b.getWidth()][b.getHeight()];
 		Icon img;
@@ -47,26 +42,21 @@ public class GamePanel extends JPanel {
 				slots[i][p] = new Slot(i);
 				slots[i][p].setIcon(img);
 				slots[i][p].setMinimumSize(new Dimension(img.getIconWidth(), img.getIconHeight()));
-				//System.out.println("img hoogde lengte" + img.getIconHeight() + img.getIconWidth());
 				slots[i][p].addMouseListener(mouseListener);
 				add(slots[i][p]);
 			}
 		}
 		setLayout(new GridLayout(b.getHeight(), b.getWidth()));
-		//setSize(b.getWidth()*slots[0][0].getIcon().getIconHeight(), b.getHeight()*slots[0][0].getIcon().getIconHeight());
-		
-		//System.err.println(getPreferredSize());
-		setSize(this.getPreferredSize());
 	}
 	
 	
 	public Icon getIcon(Mark m){ 
 		if(m==Mark.X){
-			return new ImageIcon("bin/Project/gui/images/red.png");
+			return new ImageIcon("bin/Project/gui/game/images/red.png");
 		}else if(m==Mark.O){
-			return new ImageIcon("bin/Project/gui/images/yellow.png");
+			return new ImageIcon("bin/Project/gui/game/images/yellow.png");
 		}else{
-			return new ImageIcon("bin/Project/gui/images/empty.png");
+			return new ImageIcon("bin/Project/gui/game/images/empty.png");
 		}
 		
 	}

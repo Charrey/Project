@@ -1,13 +1,10 @@
-package Project.gui;
+package Project.gui.game;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.TextArea;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -27,7 +24,7 @@ public class MessagePanel extends JPanel{
 	private JTextField textfield;
 	private JScrollPane scrollPane;
 	
-	
+	//volgens mij onnodig een Game mee te geven.
 	public MessagePanel(Game g){
 		this.g = g;
 		

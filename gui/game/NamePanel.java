@@ -1,16 +1,11 @@
-package Project.gui;
+package Project.gui.game;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-
 import Project.logic.Game;
 
 public class NamePanel extends JPanel {
@@ -21,7 +16,6 @@ public class NamePanel extends JPanel {
 	private JLabel label1;
 	private JLabel label2;
 	private Font fnt = new Font("", Font.BOLD, 30);
-	//private int currentPlayer = 0;
 	private JLabel arrowLabel1;
 	private JLabel arrowLabel2;
 	private boolean justStarted = true;
@@ -37,9 +31,7 @@ public class NamePanel extends JPanel {
 		label2 = new JLabel(name2, SwingConstants.RIGHT);
 		label2.setFont(fnt);
 		label2.setForeground(Color.YELLOW);
-		
-		
-		
+
 		arrowLabel1 = new JLabel("", SwingConstants.LEFT);
 		arrowLabel1.setFont(fnt);
 
@@ -49,15 +41,9 @@ public class NamePanel extends JPanel {
 		this.setLayout(new GridLayout(1,4));
 		add(label1);
 		add(arrowLabel1);
-		//add(hintButton);
 		add(arrowLabel2);
 		add(label2);
-		
-		
-		
 
-
-		setSize(getPreferredSize());
 	}
 
 	

@@ -1,4 +1,4 @@
-package Project.gui;
+package Project.gui.game;
 
 import javax.swing.JLabel;
 
