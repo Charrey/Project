@@ -1,24 +1,21 @@
 package Project.gui;
 
 import java.awt.Dimension;
-import java.util.Observable;
-import java.util.Observer;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class MainGui extends JFrame implements Observer, Runnable {
+public class MainGui extends JFrame{
 
-	JPanel currentPanel;
+	private JPanel currentPanel;
+	private MainMenuPanel mainMenuPanel;
+	private GameSelectPanel gameSelectPanel;
 	
 	
 	public MainGui(){
-		//currentPanel = new GameSelectPanel(this);
-		currentPanel = new MainMenuPanel(this);
-		//add(currentPanel);
-		//setSize(500,800);
-		changePanel(currentPanel);
-		
+		mainMenuPanel = new MainMenuPanel(this);
+		currentPanel = mainMenuPanel;
+		changePanel(mainMenuPanel);
+		gameSelectPanel = new GameSelectPanel(this);
 		setVisible(true);
 		
 		
@@ -34,20 +31,12 @@ public class MainGui extends JFrame implements Observer, Runnable {
 	}
 	
 	
-	
-	
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
+	public MainMenuPanel getMainMenuPanel(){
+		return mainMenuPanel;
 	}
-
-	@Override
-	public void update(Observable arg0, Object arg1) {
-		if(currentPanel instanceof GameMainPanel){
-			((GameMainPanel)currentPanel).update();
-			
-		}
+	
+	public GameSelectPanel getGameSelectPanel(){
+		return gameSelectPanel;
 	}
-
+	
 }

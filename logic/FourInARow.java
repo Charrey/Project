@@ -5,7 +5,7 @@ import Project.gui.MainGui;
 public class FourInARow {
 
 	public static void main(String[] args) {
-		new Thread(new MainGui()).start();
+		new MainGui();
 		//new Gui(new Board());
 		//new Thread(new Game(new HumanPlayer(args[0], Mark.O), new ComputerPlayer(Mark.X))).start();
 		//InputHandler handler = new InputHandler();

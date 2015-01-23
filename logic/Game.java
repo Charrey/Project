@@ -3,8 +3,11 @@ package Project.logic;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Scanner;
+
 import javax.swing.JLabel;
+
 import Project.gui.MainGui;
+import Project.gui.game.GameMainPanel;
 
 
 
@@ -17,6 +20,7 @@ public class Game implements Runnable {
 	private boolean running;
 	private TUI tui;
 	private MainGui gui;
+	private GameMainPanel gamePanel;
 	
 	public Game(Player s0, Player s1, MainGui gui){
 		this(s0, s1, gui, 7, 6);
@@ -32,6 +36,16 @@ public class Game implements Runnable {
         tui = new TUI(board);
         this.gui = gui;
         
+        if(s0 instanceof HumanPlayer || s1 instanceof HumanPlayer){
+        	if(s0 instanceof HumanPlayer){
+        		gamePanel =new GameMainPanel(gui, this, ((HumanPlayer) s0).getInputHandler());
+        	}else if(s1 instanceof HumanPlayer){
+        		gamePanel = new GameMainPanel(gui, this, ((HumanPlayer) s1).getInputHandler());
+        	}
+        }else{
+        	gamePanel = new GameMainPanel(gui, this);
+        }
+        
         //gui = new Gui(board, (MouseListener)((HumanPlayer)s0).getInputHandler()));
 
         //gui = new Gui(board, ((HumanPlayer)s0).getInputHandler());
@@ -39,10 +53,12 @@ public class Game implements Runnable {
         //guiThread.start();
 
         //gui = new Gui(board, ((HumanPlayer)s0).getInputHandler()); //<- TO FIX
-        Thread guiThread = new Thread(gui);
-        guiThread.start();
-        board.addObserver(gui);
+        //Thread guiThread = new Thread(gui);
+        //guiThread.start();
+        board.addObserver(gamePanel);
         //gui.addMouseListener(this);
+        gui.changePanel(gamePanel);
+        new Thread(this).start();
         
     }
     
@@ -129,7 +145,7 @@ public class Game implements Runnable {
 		while(running){
 			reset();
 			play();
-			running = readPlayAgain();
+			running = gamePanel.getInfoPanel().getReplay();
 			
 		}
 		
@@ -146,7 +162,6 @@ public class Game implements Runnable {
 		return players[current];
 	}
 	public int getCurrent(){
-		System.out.println("getCurrent: " + current);
 		return current;
 	}
 	
