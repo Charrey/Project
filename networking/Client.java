@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.OutputStreamWriter;
 
+import Project.gui.ClientGUI;
 import Project.logic.*;
 
 import java.util.Set;
@@ -43,6 +44,7 @@ public class Client implements Runnable {
 	int boardheight;
 
 	Map<String, int[]> invites;
+	private ClientGUI gui;
 
 	/**
 	 * Takes console input and reacts accordingly.
@@ -69,7 +71,9 @@ public class Client implements Runnable {
 				String[] apart = gotten.split("\\s+");
 				int[] array = {boardwidth,boardheight};
 				invites.put(apart[1], array);
-			
+				sendMessage("INVITE "+apart[1]);
+			} else if (gotten.equals("board")) {
+				sendMessage("REQUEST");
 			} else if (Server.representsInt(gotten) && gotten.length() >= 1) {
 				this.notifyAll();
 			} else if (gotten.startsWith("spam")) {
@@ -134,13 +138,13 @@ public class Client implements Runnable {
 	 */
 	public void sendMessage(String msg) {
 		try {
-			System.out.println("Sending message to server ("
+			gui.addMessage("Sending message to server ("
 					+ sock.getInetAddress() + ") : " + msg);
 			out.write(msg);
 			out.newLine();
 			out.flush();
 		} catch (IOException e) {
-			System.err.println("Could not send command (" + msg
+			gui.addMessage("Could not send command (" + msg
 					+ ") to server.");
 		}
 	}
@@ -174,13 +178,15 @@ public class Client implements Runnable {
 	 *            is the port used to create a Socket.
 	 * @param name
 	 *            is the name of this client.
+	 * @param gui is the gui associated with this client.
 	 */
-	public Client(String address, int port, String name) {
+	public Client(String address, int port, String name, ClientGUI gui) {
+		this.gui=gui;
 		this.name = name;
 		try {
 			sock = new Socket(address, port);
 		} catch (IOException e1) {
-			System.err.println("Could not create socket with server.");
+			gui.addMessage("Could not create socket with server.");
 			System.exit(0);
 		}
 		inter = new Interpreter(this);
@@ -190,7 +196,7 @@ public class Client implements Runnable {
 			out = new BufferedWriter(new OutputStreamWriter(
 					sock.getOutputStream()));
 		} catch (IOException alpha) {
-			System.err.println("Error while opening streams");
+			gui.addMessage("Error while opening streams");
 			System.exit(0);
 		}
 		sersup = new HashSet<String>();
@@ -210,7 +216,7 @@ public class Client implements Runnable {
 		for (int i = 0; i < splitted.length; i++) {
 			inter.whatisthatClient(splitted[i]);
 		}
-		System.out.println("DONE");
+		gui.addMessage("CONNECTED");
 	}
 
 	public void makemove() {
@@ -220,13 +226,12 @@ public class Client implements Runnable {
 			out.write("MOVE " + movetobemade + " /n/n");
 			out.flush();
 		} catch (IOException ex) {
-			System.err.println("Could not send move to server");
+			gui.addMessage("Could not send move to server");
 		}
 	}
 
 	public void gamestart() {
 		player = new HumanPlayer(this.ourname, Mark.X, new InputHandler());
-		System.out.println("boardwidth="+boardwidth);
 		game = new Game(player, new HumanPlayer("That_pc", Mark.O,
 				new NetworkedInputHandler(this)), boardwidth, boardheight);
 		// HumanPlayer met networked handler!!!!
@@ -260,15 +265,15 @@ public class Client implements Runnable {
 		for (int i = 0; i < splitted.length; i++) {
 			lobby.add(splitted[i]);
 		}
-		System.out.println("***LOBBY***");
+		gui.addMessage("***LOBBY***");
 		if (lobby.isEmpty()) {
-			System.out.println("* Empty lobby :(");
+			gui.addMessage("* Empty lobby :(");
 		} else {
 			for (String i : lobby) {
-				System.out.println("* " + i);
+				gui.addMessage("* " + i);
 			}
 		}
-		System.out.println("***********");
+		gui.addMessage("***********");
 	}
 
 	public BufferedReader getIn() {
@@ -283,13 +288,12 @@ public class Client implements Runnable {
 		try {
 			String tussenvar = in.readLine();
 			while (!sock.isClosed()) {
-				System.out
-						.println("Message received from server: " + tussenvar);
+				gui.addMessage("Message received from server: " + tussenvar);
 				inter.whatisthatClient(tussenvar);
 				tussenvar = in.readLine();
 			}
 		} catch (IOException e) {
-			System.err.println("Server has shut down.");
+			gui.addMessage("Server has shut down.");
 		}
 		System.exit(0);
 	}
@@ -317,18 +321,18 @@ public class Client implements Runnable {
 		String[] apart = other.split("\\s+");
 		int[] dimensions = new int[2];
 		if (apart.length < 3) {
-			System.out.println("You have been invited by " + apart[0]
+			gui.addMessage("You have been invited by " + apart[0]
 					+ " for a game of 6 by 7!");
 			dimensions[0] = 6;
 			dimensions[1] = 7;
 		} else {
-			System.out.println("You have been invited by " + apart[0]
+			gui.addMessage("You have been invited by " + apart[0]
 					+ " for a game of " + apart[1] + " by " + apart[2] + "!");
 			dimensions[0] = Integer.parseInt(apart[1]);
 			dimensions[1] = Integer.parseInt(apart[2]);
 		}
 		invites.put(apart[0], dimensions);
-		System.out.println("Type accept " + apart[0] + " to accept.");
-		System.out.println("Type decline " + apart[0] + " to decline.");
+		gui.addMessage("Type accept " + apart[0] + " to accept.");
+		gui.addMessage("Type decline " + apart[0] + " to decline.");
 	}
 }

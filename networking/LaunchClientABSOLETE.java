@@ -5,7 +5,7 @@ import java.lang.NumberFormatException;
 
 import Project.gui.ServerGUI;
 
-public class LaunchClient {
+public class LaunchClientABSOLETE {
 
 	private static Scanner scanner;
 

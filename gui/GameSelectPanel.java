@@ -41,9 +41,10 @@ public class GameSelectPanel extends JPanel {
 	private JButton startButton;
 	
 	private InputHandler handler;
+	private MainGui gui;
 	
 	public GameSelectPanel(MainGui gui){
-
+		this.gui=gui;
 	
 		setLayout(new BorderLayout());
 		
@@ -167,7 +168,7 @@ public class GameSelectPanel extends JPanel {
 					p1 = new ComputerPlayer(Mark.X);
 					p2 = new ComputerPlayer(Mark.O);
 				}
-				new Game(p1, p2, gui, width, height);
+				new Game(p1, p2, this.gui, width, height);
 				/*
 				if(handler!=null){
 					Game newGame = new Game(p1, p2, gui, width, height);

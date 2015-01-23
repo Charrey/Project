@@ -26,6 +26,7 @@ import javax.swing.SpringLayout;
 
 import Project.networking.Client;
 import Project.networking.ClientBot;
+import Project.networking.ClientConsole;
 import Project.networking.ClientHandler;
 import Project.networking.Server;
 
@@ -122,14 +123,14 @@ public class ClientGUI extends JFrame {
 					ip = ipAdressLabel.getText();
 					name = nameField.getText();
 					if(name.equals(ClientBot.NAME)){
-						client = new ClientBot(ip, portNumber, ClientBot.NAME);
+						client = new ClientBot(ip, portNumber, ClientBot.NAME, self);
 					}else{
-						client = new Client(ip, portNumber, name);
+						client = new Client(ip, portNumber, name, self);
 					}
 					Thread thread = new Thread(client);
 					thread.start();
-					
-					client.watchInput();
+					ClientConsole clientconsole = new ClientConsole(client);
+					clientconsole.start();
 
 					hostButton.setText("Disconnect");
 					connected = true;

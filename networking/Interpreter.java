@@ -1,5 +1,7 @@
 package Project.networking;
 
+import Project.logic.Board;
+
 //import Project.logic.Game;
 
 public class Interpreter {
@@ -162,7 +164,7 @@ public class Interpreter {
 			switch (splitted[0]) {
 			case kw_game_sendboard:
 				client.refreshBoard(that.substring(kw_game_sendboard.length()+1));
-				System.out.println(client.getGame().getBoard().networkBoard());
+				Board.printNetworkBoard(client.getGame().getBoard().networkBoard());
 				break;
 			case kw_conn_acceptconnect:
 				client.connectionAccepted(that.substring(kw_conn_acceptconnect
