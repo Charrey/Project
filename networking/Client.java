@@ -87,7 +87,9 @@ public class Client implements Runnable {
 			}
 		}
 		else {
-			gui.waitForCommand(); 
+			while(true){
+				gui.waitForCommand(); 
+			}
 		}
 	}
 
