@@ -19,7 +19,10 @@ public class GameMainPanel extends JPanel implements Observer {
 	private Game g;
 	
 	
-
+	/* 
+	 * Constructor voor een spel zonder HumanPlayers. 
+	 * Dit is omdat de een ComputerPlayer geen Inputhandler nodig heeft.
+	 */
 	public GameMainPanel(MainGui gui, Game g){
 		this.g = g;
 		gamePanel = new GamePanel(g);
@@ -31,6 +34,9 @@ public class GameMainPanel extends JPanel implements Observer {
 		add(infoPanel, BorderLayout.PAGE_END);
 	}
 	
+	/*
+	 * Constructor voor een GamePanel met een of twee HumanPlayers
+	 */
 	public GameMainPanel(MainGui gui, Game g, InputHandler i){
 		this.g = g;
 		gamePanel = new GamePanel(g, i);
@@ -46,18 +52,12 @@ public class GameMainPanel extends JPanel implements Observer {
 		//add(messagePanel, BorderLayout.LINE_END);
 		
 		namePanel.setSize(gamePanel.getWidth(), namePanel.getHeight());
-
-		
-
 	}
 	
-	public GamePanel getGamePanel(){
-		return gamePanel;
-	}
-	public InfoPanel getInfoPanel(){
-		return infoPanel;
-	}
 
+	/*
+	 * Deze methode wordt aangeroepen als de klasse Board een notify geeft.
+	 */
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		gamePanel.updateBoard();
@@ -70,6 +70,13 @@ public class GameMainPanel extends JPanel implements Observer {
 			infoPanel.setDraw();
 		}
 		
+	}
+	
+	public GamePanel getGamePanel(){
+		return gamePanel;
+	}
+	public InfoPanel getInfoPanel(){
+		return infoPanel;
 	}
 
 	

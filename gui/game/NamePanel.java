@@ -20,6 +20,11 @@ public class NamePanel extends JPanel {
 	private JLabel arrowLabel2;
 	private boolean justStarted = true;
 	
+	//NamePanel is het balkje boven de GamePanel waarin de namen van de spelers staan en een pijltje die aangeeft wie er aan de beurt is
+	
+	/*
+	 * Constructor van NamePanel 
+	 */
 	public NamePanel(Game g){
 		this.g = g;
 		name1 = g.getFirstPlayer().getName();
@@ -46,7 +51,11 @@ public class NamePanel extends JPanel {
 
 	}
 
-	
+	/*
+	 * Deze methode zorgt ervoor dat het pijltje de goede kant op wijst.
+	 * De eerste keer gaat het niet goed met het uitlezen van de huidige speler, dus daarom is ervoor gekozen om een nieuwe variabel
+	 * toe te voegen die kijkt of het de eerste zet is van het spel.
+	 */
 	//TODO fix reset bug, where arrow changes while it shouldn't
 	public void update() {
 		if(justStarted){

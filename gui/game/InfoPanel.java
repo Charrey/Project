@@ -23,7 +23,11 @@ public class InfoPanel extends JPanel {
 	private boolean clicked = false;
 	private InfoPanel self;
 	
+	//De infoPanel is het blokje onder het bord die een paar Buttons en een label herbergt
 	
+	/*
+	 * Constructor voor de InfoPanel
+	 */
 	public InfoPanel(MainGui gui, Game g, GamePanel gamePanel){
 		this.g = g;
 		this.gui = gui;
@@ -44,7 +48,12 @@ public class InfoPanel extends JPanel {
 		add(backToMainMenu);
 	}
 	
-	
+	/*
+	 * methode die ervoor zorgt dat er een hint verschijnt op het scherm
+	 * het bord wordt eerste geupdate zodat eventuele eerdere hints verwijderd worden
+	 * De hint functie van het bord geeft een array van lengte 2 terug met op positie 0 de kollom en op positie 1 de rij
+	 * De hint wordt alleen weergegeven in de GamePanel, hij wordt niet doorgegeven aan het systeem.
+	 */
 	public void showHint(){
 		//TODO maybe a different slot icon for the hint???
 		gamePanel.updateBoard();
@@ -54,6 +63,10 @@ public class InfoPanel extends JPanel {
 
 	}
 	
+	/*
+	 * Deze methode zorgt ervoor dat alle buttons voorzien worden van een MouseListener 
+	 * Is in aparte methode gedaan zodat de code iets overzichterlijker wordt
+	 */
 	public void addMouse(){
 		hintButton.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e){
@@ -92,6 +105,11 @@ public class InfoPanel extends JPanel {
 		hasWon.setText("");
 	}
 
+	/*
+	 * Het herstarten van een spel mag alleen plaatsvinden als een spel is afgelopen en er op de Restart knop is gedrukt.
+	 * Deze methode wordt aangeroepen vanuit de Game klasse. 
+	 * Op het moment dat de Restart knop nog niet geklikt is, dan gaat deze methode wachten totdat die wel gedrukt is. 
+	 */
 	public boolean getReplay(){
 		synchronized(self){
 			if(!clicked){

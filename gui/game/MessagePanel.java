@@ -24,7 +24,11 @@ public class MessagePanel extends JPanel{
 	private JTextField textfield;
 	private JScrollPane scrollPane;
 	
-	//volgens mij onnodig een Game mee te geven.
+	//MessagePanel is een chatWindow dat naast de GamePanel komt. Deze staat uit voor lokale spellen
+	
+	/*
+	 * Constructor van MessagePanel
+	 */
 	public MessagePanel(Game g){
 		this.g = g;
 		
@@ -55,6 +59,9 @@ public class MessagePanel extends JPanel{
 		});
 	}
 	
+	/*
+	 * Deze methode voegt een bericht toe aan het textfield
+	 */
 	public void addMessage(String msg){
 		textarea.append(msg + "\n");
 	}

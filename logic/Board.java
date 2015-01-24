@@ -113,7 +113,7 @@ public class Board extends Observable {
 	 *            Typically -1, 0 or 1.
 	 * @return
 	 */
-	public int checkDirection(int a, int b, int toright, int toabove) {
+	private int checkDirection(int a, int b, int toright, int toabove) {
 		Mark checking = board[a][b];
 		int testa = a;
 		int testb = b;
@@ -130,7 +130,7 @@ public class Board extends Observable {
 	}
 
 	// Checks for all directions if this stone is part of a four-in-a-row.
-	public boolean checkWin(int a, int b) {
+	private boolean checkWin(int a, int b) {
 		if (checkDirection(a, b, 1, 0) + checkDirection(a, b, -1, 0) - 1 >= 4) {
 			return true;
 		} else if (checkDirection(a, b, 0, 1) + checkDirection(a, b, 0, -1) - 1 >= 4) {
