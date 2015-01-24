@@ -52,6 +52,7 @@ public class ClientGUI extends JFrame {
 	private int portNumber;
 	private String name;
 	private Client client;
+	private boolean clicked = false;
 	
 	public ClientGUI(){
 	
@@ -147,7 +148,10 @@ public class ClientGUI extends JFrame {
 		
 		sentCommandButton.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e){
-				
+				synchronized(self){
+					clicked = true;
+					notifyAll();
+				}
 			}
 		});
 		
@@ -155,6 +159,22 @@ public class ClientGUI extends JFrame {
 	
 	public void addMessage(String msg){
 		textArea.append(msg + "\n");
+	}
+	
+	public String waitForCommand(){
+		synchronized(this){
+			if(!clicked){
+				try {
+					wait();
+				} catch (InterruptedException e) {
+					System.err.println("Something went wrong");
+				}
+			}
+			clicked = false;
+			String command = commandField.getText();
+			commandField.setText("");
+			return command;
+		}
 	}
 	
 	/**
