@@ -150,7 +150,8 @@ public class ClientGUI extends JFrame {
 			public void mouseClicked(MouseEvent e){
 				synchronized(self){
 					clicked = true;
-					notifyAll();
+					System.out.println("clicked");
+					self.notifyAll();
 				}
 			}
 		});
@@ -172,6 +173,7 @@ public class ClientGUI extends JFrame {
 			}
 			clicked = false;
 			String command = commandField.getText();
+			addMessage(command);
 			commandField.setText("");
 			return command;
 		}
