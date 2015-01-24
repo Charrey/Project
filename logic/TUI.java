@@ -1,6 +1,10 @@
 package Project.logic;
 
-public class TUI {
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Scanner;
+
+public class TUI implements Observer {
 
 	private Board playingfield;
 	
@@ -34,5 +38,22 @@ public class TUI {
 			}
 		result += guidance + "\n\n";
 		return result;
+	}
+
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		System.out.println("Board situation \n" + showBoard());
+	}
+	
+	public static boolean readPlayAgain() {
+        String answer;
+
+        do {
+            System.out.print("Play again? (y/n)");
+            Scanner in = new Scanner(System.in);
+            answer = in.hasNextLine() ? in.nextLine() : null;
+        } while (answer == null || (!answer.equals("y") && !answer.equals("n")));
+        return answer.equals("y");
 	}
 }

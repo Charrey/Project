@@ -3,6 +3,11 @@ package Project.runnables;
 import java.util.Scanner;
 
 import Project.gui.ServerGUI;
+import Project.logic.ComputerPlayer;
+import Project.logic.Game;
+import Project.logic.HumanPlayer;
+import Project.logic.Mark;
+import Project.logic.Player;
 import Project.networking.Client;
 import Project.networking.ClientBot;
 import Project.networking.Server;
@@ -11,8 +16,35 @@ public class RunTextual {
 
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
-		System.out.println("Pick one: Server(A) or Client(B)");
+		
+		System.out.println("To stay local pick A, to go online pick B");
 		String gotten = scanner.nextLine();
+		while(!gotten.equals("A") && !gotten.equals("B")){
+			System.out.println("Pick a valid choice.");
+			gotten = scanner.nextLine();
+		}
+		if(gotten.equals("A")){
+			System.out.println("Pick name for player 1 (empty for AI)");
+			gotten = scanner.nextLine();
+			Player p1;
+			Player p2;
+			if(gotten == ""){
+				p1 = new ComputerPlayer(Mark.X);
+			}else{
+				p1 = new HumanPlayer(gotten, Mark.X);
+			}
+			System.out.println("Pick name for player 2 (empty for AI)");
+			gotten = scanner.nextLine();
+			if(gotten == ""){
+				p2 = new ComputerPlayer(Mark.O);
+			}else{
+				p2 = new HumanPlayer(gotten, Mark.O);
+			}
+			new Game(p1, p2, 7, 6);
+			
+		}else if(gotten.equals("B")){
+		System.out.println("Pick one: Server(A) or Client(B)");
+		gotten = scanner.nextLine();
 		while (!gotten.equals("A") && !gotten.equals("B")
 				&& !gotten.equals("a") && !gotten.equals("b")) {
 			System.out.println("That's not a valid choice.");
@@ -99,7 +131,7 @@ public class RunTextual {
 			client.watchInput();
 
 		}
-
+		}
 	}
 
 	/**
