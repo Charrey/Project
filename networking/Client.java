@@ -83,7 +83,6 @@ public class Client implements Runnable {
 					while (true) {
 						sendMessage(gotten.substring(5));
 					}
-					break;
 				default:
 					sendMessage(gotten);				
 				}					
