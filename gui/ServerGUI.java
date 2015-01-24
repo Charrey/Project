@@ -111,7 +111,7 @@ public class ServerGUI extends JFrame{
 						addMessage("Please enter a valid portnumber");
 					}
 				}else{
-					//TODO server.shutdown
+					server.shutDown();
 					hostButton.setText("Host");
 					hosting = false;
 				}
