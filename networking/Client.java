@@ -49,9 +49,7 @@ public class Client implements Runnable {
 	 * Takes console input and reacts accordingly.
 	 */
 	public void watchInput() {
-		
 		if (gui == null) {
-
 			scanner = new Scanner(System.in);
 			String gotten;
 			while (true) {

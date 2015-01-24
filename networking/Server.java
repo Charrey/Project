@@ -560,4 +560,28 @@ public class Server extends Thread {
 							+ " " + apart[1] + " " + apart[2]);
 		}
 	}
+	
+	public void shutDown() {
+		running = false;
+		try {
+			serversocket.close();
+		} catch (IOException e1) {
+			printMessage("Could not close serversocket");
+		}
+		for (ClientHandler i : lobby.keySet()) {
+			try {
+				i.getSocket().close();
+			} catch (IOException e) {
+				printMessage("Could not disconnect "+i.getClientName());
+			}
+			lobby.remove(i);
+			playing.remove(i);
+		}
+		
+		
+	}
+	
+	
+	
+	
 }
