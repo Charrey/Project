@@ -49,39 +49,48 @@ public class Client implements Runnable {
 	 * Takes console input and reacts accordingly.
 	 */
 	public void watchInput() {
-		scanner = new Scanner(System.in);
-		String gotten;
-		while (true) {
-			gotten = scanner.nextLine();
-			if (gotten.startsWith("accept")) {
+		
+		if (gui == null) {
+
+			scanner = new Scanner(System.in);
+			String gotten;
+			while (true) {
+				gotten = scanner.nextLine();
 				String[] apart = gotten.split("\\s+");
-				if (invites.keySet().contains(apart[1])) {
-					sendMessage("ACCEPT " + apart[1]);
-					boardwidth = invites.get(apart[1])[0];
-					boardheight = invites.get(apart[1])[1];
-				}
-			} else if (gotten.startsWith("decline")) {
-				String[] apart = gotten.split("\\s+");
-				if (invites.keySet().contains(apart[1])) {
-					sendMessage("DECLINE " + apart[1]);
-					invites.remove(apart[1]);
-				}
-			} else if (gotten.startsWith("invite")) {
-				String[] apart = gotten.split("\\s+");
-				int[] array = {boardwidth,boardheight};
-				invites.put(apart[1], array);
-				sendMessage("INVITE "+apart[1]);
-			} else if (gotten.equals("board")) {
-				sendMessage("REQUEST");
-			} else if (Server.representsInt(gotten) && gotten.length() >= 1) {
-				this.notifyAll();
-			} else if (gotten.startsWith("spam")) {
-				while (true) {
-					sendMessage(gotten.substring(5));
-				}
-			} else {
-				sendMessage(gotten);
+				switch(apart[0]) {
+				case "accept":
+					if (invites.keySet().contains(apart[1])) {
+						sendMessage("ACCEPT " + apart[1]);
+						boardwidth = invites.get(apart[1])[0];
+						boardheight = invites.get(apart[1])[1];
+					}
+					break;
+				case "decline":
+					if (invites.keySet().contains(apart[1])) {
+						sendMessage("DECLINE " + apart[1]);
+						invites.remove(apart[1]);
+					}
+				break;
+				case "invite":
+					int[] array = { boardwidth, boardheight };
+					invites.put(apart[1], array);
+					sendMessage("INVITE " + apart[1]);
+					break;
+				case "board":
+					sendMessage("REQUEST");
+					break;
+				case "spam":
+					while (true) {
+						sendMessage(gotten.substring(5));
+					}
+					break;
+				default:
+					sendMessage(gotten);				
+				}					
 			}
+		}
+		else {
+			gui.waitForCommand(); 
 		}
 	}
 
@@ -137,14 +146,13 @@ public class Client implements Runnable {
 	 */
 	public void sendMessage(String msg) {
 		try {
-			printMessage("Sending message to server ("
-					+ sock.getInetAddress() + ") : " + msg);
+			printMessage("Sending message to server (" + sock.getInetAddress()
+					+ ") : " + msg);
 			out.write(msg);
 			out.newLine();
 			out.flush();
 		} catch (IOException e) {
-			printMessage("Could not send command (" + msg
-					+ ") to server.");
+			printMessage("Could not send command (" + msg + ") to server.");
 		}
 	}
 
@@ -168,7 +176,7 @@ public class Client implements Runnable {
 	public Socket getSocket() {
 		return sock;
 	}
-	
+
 	private void printMessage(String message) {
 		if (gui == null) {
 			System.out.println(message);
@@ -177,7 +185,6 @@ public class Client implements Runnable {
 		}
 	}
 
-	
 	/**
 	 * @param address
 	 *            is the address used to create a Socket.
@@ -185,7 +192,8 @@ public class Client implements Runnable {
 	 *            is the port used to create a Socket.
 	 * @param name
 	 *            is the name of this client.
-	 * @param gui is the gui associated with this client.
+	 * @param gui
+	 *            is the gui associated with this client.
 	 */
 	public Client(String address, int port, String name) {
 		this.name = name;
@@ -209,10 +217,7 @@ public class Client implements Runnable {
 		invites = new HashMap<String, int[]>();
 		sendMessage("CONNECT " + this.name + " CUSTOM_BOARD_SIZE");
 	}
-	
-	
-	
-	
+
 	// Constructor, obviously
 	/**
 	 * @param address
@@ -221,10 +226,11 @@ public class Client implements Runnable {
 	 *            is the port used to create a Socket.
 	 * @param name
 	 *            is the name of this client.
-	 * @param gui is the gui associated with this client.
+	 * @param gui
+	 *            is the gui associated with this client.
 	 */
 	public Client(String address, int port, String name, ClientGUI gui) {
-		this.gui=gui;
+		this.gui = gui;
 		this.name = name;
 		try {
 			sock = new Socket(address, port);
