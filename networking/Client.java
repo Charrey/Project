@@ -173,7 +173,7 @@ public class Client implements Runnable {
 		if (gui == null) {
 			System.out.println(message);
 		} else {
-			printMessage(message);
+			gui.addMessage(message);
 		}
 	}
 
