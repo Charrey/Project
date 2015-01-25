@@ -78,6 +78,9 @@ public class GameMainPanel extends JPanel implements Observer {
 	public InfoPanel getInfoPanel(){
 		return infoPanel;
 	}
+	public NamePanel getNamePanel(){
+		return namePanel;
+	}
 
 	
 }

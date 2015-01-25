@@ -70,7 +70,6 @@ public class NamePanel extends JPanel {
 			arrowLabel2.setText("->");
 			arrowLabel1.setText("");
 		}
-		
 	}
 	
 }
