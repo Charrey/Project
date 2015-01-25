@@ -128,8 +128,7 @@ public class ClientGUI extends JFrame {
 					}else{
 						client = new Client(ip, portNumber, name, self);
 					}
-					Thread thread = new Thread(client);
-					thread.start();
+					client.start();
 					ClientConsole clientconsole = new ClientConsole(client);
 					clientconsole.start();
 

@@ -11,32 +11,32 @@ public class Interpreter {
 	 */
 
 	// SENT BY SERVER ONLY:
-	public static final String kw_game_sendboard = "BOARD";
-	public static final String kw_game_gameend = "END";
-	public static final String kw_conn_gamestart = "START";
-	public static final String kw_conn_lobby = "LOBBY";
-	public static final String kw_game_moveok = "MOVE";
-	public static final String kw_game_reqmove = "REQUEST";
-	public static final String kw_conn_error = "ERROR";
+	public static final String KW_GAME_SENDBOARD = "BOARD";
+	public static final String KW_GAME_GAMEEND = "END";
+	public static final String KW_CONN_GAMESTART = "START";
+	public static final String KW_CONN_LOBBY = "LOBBY";
+	public static final String KW_GAME_MOVEOK = "MOVE";
+	public static final String KW_GAME_REQMOVE = "REQUEST";
+	public static final String KW_CONN_ERROR = "ERROR";
 
 	// SENT BY CLIENT ONLY:
-	public static final String kw_conn_welcome = "CONNECT";
-	public static final String kw_conn_chatmessage = "CHAT";
-	public static final String kw_game_requestboard = "REQUEST";
-	public static final String kw_conn_acceptconnect = "OK";
-	public static final String kw_lobb_leaderboard = "LEADERBOARD";// +
+	public static final String KW_CONN_WELCOME = "CONNECT";
+	public static final String KW_CONN_CHATMESSAGE = "CHAT";
+	public static final String KW_GAME_REQUESTBOARD = "REQUEST";
+	public static final String KW_CONN_ACCEPTCONNECT = "OK";
+	public static final String KW_LOBB_LEADERBOARD = "LEADERBOARD";// +
 																	// <leaderboard>
-	public static final String kw_game_move = "MOVE";
-	public static final String kw_lobb_request = "LOBBY";
+	public static final String KW_GAME_MOVE = "MOVE";
+	public static final String KW_LOBB_REQUEST = "LOBBY";
 
 	// SENT BY BOTH SERVER AND CLIENT:
-	public static final String kw_feature_chat = "CHAT";// + <message>
-	public static final String kw_feature_cBoardSize = "CUSTOM_BOARD_SIZE";
-	public static final String kw_feature_leaderboard = "LEADERBOARD";
-	public static final String kw_feature_multiplayer = "MULTIPLAYER";
-	public static final String kw_lobb_invite = "INVITE";
-	public static final String kw_lobb_acceptinvite = "ACCEPT";
-	public static final String kw_lobb_declineinvite = "DECLINE";
+	public static final String KW_FEATURE_CHAT = "CHAT";// + <message>
+	public static final String KW_FEATURE_CBOARDSIZE = "CUSTOM_BOARD_SIZE";
+	public static final String KW_FEATURE_LEADERBOARD = "LEADERBOARD";
+	public static final String KW_FEATURE_MULTIPLAYER = "MULTIPLAYER";
+	public static final String KW_LOBB_INVITE = "INVITE";
+	public static final String KW_LOBB_ACCEPTINVITE = "ACCEPT";
+	public static final String KW_LOBB_DECLINEINVITE = "DECLINE";
 
 	Boolean areweserver;
 
@@ -79,65 +79,66 @@ public class Interpreter {
 	public void whatisthatServer(String that, ClientHandler source,
 			Boolean subcommand) {
 		if (areweserver == true) {
+			server.printMessage("Looking up what "+that+" is.");
 			String[] splitted = that.split("\\s+");
 			switch (splitted[0]) {
-			case kw_conn_chatmessage:
+			case KW_CONN_CHATMESSAGE:
 				if (subcommand) {
-					server.setFunction(source, kw_feature_chat, true);
-				} else if (that.length() < (kw_conn_chatmessage.length() + 2)) {
-					source.sendCommand(kw_conn_error + " SyntaxError");
+					server.setFunction(source, KW_FEATURE_CHAT, true);
+				} else if (that.length() < (KW_CONN_CHATMESSAGE.length() + 2)) {
+					source.sendCommand(KW_CONN_ERROR + " SyntaxError");
 				} else {
 					server.handlechatmessage(source,
-							that.substring(kw_conn_chatmessage.length() + 1));
+							that.substring(KW_CONN_CHATMESSAGE.length() + 1));
 				}
 				break;
-			case kw_conn_welcome:
-				if (that.length() < (kw_conn_welcome.length() + 2)) {
-					source.sendCommand(kw_conn_error + " SyntaxError");
+			case KW_CONN_WELCOME:
+				if (that.length() < (KW_CONN_WELCOME.length() + 2)) {
+					source.sendCommand(KW_CONN_ERROR + " SyntaxError");
 				} else {
 					server.acceptConnection(source,
-							that.substring(kw_conn_welcome.length() + 1));
+							that.substring(KW_CONN_WELCOME.length() + 1));
 				}
 				break;
-			case kw_game_requestboard:
+			case KW_GAME_REQUESTBOARD:
 				server.sendBoard(source);
 				break;
-			case kw_lobb_leaderboard:
+			case KW_LOBB_LEADERBOARD:
 				if (subcommand) {
-					server.setFunction(source, kw_feature_leaderboard, true);
+					server.setFunction(source, KW_FEATURE_LEADERBOARD, true);
 				} else {
 					server.sendLeaderboard();
 				}
 				break;
-			case kw_feature_cBoardSize:
-				server.setFunction(source, kw_feature_cBoardSize, true);
+			case KW_FEATURE_CBOARDSIZE:
+				server.setFunction(source, KW_FEATURE_CBOARDSIZE, true);
 				break;
-			case kw_feature_multiplayer:
-				server.setFunction(source, kw_feature_multiplayer, true);
+			case KW_FEATURE_MULTIPLAYER:
+				server.setFunction(source, KW_FEATURE_MULTIPLAYER, true);
 				break;
-			case kw_lobb_invite:
-				if (that.length() < (kw_lobb_invite.length() + 2)) {
-					source.sendCommand(kw_conn_error + " SyntaxError");
+			case KW_LOBB_INVITE:
+				if (that.length() < (KW_LOBB_INVITE.length() + 2)) {
+					source.sendCommand(KW_CONN_ERROR + " SyntaxError");
 				} else {
-					server.invite(that.substring(kw_lobb_invite.length() + 1),
+					server.invite(that.substring(KW_LOBB_INVITE.length() + 1),
 							source);
 				}
 				break;
-			case kw_lobb_acceptinvite:
+			case KW_LOBB_ACCEPTINVITE:
 				server.acceptinvite(source, that);
 				break;
-			case kw_lobb_declineinvite:
+			case KW_LOBB_DECLINEINVITE:
 				server.denyinvite(source, that);
 				break;
-			case kw_game_move:
-				if (that.length() < (kw_game_move.length() + 2)) {
-					source.sendCommand(kw_conn_error + " SyntaxError");
+			case KW_GAME_MOVE:
+				if (that.length() < (KW_GAME_MOVE.length() + 2)) {
+					source.sendCommand(KW_CONN_ERROR + " SyntaxError");
 				} else {
 					server.nextMove(source,
-							that.substring(kw_game_move.length() + 1));
+							that.substring(KW_GAME_MOVE.length() + 1));
 				}
 				break;
-			case kw_lobb_request:
+			case KW_LOBB_REQUEST:
 				server.sendLobby(source);
 				break;
 
@@ -162,61 +163,61 @@ public class Interpreter {
 		if (areweserver == false && that != null) {
 			String[] splitted = that.split("\\s+");
 			switch (splitted[0]) {
-			case kw_game_sendboard:
-				client.refreshBoard(that.substring(kw_game_sendboard.length()+1));
+			case KW_GAME_SENDBOARD:
+				client.refreshBoard(that.substring(KW_GAME_SENDBOARD.length()+1));
 				Board.printNetworkBoard(client.getGame().getBoard().networkBoard());
 				break;
-			case kw_conn_acceptconnect:
-				client.connectionAccepted(that.substring(kw_conn_acceptconnect
+			case KW_CONN_ACCEPTCONNECT:
+				client.connectionAccepted(that.substring(KW_CONN_ACCEPTCONNECT
 						.length() + 1));
 				break;
-			case kw_game_gameend:
+			case KW_GAME_GAMEEND:
 				client.gameend();
 				break;
-			case kw_conn_gamestart:
-				client.gamestart();
+			case KW_CONN_GAMESTART:
+				client.gamestart(splitted[1],splitted[2]);
 				break;
-			case kw_conn_lobby:
-				client.setLobby(that.substring(kw_conn_lobby.length() + 1));
+			case KW_CONN_LOBBY:
+				client.setLobby(that.substring(KW_CONN_LOBBY.length() + 1));
 				break;
-			case kw_game_moveok:
-				client.moveok(that.substring(kw_game_moveok.length() + 1));
+			case KW_GAME_MOVEOK:
+				client.moveok(that.substring(KW_GAME_MOVEOK.length() + 1));
 				break;
-			case kw_game_reqmove:
+			case KW_GAME_REQMOVE:
 				client.getGame().getBoard().printNetworkBoard(client.getGame().getBoard().networkBoard());
 				// TODO
 				break;
-			case kw_feature_chat:
-				client.SetSerSup(kw_feature_chat, true);
+			case KW_FEATURE_CHAT:
+				client.SetSerSup(KW_FEATURE_CHAT, true);
 				break;
-			case kw_feature_cBoardSize:
-				client.SetSerSup(kw_feature_cBoardSize, true);
+			case KW_FEATURE_CBOARDSIZE:
+				client.SetSerSup(KW_FEATURE_CBOARDSIZE, true);
 				break;
-			case kw_feature_leaderboard:
-				client.SetSerSup(kw_feature_leaderboard, true);
+			case KW_FEATURE_LEADERBOARD:
+				client.SetSerSup(KW_FEATURE_LEADERBOARD, true);
 				break;
-			case kw_feature_multiplayer:
-				client.SetSerSup(kw_feature_multiplayer, true);
+			case KW_FEATURE_MULTIPLAYER:
+				client.SetSerSup(KW_FEATURE_MULTIPLAYER, true);
 				break;
-			case kw_lobb_invite:
-				client.invited(that.substring(kw_lobb_invite.length() + 1));
+			case KW_LOBB_INVITE:
+				client.invited(that.substring(KW_LOBB_INVITE.length() + 1));
 				break;
-			case kw_conn_error:
+			case KW_CONN_ERROR:
 				System.out.println("");
 				System.out.println("!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!");
 				System.out.println("ERROR RECEIVED FROM SERVER: "
-						+ that.substring(kw_conn_error.length() + 1));
+						+ that.substring(KW_CONN_ERROR.length() + 1));
 				System.out.println("!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!");
 				System.out.println("");
 				break;
-			case kw_lobb_acceptinvite:
+			case KW_LOBB_ACCEPTINVITE:
 				System.out.println("Your invite was accepted by "
-						+ that.substring(kw_lobb_acceptinvite.length() + 1)
+						+ that.substring(KW_LOBB_ACCEPTINVITE.length() + 1)
 						+ "!");
 				break;
-			case kw_lobb_declineinvite:
+			case KW_LOBB_DECLINEINVITE:
 				System.out.println("Your invite was declined by "
-						+ that.substring(kw_lobb_declineinvite.length() + 1)
+						+ that.substring(KW_LOBB_DECLINEINVITE.length() + 1)
 						+ "!");
 				client.inviteDeclined();
 				break;

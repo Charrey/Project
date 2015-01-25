@@ -18,7 +18,7 @@ import Project.logic.*;
 import java.util.Set;
 import java.util.HashSet;
 
-public class Client implements Runnable {
+public class Client extends Thread {
 
 	Interpreter inter;
 	private Game game;
@@ -55,10 +55,10 @@ public class Client implements Runnable {
 			while (true) {
 				gotten = scanner.nextLine();
 				String[] apart = gotten.split("\\s+");
-				switch(apart[0]) {
+				switch (apart[0]) {
 				case "accept":
 					if (invites.keySet().contains(apart[1])) {
-						sendMessage("ACCEPT " + apart[1]);
+						sendMessage(Interpreter.KW_LOBB_ACCEPTINVITE + apart[1]);
 						boardwidth = invites.get(apart[1])[0];
 						boardheight = invites.get(apart[1])[1];
 					}
@@ -68,27 +68,27 @@ public class Client implements Runnable {
 						sendMessage("DECLINE " + apart[1]);
 						invites.remove(apart[1]);
 					}
-				break;
+					break;
 				case "invite":
 					int[] array = { boardwidth, boardheight };
 					invites.put(apart[1], array);
 					sendMessage("INVITE " + apart[1]);
 					break;
 				case "board":
-					sendMessage("REQUEST");
+					sendMessage(Interpreter.KW_GAME_REQUESTBOARD);
 					break;
 				case "spam":
 					while (true) {
 						sendMessage(gotten.substring(5));
 					}
 				default:
-					sendMessage(gotten);				
-				}					
+					sendMessage(gotten);
+				}
 			}
-		}
-		else {
-			while(true){
-				gui.waitForCommand(); 
+		} else {
+			while (true) {
+				System.out.println("UEFHEOIWGBHIUEWHGFVIUHGFIUGFWHOIFUHWIUEGFHIUGWY");
+				gui.waitForCommand();
 			}
 		}
 	}
@@ -101,7 +101,7 @@ public class Client implements Runnable {
 	 * Requests the lobby from the server.
 	 */
 	public void askLobby() {
-		sendMessage(inter.kw_lobb_request);
+		sendMessage(Interpreter.KW_LOBB_REQUEST);
 	}
 
 	public void moveok(String arguments) {
@@ -156,7 +156,7 @@ public class Client implements Runnable {
 	}
 
 	public void sendMove(int move) {
-		sendMessage(inter.kw_game_move + " " + move);
+		sendMessage(Interpreter.KW_GAME_MOVE + " " + move);
 	}
 
 	public Boolean hasFunction(String function) {
@@ -214,7 +214,17 @@ public class Client implements Runnable {
 		}
 		sersup = new HashSet<String>();
 		invites = new HashMap<String, int[]>();
-		sendMessage("CONNECT " + this.name + " CUSTOM_BOARD_SIZE");
+		sendMessage("CONNECT " + this.name + " "
+				+ Interpreter.KW_FEATURE_CBOARDSIZE);
+	}
+	
+	
+	public static void hold(int time) {
+		try {
+			Thread.sleep(time);
+		} catch (InterruptedException e) {
+			System.out.println("Impatient bastard");
+		}
 	}
 
 	// Constructor, obviously
@@ -249,7 +259,8 @@ public class Client implements Runnable {
 		}
 		sersup = new HashSet<String>();
 		invites = new HashMap<String, int[]>();
-		sendMessage("CONNECT " + this.name + " CUSTOM_BOARD_SIZE");
+		sendMessage("CONNECT " + this.name + " "
+				+ Interpreter.KW_FEATURE_CBOARDSIZE);
 	}
 
 	/**
@@ -268,20 +279,29 @@ public class Client implements Runnable {
 	}
 
 	public void makemove() {
-		movetobemade = ((HumanPlayer) game.getFirstPlayer()).getInputHandler()
-				.getMove();
-		try {
-			out.write("MOVE " + movetobemade + " /n/n");
-			out.flush();
-		} catch (IOException ex) {
-			printMessage("Could not send move to server");
+		if (playerno == 1) {
+			movetobemade = ((HumanPlayer) game.getFirstPlayer())
+					.getInputHandler().getMove();
+		} else {
+			movetobemade = ((HumanPlayer) game.getSecondPlayer())
+					.getInputHandler().getMove();
 		}
+		this.sendMove(movetobemade);
 	}
 
-	public void gamestart() {
+	public void gamestart(String firstname, String secondname) {
 		player = new HumanPlayer(this.ourname, Mark.X, new InputHandler());
-		game = new Game(player, new HumanPlayer("That_pc", Mark.O,
-				new NetworkedInputHandler(this)), boardwidth, boardheight);
+		if (ourname.equals(firstname)) {
+			playerno = 1;
+			game = new Game(player, new HumanPlayer(secondname, Mark.O,
+					new NetworkedInputHandler(this)), boardwidth, boardheight);
+		} else {
+			playerno = 2;
+			game = new Game(new HumanPlayer(secondname, Mark.O,
+					new NetworkedInputHandler(this)), player, boardwidth,
+					boardheight);
+		}
+
 		// HumanPlayer met networked handler!!!!
 	}
 
@@ -314,12 +334,8 @@ public class Client implements Runnable {
 			lobby.add(splitted[i]);
 		}
 		printMessage("***LOBBY***");
-		if (lobby.isEmpty()) {
-			printMessage("* Empty lobby :(");
-		} else {
-			for (String i : lobby) {
-				printMessage("* " + i);
-			}
+		for (String i : lobby) {
+			printMessage("* " + i);
 		}
 		printMessage("***********");
 	}
@@ -383,4 +399,21 @@ public class Client implements Runnable {
 		printMessage("Type accept " + apart[0] + " to accept.");
 		printMessage("Type decline " + apart[0] + " to decline.");
 	}
+	
+	public void shutDown() {
+		scanner.close();
+		try {
+			sock.close();
+		} catch (IOException e) {
+			printMessage("Could not close server");
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 }

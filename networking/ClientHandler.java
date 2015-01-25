@@ -27,6 +27,7 @@ public class ClientHandler extends Thread {
 			out = new BufferedWriter(new OutputStreamWriter(
 					sock.getOutputStream()));
 		} catch (IOException io) {
+			server.printMessage("IOE in constructor");
 			this.shutdown();
 		}
 		clientName = sock.getInetAddress().getHostName();
@@ -36,27 +37,26 @@ public class ClientHandler extends Thread {
 		try {
 			String ontvangen;
 			while (!sock.isClosed()) {
-				// System.out.println("Ready to read new command from "+
-				// clientName);
+				server.printMessage("Ready for new command.");
 				ontvangen = in.readLine();
-				server.getGUI().addMessage(
-						"New command from " + clientName + ": " + ontvangen);
+				server.printMessage("New command from " + clientName + ": " + ontvangen);
 				server.interpreter.whatisthatServer(ontvangen, this, false);
 			}
 		} catch (IOException ex) {
+			server.printMessage("IOE in CH.run");
 			shutdown();
 		}
 	}
 
 	public void sendCommand(String command) {
 		try {
-			server.getGUI().addMessage(
+			server.printMessage(
 					"Writing to " + getClientName() + ": " + command);
 			out.write(command);
 			out.newLine();
 			out.flush();
 		} catch (IOException ex) {
-			server.getGUI().addMessage("Unable to send command");
+			server.printMessage("Unable to send command");
 		}
 	}
 
@@ -88,7 +88,7 @@ public class ClientHandler extends Thread {
 
 	public void shutdown() {
 
-		server.getGUI().addMessage(
+		server.printMessage(
 				"Client " + clientName + " has left the server.");
 		if (server.invites.containsKey(this)) {
 			server.invites.remove(this);
@@ -102,14 +102,14 @@ public class ClientHandler extends Thread {
 		server.lobby.remove(this);		
 		if (server.playing.get(this)) {
 			if (server.getOpponent(this)!=null) {
-			server.getOpponent(this).sendCommand(Interpreter.kw_game_gameend + " DISCONNECT"+" "+server.getOpponent(this).getClientName());}
+			server.getOpponent(this).sendCommand(Interpreter.KW_GAME_GAMEEND + " DISCONNECT"+" "+server.getOpponent(this).getClientName());}
 			server.gamesgames.remove(server.getGame(this));
 		}
 		server.playing.remove(this);
 		try {
 			sock.close();
 		} catch (IOException e) {
-			server.getGUI().addMessage("Could not close socket");
+			server.printMessage("Could not close socket");
 		}
 	}
 
