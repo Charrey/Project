@@ -30,6 +30,10 @@ public class MarkTest {
 		ifExpected("To String X", "X", mX.toString());
 		ifExpected("To String EMPTY", " ", mE.toString());
 		
+		ifExpected("From int to mark (0)", mE, Mark.fromInt(0));
+		ifExpected("From int to mark (1)", mX, Mark.fromInt(1));
+		ifExpected("From int to mark (2)", mO, Mark.fromInt(2));
+		
 		System.out.println("Test finished");
 		
 		

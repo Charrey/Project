@@ -20,7 +20,7 @@ public enum Mark {
 		} else if (a == 2) {
 			return O;
 		} else {
-			return null;
+			return EMPTY;
 		}
 	}
 
