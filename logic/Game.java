@@ -95,6 +95,10 @@ public class Game implements Runnable {
 		return current;
 	}
 	
+	public GameMainPanel getGamePanel() {
+		return gamePanel;
+	}
+	
 	public void gameEnd(){
 		System.out.println("Game has ended");
 	}

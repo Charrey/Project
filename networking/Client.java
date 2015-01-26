@@ -13,6 +13,8 @@ import java.io.BufferedReader;
 import java.io.OutputStreamWriter;
 
 import Project.gui.ClientGUI;
+import Project.gui.MainGui;
+import Project.gui.game.GameMainPanel;
 import Project.logic.*;
 
 import java.util.Set;
@@ -51,46 +53,59 @@ public class Client extends Thread {
 	public void watchInput() {
 		if (gui == null) {
 			scanner = new Scanner(System.in);
-			String gotten;
-			while (true) {
+		}
+		String gotten;
+		String[] apart;
+		while (true) {			
+			if (gui == null) {
 				gotten = scanner.nextLine();
-				String[] apart = gotten.split("\\s+");
-				switch (apart[0]) {
-				case "accept":
-					if (invites.keySet().contains(apart[1])) {
-						sendMessage(Interpreter.KW_LOBB_ACCEPTINVITE + apart[1]);
-						boardwidth = invites.get(apart[1])[0];
-						boardheight = invites.get(apart[1])[1];
-					}
-					break;
-				case "decline":
-					if (invites.keySet().contains(apart[1])) {
-						sendMessage("DECLINE " + apart[1]);
-						invites.remove(apart[1]);
-					}
-					break;
-				case "invite":
-					int[] array = { boardwidth, boardheight };
-					invites.put(apart[1], array);
-					sendMessage("INVITE " + apart[1]);
-					break;
-				case "board":
-					sendMessage(Interpreter.KW_GAME_REQUESTBOARD);
-					break;
-				case "spam":
-					while (true) {
-						sendMessage(gotten.substring(5));
-					}
-				default:
-					sendMessage(gotten);
-				}
+				apart = gotten.split("\\s+");
+			} else {
+				gotten = gui.waitForCommand();
+				apart = gotten.split("\\s+");
 			}
-		} else {
-			while (true) {
-				System.out.println("UEFHEOIWGBHIUEWHGFVIUHGFIUGFWHOIFUHWIUEGFHIUGWY");
-				sendMessage(gui.waitForCommand());
+			switch (apart[0]) {
+			case "accept":
+				if (invites.keySet().contains(apart[1])) {
+					sendMessage(Interpreter.KW_LOBB_ACCEPTINVITE + apart[1]);
+					boardwidth = invites.get(apart[1])[0];
+					boardheight = invites.get(apart[1])[1];
+				}
+				break;
+			case "decline":
+				if (invites.keySet().contains(apart[1])) {
+					sendMessage("DECLINE " + apart[1]);
+					invites.remove(apart[1]);
+				}
+				break;
+			case "invite":
+				int[] array = { boardwidth, boardheight };
+				invites.put(apart[1], array);
+				sendMessage("INVITE " + apart[1]);
+				break;
+			case "board":
+				sendMessage(Interpreter.KW_GAME_REQUESTBOARD);
+				break;
+			case "spam":
+				while (true) {
+					sendMessage(gotten.substring(5));
+				}
+			case "help":
+				printMessage("----HELP--------------");
+				printMessage("help -- view this help screen");
+				printMessage("accept <name> -- accept an invite");
+				printMessage("decline <name> -- decline an invite");
+				printMessage("invite <name> -- invite a player");
+				printMessage("----DEBUG-ONLY--------");
+				printMessage("board -- refresh the board");
+				printMessage("spam <command> -- spam the server");
+				printMessage("<command> -- send a command to the server");
+				printMessage("----------------------");
+			default:
+				sendMessage(gotten);
 			}
 		}
+
 	}
 
 	// ****************************************
@@ -176,7 +191,7 @@ public class Client extends Thread {
 		return sock;
 	}
 
-	private void printMessage(String message) {
+	void printMessage(String message) {
 		if (gui == null) {
 			System.out.println(message);
 		} else {
@@ -217,8 +232,7 @@ public class Client extends Thread {
 		sendMessage("CONNECT " + this.name + " "
 				+ Interpreter.KW_FEATURE_CBOARDSIZE);
 	}
-	
-	
+
 	public static void hold(int time) {
 		try {
 			Thread.sleep(time);
@@ -290,17 +304,37 @@ public class Client extends Thread {
 	}
 
 	public void gamestart(String firstname, String secondname) {
-		player = new HumanPlayer(this.ourname, Mark.X, new InputHandler());
-		if (ourname.equals(firstname)) {
-			playerno = 1;
-			game = new Game(player, new HumanPlayer(secondname, Mark.O,
-					new NetworkedInputHandler(this)), boardwidth, boardheight);
+		player = new HumanPlayer(ourname, Mark.X, new InputHandler());
+		if (gui == null) {
+			if (ourname.equals(firstname)) {
+				playerno = 1;
+				game = new Game(player, new HumanPlayer(secondname, Mark.O,
+						new NetworkedInputHandler(this)), boardwidth,
+						boardheight);
+			} else {
+				playerno = 2;
+				game = new Game(new HumanPlayer(secondname, Mark.O,
+						new NetworkedInputHandler(this)), player, boardwidth,
+						boardheight);
+			}
 		} else {
-			playerno = 2;
-			game = new Game(new HumanPlayer(secondname, Mark.O,
-					new NetworkedInputHandler(this)), player, boardwidth,
-					boardheight);
+			MainGui thegui = new MainGui();
+			if (ourname.equals(firstname)) {
+				playerno = 1;
+				game = new Game(player, new HumanPlayer(secondname, Mark.O,
+						new NetworkedInputHandler(this)), boardwidth,
+						boardheight);
+			} else {
+				playerno = 2;
+				game = new Game(new HumanPlayer(secondname, Mark.O,
+						new NetworkedInputHandler(this)), player, boardwidth,
+						boardheight);
+			}
+			thegui.changePanel(new GameMainPanel(thegui, game, player
+					.getInputHandler()));
+
 		}
+		game.getGamePanel();
 
 		// HumanPlayer met networked handler!!!!
 	}
@@ -399,7 +433,7 @@ public class Client extends Thread {
 		printMessage("Type accept " + apart[0] + " to accept.");
 		printMessage("Type decline " + apart[0] + " to decline.");
 	}
-	
+
 	public void shutDown() {
 		scanner.close();
 		try {
@@ -408,12 +442,5 @@ public class Client extends Thread {
 			printMessage("Could not close server");
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
+
 }

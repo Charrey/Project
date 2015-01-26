@@ -1,6 +1,9 @@
 package Project.logic;
 
 import static org.junit.Assert.*;
+
+import java.math.BigInteger;
+
 import Project.networking.*;
 
 import org.junit.Before;
@@ -14,7 +17,13 @@ public class Testing {
 
 	@Test
 	public void test() {
-		Board b = new Board(7, 6);
+		
+		System.out.println(new BigInteger("100").compareTo(new BigInteger(Integer
+				.toString(Integer.MAX_VALUE))) <= 0);
+		
+		
+		
+		/*Board b = new Board(7, 6);
 		b.putMark(1, Mark.X);
 		String send = b.networkBoard();
 		Board.printNetworkBoard(send);

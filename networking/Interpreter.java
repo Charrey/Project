@@ -125,7 +125,7 @@ public class Interpreter {
 				}
 				break;
 			case KW_LOBB_ACCEPTINVITE:
-				server.acceptinvite(source, that);
+				server.acceptinvite(source, that.substring(KW_LOBB_ACCEPTINVITE.length()+1));
 				break;
 			case KW_LOBB_DECLINEINVITE:
 				server.denyinvite(source, that);
@@ -184,7 +184,7 @@ public class Interpreter {
 				client.moveok(that.substring(KW_GAME_MOVEOK.length() + 1));
 				break;
 			case KW_GAME_REQMOVE:
-				client.getGame().getBoard().printNetworkBoard(client.getGame().getBoard().networkBoard());
+				Board.printNetworkBoard(client.getGame().getBoard().networkBoard());
 				// TODO
 				break;
 			case KW_FEATURE_CHAT:
@@ -203,20 +203,20 @@ public class Interpreter {
 				client.invited(that.substring(KW_LOBB_INVITE.length() + 1));
 				break;
 			case KW_CONN_ERROR:
-				System.out.println("");
-				System.out.println("!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!");
-				System.out.println("ERROR RECEIVED FROM SERVER: "
+				client.printMessage("");
+				client.printMessage("!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!");
+				client.printMessage("ERROR RECEIVED FROM SERVER: "
 						+ that.substring(KW_CONN_ERROR.length() + 1));
-				System.out.println("!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!");
-				System.out.println("");
+				client.printMessage("!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!");
+				client.printMessage("");
 				break;
 			case KW_LOBB_ACCEPTINVITE:
-				System.out.println("Your invite was accepted by "
+				client.printMessage("Your invite was accepted by "
 						+ that.substring(KW_LOBB_ACCEPTINVITE.length() + 1)
 						+ "!");
 				break;
 			case KW_LOBB_DECLINEINVITE:
-				System.out.println("Your invite was declined by "
+				client.printMessage("Your invite was declined by "
 						+ that.substring(KW_LOBB_DECLINEINVITE.length() + 1)
 						+ "!");
 				client.inviteDeclined();
@@ -226,7 +226,7 @@ public class Interpreter {
 			}
 		} else {
 			if (that == null) {
-				System.out.println("We have been kicked.");
+				client.printMessage("We have been kicked.");
 				System.exit(0);
 			} else {
 				System.err
