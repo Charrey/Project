@@ -13,6 +13,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
 
+import java.math.BigInteger;
+
 public class Server extends Thread {
 
 	// Set of string contains features
@@ -24,8 +26,10 @@ public class Server extends Thread {
 	private boolean running;
 	private int portNumber;
 	private ServerGUI gui;
+	
 
-	public Map<ClientHandler, String[]> invites; 	
+	public Map<ClientHandler, String[]> invites;
+
 	// First string = target,
 	// second = toString(width),
 	// third = toString(height)
@@ -434,8 +438,8 @@ public class Server extends Thread {
 			if (!Character.isDigit(array[i])) {
 				return false;
 			}
-		}
-		return true;
+		}	
+		return (new BigInteger(thestring).compareTo(new BigInteger(Integer.toString(Integer.MAX_VALUE)))<=0);
 	}
 
 	/**
@@ -473,7 +477,7 @@ public class Server extends Thread {
 
 		else {
 			ClientHandler invitesource = findClientHandler(apart[1]);
-			int boardwidth = Integer.parseInt(invites.get(invitesource)[2]);
+			int boardwidth = Integer.parseInt(invites.get(invitesource)[1]);
 			int boardheight = Integer.parseInt(invites.get(invitesource)[2]);
 			invites.remove(invitesource);
 			for (ClientHandler i : invites.keySet()) {
@@ -535,7 +539,7 @@ public class Server extends Thread {
 	 */
 	public void invite(String targetandxy, ClientHandler source) {
 		String[] apart = targetandxy.split("\\s+");
-		if (apart.length != 2) {
+		if (apart.length != 1) {
 			if (apart.length != 3 || !representsInt(apart[1])
 					|| !representsInt(apart[2])) {
 				sendError(source, "BadInviteSyntax");
@@ -553,18 +557,25 @@ public class Server extends Thread {
 			sendError(source, "AlreadyInvited");
 
 		} else {
-			invites.put(source, apart);
-			if (apart.length == 2) {
+			if (apart.length == 1) {
+				String[] toput = {apart[0],"7","6"};
 				findClientHandler(apart[0]).sendCommand(
 						Interpreter.KW_LOBB_INVITE + " "
 								+ source.getClientName() + " 7 6");
+			} else {
+				if (lobby.get(findClientHandler(apart[0])).contains(Interpreter.KW_FEATURE_CBOARDSIZE)) {
+				invites.put(source, apart);
+				findClientHandler(apart[0]).sendCommand(
+						Interpreter.KW_LOBB_INVITE + " "
+								+ source.getClientName() + " " + apart[1] + " "
+								+ apart[2]);
+				} else {
+					sendError(source, "TargetNoCBoardSize");
+				}
 			}
-			findClientHandler(apart[0]).sendCommand(
-					Interpreter.KW_LOBB_INVITE + " " + source.getClientName()
-							+ " " + apart[1] + " " + apart[2]);
 		}
 	}
-	
+
 	public void shutDown() {
 		running = false;
 		try {
@@ -576,16 +587,12 @@ public class Server extends Thread {
 			try {
 				i.getSocket().close();
 			} catch (IOException e) {
-				printMessage("Could not disconnect "+i.getClientName());
+				printMessage("Could not disconnect " + i.getClientName());
 			}
 			lobby.remove(i);
 			playing.remove(i);
 		}
-		
-		
+
 	}
-	
-	
-	
-	
+
 }
