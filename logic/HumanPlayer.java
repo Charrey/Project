@@ -18,22 +18,27 @@ public class HumanPlayer extends Player {
 	@Override
 	public int determineMove(Board playingfield) {
 		if(inputHandler==null){
-			System.out.println("Which column would you like to pick, "+ this.getName() + "?");
+			System.out.println("Which column would you like to pick, "+ this.getName() + "? " + "(type hint for hint)");
 			Scanner a = new Scanner(System.in);
-			int pick;
+			String pick;
 			boolean processing = true;
 			//String tussenvar = a.nextLine();
 			while(processing){
 				try{
-					pick = Integer.parseInt(a.nextLine());
-					if(pick >= 0 && pick < playingfield.getWidth() && playingfield.columnFree(pick)){
-						//playingfield.putMark(pick, this.getMark());
-						processing = false;
-						return pick;
+					pick = a.nextLine();
+					if(pick.equals("hint")){
+						int[] hint = playingfield.hint(getMark());
+						System.out.println("Hint: " + hint[0]);
 					}else{
-						System.out.println("Pick a valid number");
+						int move = Integer.parseInt(pick);
+						if(move >= 0 && move < playingfield.getWidth() && playingfield.columnFree(move)){
+							//playingfield.putMark(pick, this.getMark());
+							processing = false;
+							return move;
+						}else{
+							System.out.println("Pick a valid number");
+						}
 					}
-			
 				}catch(NumberFormatException e){
 					System.out.println("Not a valid input, try antoher set");	
 				}
