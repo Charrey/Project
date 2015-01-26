@@ -88,7 +88,7 @@ public class Client extends Thread {
 		} else {
 			while (true) {
 				System.out.println("UEFHEOIWGBHIUEWHGFVIUHGFIUGFWHOIFUHWIUEGFHIUGWY");
-				gui.waitForCommand();
+				sendMessage(gui.waitForCommand());
 			}
 		}
 	}
