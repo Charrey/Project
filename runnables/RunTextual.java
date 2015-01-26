@@ -30,14 +30,14 @@ public class RunTextual {
 			gotten = scanner.nextLine();
 			Player p1;
 			Player p2;
-			if (gotten == "") {
+			if (gotten.equals("")) {
 				p1 = new ComputerPlayer(Mark.X);
 			} else {
 				p1 = new HumanPlayer(gotten, Mark.X);
 			}
 			System.out.println("Pick name for player 2 (empty for AI)");
 			gotten = scanner.nextLine();
-			if (gotten == "") {
+			if (gotten.equals("")) {
 				p2 = new ComputerPlayer(Mark.O);
 			} else {
 				p2 = new HumanPlayer(gotten, Mark.O);
