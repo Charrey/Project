@@ -98,7 +98,7 @@ public class ClientGUI extends JFrame {
 		
 		
 		commandField = new JTextField(30);
-		sentCommandButton = new JButton("Sent");
+		sentCommandButton = new JButton("Send");
 		commandPanel.add(commandField);
 		commandPanel.add(sentCommandButton);
 		

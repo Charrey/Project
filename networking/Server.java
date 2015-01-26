@@ -454,14 +454,14 @@ public class Server extends Thread {
 	 */
 	public String validInvite(ClientHandler source, String arguments) {
 		String[] apart = arguments.split("\\s+");
-		if (apart.length < 2) {
+		if (apart.length < 1) {
 			return Interpreter.KW_CONN_ERROR + " SyntaxError";
 			// } else if (!representsInt(apart[2]) || !representsInt(apart[3]))
 			// {
 			// return Interpreter.KW_CONN_ERROR + " SyntaxError";
-		} else if (findClientHandler(apart[1]) == null) {
+		} else if (findClientHandler(apart[0]) == null) {
 			return Interpreter.KW_CONN_ERROR + " NoSuchClient";
-		} else if (!invites.containsKey(findClientHandler(apart[1]))) {
+		} else if (!invites.containsKey(findClientHandler(apart[0]))) {
 			return Interpreter.KW_CONN_ERROR + " NoOpenInvite";
 		} else {
 			return "true";
@@ -469,14 +469,14 @@ public class Server extends Thread {
 	}
 
 	public void acceptinvite(ClientHandler source, String arguments) {
-
+		printMessage("Start of acceptinvite");
 		String[] apart = arguments.split("\\s+");
 		if (!validInvite(source, arguments).equals("true")) {
 			source.sendCommand(validInvite(source, arguments));
 		}
 
 		else {
-			ClientHandler invitesource = findClientHandler(apart[1]);
+			ClientHandler invitesource = findClientHandler(apart[0]);
 			int boardwidth = Integer.parseInt(invites.get(invitesource)[1]);
 			int boardheight = Integer.parseInt(invites.get(invitesource)[2]);
 			invites.remove(invitesource);
@@ -488,14 +488,14 @@ public class Server extends Thread {
 							+ source.getClientName());
 				}
 			}
-			findClientHandler(apart[1]).sendCommand(
+			findClientHandler(apart[0]).sendCommand(
 					Interpreter.KW_CONN_GAMESTART + " "
-							+ source.getClientName() + " " + apart[1]);
+							+ source.getClientName() + " " + apart[0]);
 			source.sendCommand(Interpreter.KW_CONN_GAMESTART + " "
-					+ source.getClientName() + " " + apart[1]);
+					+ source.getClientName() + " " + apart[0]);
 			source.setPlayerno(1);
 			invitesource.setPlayerno(2);
-			StartGame(source, findClientHandler(apart[1]), boardwidth,
+			StartGame(source, findClientHandler(apart[0]), boardwidth,
 					boardheight);
 		}
 	}
@@ -517,6 +517,7 @@ public class Server extends Thread {
 
 	public void StartGame(ClientHandler playerone, ClientHandler playertwo,
 			int width, int height) {
+		printMessage("Start of startgame");
 		gamesgames.put(new Game(new HumanPlayer(playerone.getClientName(),
 				Mark.X, new NetworkedInputHandler(playerone)), new HumanPlayer(
 				playertwo.getClientName(), Mark.O, new NetworkedInputHandler(
@@ -524,6 +525,7 @@ public class Server extends Thread {
 		playerone.sendCommand(Interpreter.KW_GAME_REQMOVE);
 		playing.put(playerone, true);
 		playing.put(playertwo, true);
+		printMessage("End of startgame");
 	}
 
 	/**
@@ -559,6 +561,7 @@ public class Server extends Thread {
 		} else {
 			if (apart.length == 1) {
 				String[] toput = {apart[0],"7","6"};
+				invites.put(source, toput);
 				findClientHandler(apart[0]).sendCommand(
 						Interpreter.KW_LOBB_INVITE + " "
 								+ source.getClientName() + " 7 6");

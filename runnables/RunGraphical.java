@@ -1,12 +1,10 @@
 package Project.runnables;
-import Project.logic.FourInARow;
+import Project.gui.MainGui;
 
 public class RunGraphical {
 
 	public static void main(String[] args) {
-		String[] a = {"l","o","l"};
-		FourInARow.main(a);
-
+		new MainGui();
 	}
 
 }

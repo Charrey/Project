@@ -184,8 +184,8 @@ public class Interpreter {
 				client.moveok(that.substring(KW_GAME_MOVEOK.length() + 1));
 				break;
 			case KW_GAME_REQMOVE:
-				Board.printNetworkBoard(client.getGame().getBoard().networkBoard());
-				// TODO
+				//Board.printNetworkBoard(client.getGame().getBoard().networkBoard());
+				client.makemove();
 				break;
 			case KW_FEATURE_CHAT:
 				client.SetSerSup(KW_FEATURE_CHAT, true);
@@ -214,6 +214,7 @@ public class Interpreter {
 				client.printMessage("Your invite was accepted by "
 						+ that.substring(KW_LOBB_ACCEPTINVITE.length() + 1)
 						+ "!");
+				//client.inviteAccepted(splitted[1]);
 				break;
 			case KW_LOBB_DECLINEINVITE:
 				client.printMessage("Your invite was declined by "

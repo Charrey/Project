@@ -43,7 +43,7 @@ public class TUI implements Observer {
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		System.out.println("Board situation \n" + showBoard());
+		System.out.println(showBoard());
 	}
 	
 	public static boolean readPlayAgain() {

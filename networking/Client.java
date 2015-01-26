@@ -22,27 +22,26 @@ import java.util.HashSet;
 
 public class Client extends Thread {
 
-	Interpreter inter;
+	protected Interpreter inter;
 	private Game game;
-	String name;
+	protected String name;
 
 	// Server supports:
-	Set<String> sersup;
+	private Set<String> sersup;
 
-	Socket sock;
-	Set<String> lobby;
-	HumanPlayer player;
-	String ourname;
-	int playerno;
+	protected Socket sock;
+	protected Set<String> lobby;
+	private HumanPlayer player;
+	private int playerno;
 
 	private BufferedReader in;
 	private BufferedWriter out;
 
-	int movetobemade;
+	private int movetobemade;
 	private Scanner scanner;
 
-	int boardwidth;
-	int boardheight;
+	private int boardwidth;
+	private int boardheight;
 
 	Map<String, int[]> invites;
 	private ClientGUI gui;
@@ -56,18 +55,22 @@ public class Client extends Thread {
 		}
 		String gotten;
 		String[] apart;
-		while (true) {			
+		while (true) {
 			if (gui == null) {
 				gotten = scanner.nextLine();
-				apart = gotten.split("\\s+");
 			} else {
 				gotten = gui.waitForCommand();
-				apart = gotten.split("\\s+");
 			}
+			apart = gotten.split("\\s+");
 			switch (apart[0]) {
 			case "accept":
 				if (invites.keySet().contains(apart[1])) {
-					sendMessage(Interpreter.KW_LOBB_ACCEPTINVITE + apart[1]);
+					sendMessage(Interpreter.KW_LOBB_ACCEPTINVITE + " "
+							+ apart[1]);
+					System.out.println("boardwidth set to "
+							+ invites.get(apart[1])[0] + " in 70 for " + name);
+					System.out.println("boardheight set to "
+							+ invites.get(apart[1])[1] + " in 71" + name);
 					boardwidth = invites.get(apart[1])[0];
 					boardheight = invites.get(apart[1])[1];
 				}
@@ -79,8 +82,20 @@ public class Client extends Thread {
 				}
 				break;
 			case "invite":
-				int[] array = { boardwidth, boardheight };
+				int[] array = new int[2];
+				System.out.println("Apart length is "+apart.length);
+				if (apart.length == 4 && Server.representsInt(apart[1])
+						&& Server.representsInt(apart[2])) {
+					array[0] = Integer.parseInt(apart[1]);
+					array[1] = Integer.parseInt(apart[2]);
+				} else if (apart.length == 2) {
+					array[0] = 7;
+					array[1] = 6;
+				}
+
 				invites.put(apart[1], array);
+				System.out.println(apart[1] + " and dimensions " + array[0]
+						+ array[1] + " in 97");
 				sendMessage("INVITE " + apart[1]);
 				break;
 			case "board":
@@ -101,6 +116,7 @@ public class Client extends Thread {
 				printMessage("spam <command> -- spam the server");
 				printMessage("<command> -- send a command to the server");
 				printMessage("----------------------");
+				break;
 			default:
 				sendMessage(gotten);
 			}
@@ -294,47 +310,63 @@ public class Client extends Thread {
 
 	public void makemove() {
 		if (playerno == 1) {
-			movetobemade = ((HumanPlayer) game.getFirstPlayer())
-					.getInputHandler().getMove();
+			movetobemade = game.getFirstPlayer().determineMove(game.getBoard());
 		} else {
-			movetobemade = ((HumanPlayer) game.getSecondPlayer())
-					.getInputHandler().getMove();
+			movetobemade = game.getSecondPlayer()
+					.determineMove(game.getBoard());
 		}
 		this.sendMove(movetobemade);
 	}
 
 	public void gamestart(String firstname, String secondname) {
-		player = new HumanPlayer(ourname, Mark.X, new InputHandler());
+		if (invites.containsKey(firstname)) {
+			this.setDimensions(invites.get(firstname)[0],
+					invites.get(firstname)[1]);
+		} else {
+			this.setDimensions(invites.get(secondname)[0],
+					invites.get(secondname)[1]);
+		}
+
+		player = new HumanPlayer(name, Mark.X, new InputHandler());
 		if (gui == null) {
-			if (ourname.equals(firstname)) {
+			if (name.equals(firstname)) {
 				playerno = 1;
+				printMessage("Board width: " + boardwidth);
+				printMessage("Board height: " + boardheight);
 				game = new Game(player, new HumanPlayer(secondname, Mark.O,
 						new NetworkedInputHandler(this)), boardwidth,
 						boardheight);
 			} else {
 				playerno = 2;
+				printMessage("Board width: " + boardwidth);
+				printMessage("Board height: " + boardheight);
 				game = new Game(new HumanPlayer(secondname, Mark.O,
 						new NetworkedInputHandler(this)), player, boardwidth,
 						boardheight);
 			}
+			TUI thetui = new TUI(game.getBoard());
 		} else {
 			MainGui thegui = new MainGui();
-			if (ourname.equals(firstname)) {
+			if (name.equals(firstname)) {
 				playerno = 1;
+				printMessage("Board width: " + boardwidth);
+				printMessage("Board height: " + boardheight);
 				game = new Game(player, new HumanPlayer(secondname, Mark.O,
-						new NetworkedInputHandler(this)), boardwidth,
+						new NetworkedInputHandler(this)), thegui, boardwidth,
 						boardheight);
 			} else {
 				playerno = 2;
+				printMessage("Board width: " + boardwidth);
+				printMessage("Board height: " + boardheight);
 				game = new Game(new HumanPlayer(secondname, Mark.O,
-						new NetworkedInputHandler(this)), player, boardwidth,
-						boardheight);
+						new NetworkedInputHandler(this)), player, thegui,
+						boardwidth, boardheight);
 			}
-			thegui.changePanel(new GameMainPanel(thegui, game, player
-					.getInputHandler()));
+			// thegui.changePanel(new GameMainPanel(thegui, game, player
+			// .getInputHandler()));
 
 		}
-		game.getGamePanel();
+		// game.getGamePanel();
 
 		// HumanPlayer met networked handler!!!!
 	}
@@ -408,6 +440,13 @@ public class Client extends Thread {
 
 	}
 
+	public void setDimensions(int width, int height) {
+		System.out.println("Width set to " + width + " in 438 for " + name);
+		System.out.println("Height set to " + height + " in 439 for " + name);
+		boardwidth = width;
+		boardheight = height;
+	}
+
 	/**
 	 * Prompts the user for a reaction to being invited to a game.
 	 * 
@@ -430,6 +469,8 @@ public class Client extends Thread {
 			dimensions[1] = Integer.parseInt(apart[2]);
 		}
 		invites.put(apart[0], dimensions);
+		System.out.println(apart[0] + " and dimensions " + dimensions[0]
+				+ dimensions[1] + " in 466");
 		printMessage("Type accept " + apart[0] + " to accept.");
 		printMessage("Type decline " + apart[0] + " to decline.");
 	}
@@ -442,5 +483,12 @@ public class Client extends Thread {
 			printMessage("Could not close server");
 		}
 	}
+
+	/*
+	 * public void inviteAccepted(String name) {
+	 * this.setDimensions(invites.get(name)[0], invites.get(name)[1]);
+	 * 
+	 * }
+	 */
 
 }

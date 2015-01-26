@@ -59,15 +59,15 @@ public class NamePanel extends JPanel {
 	//TODO fix reset bug, where arrow changes while it shouldn't
 	public void update() {
 		if(justStarted){
-			arrowLabel1.setText("<-");
+			arrowLabel1.setText("<=");
 			arrowLabel2.setText("");
 			justStarted=false;
 		}
 		else if(g.getCurrent() == 1){
-			arrowLabel1.setText("<-");
+			arrowLabel1.setText("<=");
 			arrowLabel2.setText("");
 		}else{
-			arrowLabel2.setText("->");
+			arrowLabel2.setText("=>");
 			arrowLabel1.setText("");
 		}
 	}
