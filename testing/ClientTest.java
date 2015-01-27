@@ -33,6 +33,7 @@ public class ClientTest {
 		client1.sendMessage("INVITE client2");
 		Client.hold(1000);
 		client2.sendMessage("ACCEPT client1");
+		Client.hold(250);
 		ifExpectedNotNull("Game niet null", client1.getGame());
 		Client.hold(250);
 		client2.sendMove(3);
