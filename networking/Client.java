@@ -61,7 +61,9 @@ public class Client extends Thread {
 	 */
 	public void watchInput() {
 		if (gui == null) {
-			scanner.close();
+			if(scanner!=null){
+				scanner.close();
+			}
 			scanner = new Scanner(System.in);
 		}
 		String gotten;
