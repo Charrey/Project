@@ -177,7 +177,7 @@ public class Interpreter {
 				client.gameend();
 				break;
 			case KW_CONN_GAMESTART:
-				client.gamestart(splitted[1], splitted[2]);
+				client.gamestart(splitted[1], splitted[2], false);
 				break;
 			case KW_CONN_LOBBY:
 				if (splitted.length < 2) {
@@ -215,6 +215,9 @@ public class Interpreter {
 						+ that.substring(KW_CONN_ERROR.length() + 1));
 				client.printMessage("!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!");
 				client.printMessage("");
+				if (client instanceof ClientBot) {
+					((ClientBot)client).retryConnection();
+				}
 				break;
 			case KW_LOBB_ACCEPTINVITE:
 				client.printMessage("Your invite was accepted by "

@@ -61,7 +61,7 @@ public class Client extends Thread {
 	 */
 	public void watchInput() {
 		if (gui == null) {
-			if(scanner!=null){
+			if (scanner != null) {
 				scanner.close();
 			}
 			scanner = new Scanner(System.in);
@@ -81,11 +81,20 @@ public class Client extends Thread {
 					if (invites.keySet().contains(apart[1])) {
 						sendMessage(Interpreter.KW_LOBB_ACCEPTINVITE + " "
 								+ apart[1]);
+
 						//System.out.println("boardwidth set to "+ invites.get(apart[1])[0] + " in 70 for "+ name);
 						//System.out.println("boardheight set to "+ invites.get(apart[1])[1] + " in 71" + name);
 						setDimensions(invites.get(apart[1])[0], invites.get(apart[1])[0]);
 						//boardwidth = invites.get(apart[1])[0];
 						//boardheight = invites.get(apart[1])[1];
+
+						// System.out.println("boardwidth set to "+
+						// invites.get(apart[1])[0] + " in 70 for "+ name);
+						// System.out.println("boardheight set to "+
+						// invites.get(apart[1])[1] + " in 71" + name);
+						boardwidth = invites.get(apart[1])[0];
+						boardheight = invites.get(apart[1])[1];
+
 					}
 					break;
 				case "decline":
@@ -96,7 +105,7 @@ public class Client extends Thread {
 					break;
 				case "invite":
 					int[] array = new int[2];
-					//System.out.println("Apart length is " + apart.length);
+					// System.out.println("Apart length is " + apart.length);
 					if (apart.length == 4 && Server.representsInt(apart[1])
 							&& Server.representsInt(apart[2])) {
 						array[0] = Integer.parseInt(apart[1]);
@@ -107,7 +116,8 @@ public class Client extends Thread {
 					}
 
 					invites.put(apart[1], array);
-					//System.out.println(apart[1] + " and dimensions " + array[0] + array[1] + " in 97");
+					// System.out.println(apart[1] + " and dimensions " +
+					// array[0] + array[1] + " in 97");
 					sendMessage("INVITE " + apart[1]);
 					break;
 				case "board":
@@ -133,7 +143,8 @@ public class Client extends Thread {
 					sendMessage(gotten);
 				}
 			} else {
-				sendMove(player.determineMove(getGame().getBoard(), gotten, scanner));
+				sendMove(player.determineMove(getGame().getBoard(), gotten,
+						scanner));
 				UseScannerForDeterminingMoves(false);
 			}
 		}
@@ -312,6 +323,10 @@ public class Client extends Thread {
 		}
 	}
 
+	public void setClientname(String name) {
+		this.name = name;
+	}
+
 	// Constructor, obviously
 	/**
 	 * @param address
@@ -344,7 +359,7 @@ public class Client extends Thread {
 		}
 		sersup = new HashSet<String>();
 		invites = new HashMap<String, int[]>();
-		sendMessage("CONNECT " + this.name + " "
+		sendMessage(Interpreter.KW_CONN_WELCOME + " " + this.name + " "
 				+ Interpreter.KW_FEATURE_CBOARDSIZE);
 	}
 
@@ -384,16 +399,19 @@ public class Client extends Thread {
 	 * @param secondname
 	 *            is the name of player #2
 	 */
-	public void gamestart(String firstname, String secondname) {
-		if (invites.containsKey(firstname)) {
-			this.setDimensions(invites.get(firstname)[0],
-					invites.get(firstname)[1]);
+	public void gamestart(String firstname, String secondname,
+			boolean standardsize) {
+		if (!standardsize) {
+			if (invites.containsKey(firstname)) {
+				this.setDimensions(invites.get(firstname)[0],
+						invites.get(firstname)[1]);
+			} else {
+				this.setDimensions(invites.get(secondname)[0],
+						invites.get(secondname)[1]);
+			}
 		} else {
-			this.setDimensions(invites.get(secondname)[0],
-					invites.get(secondname)[1]);
+			this.setDimensions(7, 6);
 		}
-		
-		
 		if (gui == null) {
 			player = new HumanPlayer(name, Mark.X, this);
 			if (name.equals(firstname)) {
@@ -409,7 +427,7 @@ public class Client extends Thread {
 				printMessage("Board height: " + boardheight);
 				game = new Game(new HumanPlayer(secondname, Mark.O,
 						new NetworkedInputHandler(this)), player, boardwidth,
-						boardheight,true);
+						boardheight, true);
 			}
 			TUI thetui = new TUI(game.getBoard());
 		} else {
@@ -421,14 +439,14 @@ public class Client extends Thread {
 				printMessage("Board height: " + boardheight);
 				game = new Game(player, new HumanPlayer(secondname, Mark.O,
 						new NetworkedInputHandler(this)), thegui, boardwidth,
-						boardheight,true);
+						boardheight, true);
 			} else {
 				playerno = 2;
 				printMessage("Board width: " + boardwidth);
 				printMessage("Board height: " + boardheight);
 				game = new Game(new HumanPlayer(secondname, Mark.O,
 						new NetworkedInputHandler(this)), player, thegui,
-						boardwidth, boardheight,true);
+						boardwidth, boardheight, true);
 			}
 			// thegui.changePanel(new GameMainPanel(thegui, game, player
 			// .getInputHandler()));
@@ -497,12 +515,12 @@ public class Client extends Thread {
 
 	public void run() {
 		try {
-			//printMessage("Ready to read new command ||||||||||||||||||||||||");
+			// printMessage("Ready to read new command ||||||||||||||||||||||||");
 			String tussenvar = in.readLine();
 			while (!sock.isClosed()) {
 				printMessage("Message received from server: " + tussenvar);
 				inter.whatisthatClient(tussenvar);
-				//printMessage("Ready to read new command ||||||||||||||||||||||||");
+				// printMessage("Ready to read new command ||||||||||||||||||||||||");
 				tussenvar = in.readLine();
 			}
 		} catch (IOException e) {
@@ -527,8 +545,9 @@ public class Client extends Thread {
 	}
 
 	public void setDimensions(int width, int height) {
-		//System.out.println("Width set to " + width + " in 438 for " + name);
-		//System.out.println("Height set to " + height + " in 439 for " + name);
+		// System.out.println("Width set to " + width + " in 438 for " + name);
+		// System.out.println("Height set to " + height + " in 439 for " +
+		// name);
 		boardwidth = width;
 		boardheight = height;
 	}
@@ -555,7 +574,8 @@ public class Client extends Thread {
 			dimensions[1] = Integer.parseInt(apart[2]);
 		}
 		invites.put(apart[0], dimensions);
-		//System.out.println(apart[0] + " and dimensions " + dimensions[0] + dimensions[1] + " in 466");
+		// System.out.println(apart[0] + " and dimensions " + dimensions[0] +
+		// dimensions[1] + " in 466");
 		printMessage("Type accept " + apart[0] + " to accept.");
 		printMessage("Type decline " + apart[0] + " to decline.");
 	}

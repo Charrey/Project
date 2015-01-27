@@ -15,6 +15,8 @@ import Project.networking.Server;
 import Project.networking.ServerConsole;
 
 public class RunTextual {
+	
+	private static Boolean ai = false;
 
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
@@ -75,6 +77,7 @@ public class RunTextual {
 				}
 				if (name.equals("a")) {
 					name = ClientBot.NAME;
+					ai = true;
 				}
 				System.out
 						.println("Welcome, "
@@ -119,7 +122,7 @@ public class RunTextual {
 				}
 
 				Client client;
-				if (name.equals(ClientBot.NAME)) {
+				if (ai) {
 					client = new ClientBot(ip, intport, name);
 				} else {
 					client = new Client(ip, intport, name);
