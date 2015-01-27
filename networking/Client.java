@@ -52,6 +52,7 @@ public class Client extends Thread {
 	}
 
 	public void resumeScanner() {
+		scanner.close();
 		scanner = new Scanner(System.in);
 	}
 
@@ -60,6 +61,7 @@ public class Client extends Thread {
 	 */
 	public void watchInput() {
 		if (gui == null) {
+			scanner.close();
 			scanner = new Scanner(System.in);
 		}
 		String gotten;
@@ -77,11 +79,8 @@ public class Client extends Thread {
 					if (invites.keySet().contains(apart[1])) {
 						sendMessage(Interpreter.KW_LOBB_ACCEPTINVITE + " "
 								+ apart[1]);
-						System.out.println("boardwidth set to "
-								+ invites.get(apart[1])[0] + " in 70 for "
-								+ name);
-						System.out.println("boardheight set to "
-								+ invites.get(apart[1])[1] + " in 71" + name);
+						//System.out.println("boardwidth set to "+ invites.get(apart[1])[0] + " in 70 for "+ name);
+						//System.out.println("boardheight set to "+ invites.get(apart[1])[1] + " in 71" + name);
 						boardwidth = invites.get(apart[1])[0];
 						boardheight = invites.get(apart[1])[1];
 					}
@@ -94,7 +93,7 @@ public class Client extends Thread {
 					break;
 				case "invite":
 					int[] array = new int[2];
-					System.out.println("Apart length is " + apart.length);
+					//System.out.println("Apart length is " + apart.length);
 					if (apart.length == 4 && Server.representsInt(apart[1])
 							&& Server.representsInt(apart[2])) {
 						array[0] = Integer.parseInt(apart[1]);
@@ -105,8 +104,7 @@ public class Client extends Thread {
 					}
 
 					invites.put(apart[1], array);
-					System.out.println(apart[1] + " and dimensions " + array[0]
-							+ array[1] + " in 97");
+					//System.out.println(apart[1] + " and dimensions " + array[0] + array[1] + " in 97");
 					sendMessage("INVITE " + apart[1]);
 					break;
 				case "board":
@@ -496,12 +494,12 @@ public class Client extends Thread {
 
 	public void run() {
 		try {
-			printMessage("Ready to read new command ||||||||||||||||||||||||");
+			//printMessage("Ready to read new command ||||||||||||||||||||||||");
 			String tussenvar = in.readLine();
 			while (!sock.isClosed()) {
 				printMessage("Message received from server: " + tussenvar);
 				inter.whatisthatClient(tussenvar);
-				printMessage("Ready to read new command ||||||||||||||||||||||||");
+				//printMessage("Ready to read new command ||||||||||||||||||||||||");
 				tussenvar = in.readLine();
 			}
 		} catch (IOException e) {
@@ -526,8 +524,8 @@ public class Client extends Thread {
 	}
 
 	public void setDimensions(int width, int height) {
-		System.out.println("Width set to " + width + " in 438 for " + name);
-		System.out.println("Height set to " + height + " in 439 for " + name);
+		//System.out.println("Width set to " + width + " in 438 for " + name);
+		//System.out.println("Height set to " + height + " in 439 for " + name);
 		boardwidth = width;
 		boardheight = height;
 	}
@@ -554,8 +552,7 @@ public class Client extends Thread {
 			dimensions[1] = Integer.parseInt(apart[2]);
 		}
 		invites.put(apart[0], dimensions);
-		System.out.println(apart[0] + " and dimensions " + dimensions[0]
-				+ dimensions[1] + " in 466");
+		//System.out.println(apart[0] + " and dimensions " + dimensions[0] + dimensions[1] + " in 466");
 		printMessage("Type accept " + apart[0] + " to accept.");
 		printMessage("Type decline " + apart[0] + " to decline.");
 	}
