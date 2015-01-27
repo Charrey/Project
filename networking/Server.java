@@ -41,12 +41,10 @@ public class Server extends Thread {
 		sc.start();
 	}
 
-
-
 	/**
 	 * Accepts input from System.in.
 	 */
-	
+
 	/*@
 	 * pure
 	 * ensures \result.equals(lobby);
@@ -54,7 +52,7 @@ public class Server extends Thread {
 	public Map<ClientHandler, Set<String>> getLobby() {
 		return lobby;
 	}
-	
+
 	/*@
 	 * pure
 	 * ensures \result.equals(playing);
@@ -62,7 +60,7 @@ public class Server extends Thread {
 	public Map<ClientHandler, Boolean> getPlaying() {
 		return playing;
 	}
-	
+
 	/*@
 	 * pure
 	 * ensures \result.equals(gamesgames);
@@ -70,7 +68,7 @@ public class Server extends Thread {
 	public Map<Game, Integer> getGames() {
 		return gamesgames;
 	}
-	
+
 	/*@
 	 * pure
 	 * ensures \result.equals(interpreter);
@@ -78,7 +76,7 @@ public class Server extends Thread {
 	public Interpreter getInterpreter() {
 		return interpreter;
 	}
-	
+
 	/*@
 	 * loop_invariant true == true;
 	 * 
@@ -104,15 +102,24 @@ public class Server extends Thread {
 						gotten.substring(6 + splitted[1].length()));
 				break;
 			case "help":
-				printMessage("----HELP--------------");
+				printMessage("----HELP-------------------------------");
 				printMessage("kick <name> -- Kick a player");
 				printMessage("error <name> <error> -- Send an error");
 				printMessage("hello <name> <message> -- Send a message");
-				printMessage("----------------------");
+				printMessage("clear -- Clears your GUI screen");
+				printMessage("----DISCLAIMER-------------------------");
+				printMessage("It is presumed that you as admin use");
+				printMessage("these features correctly. Failure to do");
+				printMessage("so may result in inconsistency and/or");
+				printMessage("program failure.");
+				printMessage("---------------------------------------");
 				break;
 			case "hello":
 				findClientHandler(splitted[1]).sendCommand(
 						"CHAT " + gotten.substring(6 + splitted[1].length()));
+				break;
+			case "clear":
+				gui.clearScreen();
 				break;
 			default:
 				printMessage("Use 'help' to view console commands.");
@@ -138,9 +145,7 @@ public class Server extends Thread {
 				printMessage("Connection from " + socket.getInetAddress()
 						+ " accepted");
 				ClientHandler clienthandler = addClientHandler(socket);
-				System.out.println("Starting");
 				clienthandler.start();
-				System.out.println("started");
 			} catch (IOException e) {
 				printMessage("Server shut down.");
 			}
@@ -375,6 +380,7 @@ public class Server extends Thread {
 			if (i.getClientName().equals(splitted[0])) {
 				printMessage("Connection denied due to duplicate name from "
 						+ source.getClientName());
+				sendError(source, "DuplicateName");
 				return;
 			}
 		}
@@ -596,7 +602,8 @@ public class Server extends Thread {
 					|| Integer.parseInt(apart[2]) < 1) {
 				sendError(source, "InvalidBounds");
 			}
-		} else if (findClientHandler(apart[0]) == null) {
+		}
+		if (findClientHandler(apart[0]) == null) {
 			sendError(source, "NoSuchPlayer");
 		} else if (playing.get((findClientHandler(apart[0])))) {
 			sendError(source, "AlreadyIngame");
@@ -604,7 +611,6 @@ public class Server extends Thread {
 			sendError(source, "SelfInvite");
 		} else if (invites.containsKey(source)) {
 			sendError(source, "AlreadyInvited");
-
 		} else {
 			if (apart.length == 1) {
 				String[] toput = { apart[0], "7", "6" };
@@ -628,21 +634,16 @@ public class Server extends Thread {
 	}
 
 	public void shutDown() {
-		running = false;
+		for (ClientHandler i : lobby.keySet()) {
+			i.shutdown();
+		}
 		try {
 			serversocket.close();
-		} catch (IOException e1) {
+		} catch (IOException e) {
 			printMessage("Could not close serversocket");
 		}
-		for (ClientHandler i : lobby.keySet()) {
-			try {
-				i.getSocket().close();
-			} catch (IOException e) {
-				printMessage("Could not disconnect " + i.getClientName());
-			}
-			lobby.remove(i);
-			playing.remove(i);
-		}
+		
+		
 
 	}
 
