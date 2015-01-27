@@ -83,8 +83,9 @@ public class Client extends Thread {
 								+ apart[1]);
 						//System.out.println("boardwidth set to "+ invites.get(apart[1])[0] + " in 70 for "+ name);
 						//System.out.println("boardheight set to "+ invites.get(apart[1])[1] + " in 71" + name);
-						boardwidth = invites.get(apart[1])[0];
-						boardheight = invites.get(apart[1])[1];
+						setDimensions(invites.get(apart[1])[0], invites.get(apart[1])[0]);
+						//boardwidth = invites.get(apart[1])[0];
+						//boardheight = invites.get(apart[1])[1];
 					}
 					break;
 				case "decline":
@@ -574,6 +575,14 @@ public class Client extends Thread {
 	public void UseScannerForDeterminingMoves(boolean b) {
 		scannerfordeterminingmoves = b;
 
+	}
+
+	public int getBoardWidth() {
+		return boardwidth;
+	}
+	
+	public int getBoardHeight(){
+		return boardheight;
 	}
 
 	/*
