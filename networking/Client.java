@@ -132,7 +132,8 @@ public class Client extends Thread {
 					sendMessage(gotten);
 				}
 			} else {
-				player.determineMove(getGame().getBoard(), gotten, scanner);
+				sendMove(player.determineMove(getGame().getBoard(), gotten, scanner));
+				UseScannerForDeterminingMoves(false);
 			}
 		}
 
