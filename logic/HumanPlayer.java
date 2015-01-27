@@ -71,32 +71,33 @@ public class HumanPlayer extends Player {
 	}
 
 	public int determineMove(Board playingfield, String pick, Scanner scan) {
+		String toPick = pick;
 		boolean processing = true;
-		while (processing) {
+		do {
 			try {
-				if (pick.equals("hint")) {
+				if (toPick.equals("hint")) {
 					int[] hint = playingfield.hint(getMark());
 					System.out.println("Hint: " + hint[0]);
 				} else {
-					int move = Integer.parseInt(pick);
+					int move = Integer.parseInt(toPick);
 					if (move >= 0 && move < playingfield.getWidth()
 							&& playingfield.columnFree(move)) {
-						// playingfield.putM ark(pick, this.getMark());
 						processing = false;
 						return move;
 					} else {
 						System.out.println("Pick a valid number");
+						toPick = scan.nextLine();
 					}
 				}
 			} catch (NumberFormatException e) {
 				System.out.println("Not a valid input, try antoher set");
+				toPick = scan.nextLine();
 			}
-		}
+		} while (processing);
 		return -1;
 	}
 
 	public InputHandler getInputHandler() {
 		return inputHandler;
 	}
-
 }

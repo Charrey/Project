@@ -50,12 +50,11 @@ public class Client extends Thread {
 	public Scanner getScanner() {
 		return scanner;
 	}
-	
+
 	public void resumeScanner() {
 		scanner = new Scanner(System.in);
 	}
-	
-	
+
 	/**
 	 * Takes console input and reacts accordingly.
 	 */
@@ -73,66 +72,67 @@ public class Client extends Thread {
 			}
 			apart = gotten.split("\\s+");
 			if (!scannerfordeterminingmoves) {
-			switch (apart[0]) {
-			case "accept":
-				if (invites.keySet().contains(apart[1])) {
-					sendMessage(Interpreter.KW_LOBB_ACCEPTINVITE + " "
-							+ apart[1]);
-					System.out.println("boardwidth set to "
-							+ invites.get(apart[1])[0] + " in 70 for " + name);
-					System.out.println("boardheight set to "
-							+ invites.get(apart[1])[1] + " in 71" + name);
-					boardwidth = invites.get(apart[1])[0];
-					boardheight = invites.get(apart[1])[1];
-				}
-				break;
-			case "decline":
-				if (invites.keySet().contains(apart[1])) {
-					sendMessage("DECLINE " + apart[1]);
-					invites.remove(apart[1]);
-				}
-				break;
-			case "invite":
-				int[] array = new int[2];
-				System.out.println("Apart length is " + apart.length);
-				if (apart.length == 4 && Server.representsInt(apart[1])
-						&& Server.representsInt(apart[2])) {
-					array[0] = Integer.parseInt(apart[1]);
-					array[1] = Integer.parseInt(apart[2]);
-				} else if (apart.length == 2) {
-					array[0] = 7;
-					array[1] = 6;
-				}
+				switch (apart[0]) {
+				case "accept":
+					if (invites.keySet().contains(apart[1])) {
+						sendMessage(Interpreter.KW_LOBB_ACCEPTINVITE + " "
+								+ apart[1]);
+						System.out.println("boardwidth set to "
+								+ invites.get(apart[1])[0] + " in 70 for "
+								+ name);
+						System.out.println("boardheight set to "
+								+ invites.get(apart[1])[1] + " in 71" + name);
+						boardwidth = invites.get(apart[1])[0];
+						boardheight = invites.get(apart[1])[1];
+					}
+					break;
+				case "decline":
+					if (invites.keySet().contains(apart[1])) {
+						sendMessage("DECLINE " + apart[1]);
+						invites.remove(apart[1]);
+					}
+					break;
+				case "invite":
+					int[] array = new int[2];
+					System.out.println("Apart length is " + apart.length);
+					if (apart.length == 4 && Server.representsInt(apart[1])
+							&& Server.representsInt(apart[2])) {
+						array[0] = Integer.parseInt(apart[1]);
+						array[1] = Integer.parseInt(apart[2]);
+					} else if (apart.length == 2) {
+						array[0] = 7;
+						array[1] = 6;
+					}
 
-				invites.put(apart[1], array);
-				System.out.println(apart[1] + " and dimensions " + array[0]
-						+ array[1] + " in 97");
-				sendMessage("INVITE " + apart[1]);
-				break;
-			case "board":
-				sendMessage(Interpreter.KW_GAME_REQUESTBOARD);
-				break;
-			case "spam":
-				while (true) {
-					sendMessage(gotten.substring(5));
+					invites.put(apart[1], array);
+					System.out.println(apart[1] + " and dimensions " + array[0]
+							+ array[1] + " in 97");
+					sendMessage("INVITE " + apart[1]);
+					break;
+				case "board":
+					sendMessage(Interpreter.KW_GAME_REQUESTBOARD);
+					break;
+				case "spam":
+					while (true) {
+						sendMessage(gotten.substring(5));
+					}
+				case "help":
+					printMessage("----HELP--------------");
+					printMessage("help -- view this help screen");
+					printMessage("accept <name> -- accept an invite");
+					printMessage("decline <name> -- decline an invite");
+					printMessage("invite <name> -- invite a player");
+					printMessage("----DEBUG-ONLY--------");
+					printMessage("board -- refresh the board");
+					printMessage("spam <command> -- spam the server");
+					printMessage("<command> -- send a command to the server");
+					printMessage("----------------------");
+					break;
+				default:
+					sendMessage(gotten);
 				}
-			case "help":
-				printMessage("----HELP--------------");
-				printMessage("help -- view this help screen");
-				printMessage("accept <name> -- accept an invite");
-				printMessage("decline <name> -- decline an invite");
-				printMessage("invite <name> -- invite a player");
-				printMessage("----DEBUG-ONLY--------");
-				printMessage("board -- refresh the board");
-				printMessage("spam <command> -- spam the server");
-				printMessage("<command> -- send a command to the server");
-				printMessage("----------------------");
-				break;
-			default:
-				sendMessage(gotten);
-			}}
-			else {
-				player.determineMove(getGame().getBoard(),gotten, scanner);
+			} else {
+				player.determineMove(getGame().getBoard(), gotten, scanner);
 			}
 		}
 
@@ -216,7 +216,8 @@ public class Client extends Thread {
 	}
 
 	/**
-	 * @param move is the move to be sent to the server.
+	 * @param move
+	 *            is the move to be sent to the server.
 	 */
 	public void sendMove(int move) {
 		sendMessage(Interpreter.KW_GAME_MOVE + " " + move);
@@ -225,7 +226,8 @@ public class Client extends Thread {
 	/**
 	 * Checks whether the server supports a certain function.
 	 * 
-	 * @param function is a by the interpreter approved function.
+	 * @param function
+	 *            is a by the interpreter approved function.
 	 * @return whether the server supports the given function.
 	 */
 	public Boolean hasFunction(String function) {
@@ -246,9 +248,11 @@ public class Client extends Thread {
 	}
 
 	/**
-	 * Prints a message in the gui if there is one, otherwise prints it to System.out.
+	 * Prints a message in the gui if there is one, otherwise prints it to
+	 * System.out.
 	 * 
-	 * @param message is the message to be printed
+	 * @param message
+	 *            is the message to be printed
 	 */
 	void printMessage(String message) {
 		if (gui == null) {
@@ -295,7 +299,8 @@ public class Client extends Thread {
 	/**
 	 * Do nothing for a specified time.
 	 * 
-	 * @param time is the number of milliseconds to wait.
+	 * @param time
+	 *            is the number of milliseconds to wait.
 	 */
 	public static void hold(int time) {
 		try {
@@ -307,10 +312,14 @@ public class Client extends Thread {
 
 	// Constructor, obviously
 	/**
-	 * @param address is the address used to create a Socket.
-	 * @param port is the port used to create a Socket.
-	 * @param name is the name of this client.
-	 * @param gui is the gui associated with this client.
+	 * @param address
+	 *            is the address used to create a Socket.
+	 * @param port
+	 *            is the port used to create a Socket.
+	 * @param name
+	 *            is the name of this client.
+	 * @param gui
+	 *            is the gui associated with this client.
 	 */
 	public Client(String address, int port, String name, ClientGUI gui) {
 		this.gui = gui;
@@ -340,7 +349,9 @@ public class Client extends Thread {
 	/**
 	 * Logs the features the server supports.
 	 * 
-	 * @param features is a String containing the features this server supports, separated by spaces.
+	 * @param features
+	 *            is a String containing the features this server supports,
+	 *            separated by spaces.
 	 */
 	public void connectionAccepted(String features) {
 		String[] splitted = features.split("\\s+");
@@ -356,18 +367,20 @@ public class Client extends Thread {
 	public void makemove() {
 		UseScannerForDeterminingMoves(true);
 		printMessage("Please type your move.");
-		/*if (playerno == 1) {
-			movetobemade = game.getFirstPlayer().determineMove(game.getBoard());
-		} else {
-			movetobemade = game.getSecondPlayer()
-					.determineMove(game.getBoard());
-		}*/
+		/*
+		 * if (playerno == 1) { movetobemade =
+		 * game.getFirstPlayer().determineMove(game.getBoard()); } else {
+		 * movetobemade = game.getSecondPlayer()
+		 * .determineMove(game.getBoard()); }
+		 */
 
 	}
 
 	/**
-	 * @param firstname is the name of player #1
-	 * @param secondname is the name of player #2
+	 * @param firstname
+	 *            is the name of player #1
+	 * @param secondname
+	 *            is the name of player #2
 	 */
 	public void gamestart(String firstname, String secondname) {
 		if (invites.containsKey(firstname)) {
@@ -387,14 +400,14 @@ public class Client extends Thread {
 				printMessage("Board height: " + boardheight);
 				game = new Game(player, new HumanPlayer(secondname, Mark.O,
 						new NetworkedInputHandler(this)), boardwidth,
-						boardheight);
+						boardheight, true);
 			} else {
 				playerno = 2;
 				printMessage("Board width: " + boardwidth);
 				printMessage("Board height: " + boardheight);
 				game = new Game(new HumanPlayer(secondname, Mark.O,
 						new NetworkedInputHandler(this)), player, boardwidth,
-						boardheight);
+						boardheight,true);
 			}
 			TUI thetui = new TUI(game.getBoard());
 		} else {
@@ -406,14 +419,14 @@ public class Client extends Thread {
 				printMessage("Board height: " + boardheight);
 				game = new Game(player, new HumanPlayer(secondname, Mark.O,
 						new NetworkedInputHandler(this)), thegui, boardwidth,
-						boardheight);
+						boardheight,true);
 			} else {
 				playerno = 2;
 				printMessage("Board width: " + boardwidth);
 				printMessage("Board height: " + boardheight);
 				game = new Game(new HumanPlayer(secondname, Mark.O,
 						new NetworkedInputHandler(this)), player, thegui,
-						boardwidth, boardheight);
+						boardwidth, boardheight,true);
 			}
 			// thegui.changePanel(new GameMainPanel(thegui, game, player
 			// .getInputHandler()));
@@ -425,8 +438,11 @@ public class Client extends Thread {
 	}
 
 	/**
-	 * @param function is the function to be set.
-	 * @param setting is whether the function should be enabled(true) or disabled(false).
+	 * @param function
+	 *            is the function to be set.
+	 * @param setting
+	 *            is whether the function should be enabled(true) or
+	 *            disabled(false).
 	 */
 	public void SetSerSup(String function, Boolean setting) {
 		if (sersup.contains(function) && setting == false) {
@@ -440,10 +456,14 @@ public class Client extends Thread {
 	 * Sets the lobby to the given argument, then prints the lobby to the
 	 * console.
 	 * 
-	 * @param stringArg is the lobby received by the server.
+	 * @param stringArg
+	 *            is the lobby received by the server.
 	 */
 	public void setLobby(String stringArg) {
 		lobby = new HashSet<String>();
+		if (stringArg.length() == 0) {
+			lobby.add("Empty");
+		}
 		String[] splitted = stringArg.split("\\s+");
 		for (int i = 0; i < splitted.length; i++) {
 			lobby.add(splitted[i]);
@@ -498,7 +518,7 @@ public class Client extends Thread {
 	}
 
 	/**
-	 * Informs the Client of an invite being declined. 
+	 * Informs the Client of an invite being declined.
 	 */
 	public void inviteDeclined() {
 		printMessage("Your invite has been declined! Poor you :'(");
@@ -552,8 +572,8 @@ public class Client extends Thread {
 	}
 
 	public void UseScannerForDeterminingMoves(boolean b) {
-		scannerfordeterminingmoves=b;
-		
+		scannerfordeterminingmoves = b;
+
 	}
 
 	/*
