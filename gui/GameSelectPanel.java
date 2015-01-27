@@ -168,7 +168,7 @@ public class GameSelectPanel extends JPanel {
 					p1 = new ComputerPlayer(Mark.X);
 					p2 = new ComputerPlayer(Mark.O);
 				}
-				new Game(p1, p2, gui, width, height);
+				new Game(p1, p2, gui, width, height, false);
 				/*
 				if(handler!=null){
 					Game newGame = new Game(p1, p2, gui, width, height);
