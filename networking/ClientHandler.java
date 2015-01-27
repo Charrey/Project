@@ -15,7 +15,7 @@ public class ClientHandler extends Thread {
 	private BufferedReader in;
 	private BufferedWriter out;
 	private String clientName;
-	//private HumanPlayer player;
+	// private HumanPlayer player;
 	private int playerno;
 
 	public ClientHandler(Server serverArg, Socket sockArg) {
@@ -39,8 +39,10 @@ public class ClientHandler extends Thread {
 			while (!sock.isClosed()) {
 				server.printMessage("Ready for new command.");
 				ontvangen = in.readLine();
-				server.printMessage("New command from " + clientName + ": " + ontvangen);
-				server.getInterpreter().whatisthatServer(ontvangen, this, false);
+				server.printMessage("New command from " + clientName + ": "
+						+ ontvangen);
+				server.getInterpreter()
+						.whatisthatServer(ontvangen, this, false);
 			}
 		} catch (IOException ex) {
 			server.printMessage("IOE in CH.run");
@@ -50,8 +52,8 @@ public class ClientHandler extends Thread {
 
 	public void sendCommand(String command) {
 		try {
-			server.printMessage(
-					"Writing to " + getClientName() + ": " + command);
+			server.printMessage("Writing to " + getClientName() + ": "
+					+ command);
 			out.write(command);
 			out.newLine();
 			out.flush();
@@ -88,8 +90,7 @@ public class ClientHandler extends Thread {
 
 	public void shutdown() {
 
-		server.printMessage(
-				"Client " + clientName + " has left the server.");
+		server.printMessage("Client " + clientName + " has left the server.");
 		if (server.invites.containsKey(this)) {
 			server.invites.remove(this);
 		}
@@ -99,11 +100,18 @@ public class ClientHandler extends Thread {
 				i.sendCommand("DECLINE_INVITE " + clientName);
 			}
 		}
-		server.getLobby().remove(this);		
-		if (server.getPlaying().get(this)) {
-			if (server.getOpponent(this)!=null) {
-			server.getOpponent(this).sendCommand(Interpreter.KW_GAME_GAMEEND + " DISCONNECT"+" "+server.getOpponent(this).getClientName());}
-			server.getGames().remove(server.getGame(this));
+		if (server.getLobby() != null) {
+			server.getLobby().remove(this);
+		}
+		if (server.getPlaying().containsKey(this)) {
+			if (server.getPlaying().get(this)) {
+				if (server.getOpponent(this) != null) {
+					server.getOpponent(this).sendCommand(
+							Interpreter.KW_GAME_GAMEEND + " DISCONNECT" + " "
+									+ server.getOpponent(this).getClientName());
+				}
+				server.getGames().remove(server.getGame(this));
+			}
 		}
 		server.getPlaying().remove(this);
 		try {

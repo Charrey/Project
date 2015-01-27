@@ -177,7 +177,7 @@ public class Interpreter {
 				client.gameend();
 				break;
 			case KW_CONN_GAMESTART:
-				client.gamestart(splitted[1], splitted[2]);
+				client.gamestart(splitted[1], splitted[2], false);
 				break;
 			case KW_CONN_LOBBY:
 				if (splitted.length < 2) {
