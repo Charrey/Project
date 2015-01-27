@@ -79,7 +79,7 @@ public class Interpreter {
 	public void whatisthatServer(String that, ClientHandler source,
 			Boolean subcommand) {
 		if (areweserver == true) {
-			server.printMessage("Looking up what "+that+" is.");
+			server.printMessage("Looking up what " + that + " is.");
 			String[] splitted = that.split("\\s+");
 			switch (splitted[0]) {
 			case KW_CONN_CHATMESSAGE:
@@ -125,7 +125,8 @@ public class Interpreter {
 				}
 				break;
 			case KW_LOBB_ACCEPTINVITE:
-				server.acceptinvite(source, that.substring(KW_LOBB_ACCEPTINVITE.length()+1));
+				server.acceptinvite(source,
+						that.substring(KW_LOBB_ACCEPTINVITE.length() + 1));
 				break;
 			case KW_LOBB_DECLINEINVITE:
 				server.denyinvite(source, that);
@@ -164,8 +165,9 @@ public class Interpreter {
 			String[] splitted = that.split("\\s+");
 			switch (splitted[0]) {
 			case KW_GAME_SENDBOARD:
-				client.refreshBoard(that.substring(KW_GAME_SENDBOARD.length()+1));
-				Board.printNetworkBoard(client.getGame().getBoard().networkBoard());
+				client.refreshBoard(that.substring(KW_GAME_SENDBOARD.length() + 1));
+				Board.printNetworkBoard(client.getGame().getBoard()
+						.networkBoard());
 				break;
 			case KW_CONN_ACCEPTCONNECT:
 				client.connectionAccepted(that.substring(KW_CONN_ACCEPTCONNECT
@@ -175,16 +177,20 @@ public class Interpreter {
 				client.gameend();
 				break;
 			case KW_CONN_GAMESTART:
-				client.gamestart(splitted[1],splitted[2]);
+				client.gamestart(splitted[1], splitted[2]);
 				break;
 			case KW_CONN_LOBBY:
-				client.setLobby(that.substring(KW_CONN_LOBBY.length() + 1));
+				if (splitted.length < 2) {
+					client.setLobby(that.substring(KW_CONN_LOBBY.length()));
+				} else {
+					client.setLobby(that.substring(KW_CONN_LOBBY.length() + 1));
+				}
 				break;
 			case KW_GAME_MOVEOK:
 				client.moveok(that.substring(KW_GAME_MOVEOK.length() + 1));
 				break;
 			case KW_GAME_REQMOVE:
-				//Board.printNetworkBoard(client.getGame().getBoard().networkBoard());
+				// Board.printNetworkBoard(client.getGame().getBoard().networkBoard());
 				client.makemove();
 				break;
 			case KW_FEATURE_CHAT:
@@ -214,7 +220,7 @@ public class Interpreter {
 				client.printMessage("Your invite was accepted by "
 						+ that.substring(KW_LOBB_ACCEPTINVITE.length() + 1)
 						+ "!");
-				//client.inviteAccepted(splitted[1]);
+				// client.inviteAccepted(splitted[1]);
 				break;
 			case KW_LOBB_DECLINEINVITE:
 				client.printMessage("Your invite was declined by "

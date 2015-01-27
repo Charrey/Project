@@ -568,7 +568,7 @@ public class Server extends Thread {
 		gamesgames.put(new Game(new HumanPlayer(playerone.getClientName(),
 				Mark.X, new NetworkedInputHandler(playerone)), new HumanPlayer(
 				playertwo.getClientName(), Mark.O, new NetworkedInputHandler(
-						playertwo)), width, height), 1);
+						playertwo)), width, height, true), 1);
 		playerone.sendCommand(Interpreter.KW_GAME_REQMOVE);
 		playing.put(playerone, true);
 		playing.put(playertwo, true);

@@ -22,6 +22,7 @@ import java.util.HashSet;
 
 public class Client extends Thread {
 
+	private boolean scannerfordeterminingmoves;
 	protected Interpreter inter;
 	private Game game;
 	protected String name;
@@ -43,8 +44,16 @@ public class Client extends Thread {
 	private int boardwidth;
 	private int boardheight;
 
-	Map<String, int[]> invites;
+	private Map<String, int[]> invites;
 	private ClientGUI gui;
+
+	public Scanner getScanner() {
+		return scanner;
+	}
+
+	public void resumeScanner() {
+		scanner = new Scanner(System.in);
+	}
 
 	/**
 	 * Takes console input and reacts accordingly.
@@ -62,63 +71,68 @@ public class Client extends Thread {
 				gotten = gui.waitForCommand();
 			}
 			apart = gotten.split("\\s+");
-			switch (apart[0]) {
-			case "accept":
-				if (invites.keySet().contains(apart[1])) {
-					sendMessage(Interpreter.KW_LOBB_ACCEPTINVITE + " "
-							+ apart[1]);
-					System.out.println("boardwidth set to "
-							+ invites.get(apart[1])[0] + " in 70 for " + name);
-					System.out.println("boardheight set to "
-							+ invites.get(apart[1])[1] + " in 71" + name);
-					boardwidth = invites.get(apart[1])[0];
-					boardheight = invites.get(apart[1])[1];
-				}
-				break;
-			case "decline":
-				if (invites.keySet().contains(apart[1])) {
-					sendMessage("DECLINE " + apart[1]);
-					invites.remove(apart[1]);
-				}
-				break;
-			case "invite":
-				int[] array = new int[2];
-				System.out.println("Apart length is "+apart.length);
-				if (apart.length == 4 && Server.representsInt(apart[1])
-						&& Server.representsInt(apart[2])) {
-					array[0] = Integer.parseInt(apart[1]);
-					array[1] = Integer.parseInt(apart[2]);
-				} else if (apart.length == 2) {
-					array[0] = 7;
-					array[1] = 6;
-				}
+			if (!scannerfordeterminingmoves) {
+				switch (apart[0]) {
+				case "accept":
+					if (invites.keySet().contains(apart[1])) {
+						sendMessage(Interpreter.KW_LOBB_ACCEPTINVITE + " "
+								+ apart[1]);
+						System.out.println("boardwidth set to "
+								+ invites.get(apart[1])[0] + " in 70 for "
+								+ name);
+						System.out.println("boardheight set to "
+								+ invites.get(apart[1])[1] + " in 71" + name);
+						boardwidth = invites.get(apart[1])[0];
+						boardheight = invites.get(apart[1])[1];
+					}
+					break;
+				case "decline":
+					if (invites.keySet().contains(apart[1])) {
+						sendMessage("DECLINE " + apart[1]);
+						invites.remove(apart[1]);
+					}
+					break;
+				case "invite":
+					int[] array = new int[2];
+					System.out.println("Apart length is " + apart.length);
+					if (apart.length == 4 && Server.representsInt(apart[1])
+							&& Server.representsInt(apart[2])) {
+						array[0] = Integer.parseInt(apart[1]);
+						array[1] = Integer.parseInt(apart[2]);
+					} else if (apart.length == 2) {
+						array[0] = 7;
+						array[1] = 6;
+					}
 
-				invites.put(apart[1], array);
-				System.out.println(apart[1] + " and dimensions " + array[0]
-						+ array[1] + " in 97");
-				sendMessage("INVITE " + apart[1]);
-				break;
-			case "board":
-				sendMessage(Interpreter.KW_GAME_REQUESTBOARD);
-				break;
-			case "spam":
-				while (true) {
-					sendMessage(gotten.substring(5));
+					invites.put(apart[1], array);
+					System.out.println(apart[1] + " and dimensions " + array[0]
+							+ array[1] + " in 97");
+					sendMessage("INVITE " + apart[1]);
+					break;
+				case "board":
+					sendMessage(Interpreter.KW_GAME_REQUESTBOARD);
+					break;
+				case "spam":
+					while (true) {
+						sendMessage(gotten.substring(5));
+					}
+				case "help":
+					printMessage("----HELP--------------");
+					printMessage("help -- view this help screen");
+					printMessage("accept <name> -- accept an invite");
+					printMessage("decline <name> -- decline an invite");
+					printMessage("invite <name> -- invite a player");
+					printMessage("----DEBUG-ONLY--------");
+					printMessage("board -- refresh the board");
+					printMessage("spam <command> -- spam the server");
+					printMessage("<command> -- send a command to the server");
+					printMessage("----------------------");
+					break;
+				default:
+					sendMessage(gotten);
 				}
-			case "help":
-				printMessage("----HELP--------------");
-				printMessage("help -- view this help screen");
-				printMessage("accept <name> -- accept an invite");
-				printMessage("decline <name> -- decline an invite");
-				printMessage("invite <name> -- invite a player");
-				printMessage("----DEBUG-ONLY--------");
-				printMessage("board -- refresh the board");
-				printMessage("spam <command> -- spam the server");
-				printMessage("<command> -- send a command to the server");
-				printMessage("----------------------");
-				break;
-			default:
-				sendMessage(gotten);
+			} else {
+				player.determineMove(getGame().getBoard(), gotten, scanner);
 			}
 		}
 
@@ -135,6 +149,13 @@ public class Client extends Thread {
 		sendMessage(Interpreter.KW_LOBB_REQUEST);
 	}
 
+	/**
+	 * Places a mark when a move is accepted by the server
+	 * 
+	 * @param arguments
+	 *            contains both the player number and the move, separated by a
+	 *            space.
+	 */
 	public void moveok(String arguments) {
 		String[] splitted = arguments.split("\\s+");
 		if (Integer.parseInt(splitted[0]) == playerno) {
@@ -145,10 +166,19 @@ public class Client extends Thread {
 		// Refresh the visual board here!
 	}
 
+	/**
+	 * @return the Game this client is playing
+	 */
 	public Game getGame() {
 		return game;
 	}
 
+	/**
+	 * Refreshes the board based on server
+	 * 
+	 * @param stringArg
+	 *            is the board in INF-2 protocol format.
+	 */
 	public void refreshBoard(String stringArg) {
 		String[] splitted = stringArg.split("\\s+");
 		game.getBoard().reset(Integer.parseInt(splitted[0]),
@@ -156,7 +186,6 @@ public class Client extends Thread {
 		int teller = 0;
 		for (int p = 0; p < game.getBoard().getHeight(); p++) {
 			for (int i = 0; i < game.getBoard().getWidth(); i++) {
-
 				if (Integer.parseInt(splitted[teller + 2]) == 01) {
 					game.getBoard().putMark(i, Mark.X);
 				} else if (Integer.parseInt(splitted[teller + 2]) != 0) {
@@ -186,10 +215,21 @@ public class Client extends Thread {
 		}
 	}
 
+	/**
+	 * @param move
+	 *            is the move to be sent to the server.
+	 */
 	public void sendMove(int move) {
 		sendMessage(Interpreter.KW_GAME_MOVE + " " + move);
 	}
 
+	/**
+	 * Checks whether the server supports a certain function.
+	 * 
+	 * @param function
+	 *            is a by the interpreter approved function.
+	 * @return whether the server supports the given function.
+	 */
 	public Boolean hasFunction(String function) {
 		return sersup.contains(function);
 	}
@@ -207,6 +247,13 @@ public class Client extends Thread {
 		return sock;
 	}
 
+	/**
+	 * Prints a message in the gui if there is one, otherwise prints it to
+	 * System.out.
+	 * 
+	 * @param message
+	 *            is the message to be printed
+	 */
 	void printMessage(String message) {
 		if (gui == null) {
 			System.out.println(message);
@@ -249,6 +296,12 @@ public class Client extends Thread {
 				+ Interpreter.KW_FEATURE_CBOARDSIZE);
 	}
 
+	/**
+	 * Do nothing for a specified time.
+	 * 
+	 * @param time
+	 *            is the number of milliseconds to wait.
+	 */
 	public static void hold(int time) {
 		try {
 			Thread.sleep(time);
@@ -308,16 +361,27 @@ public class Client extends Thread {
 		printMessage("CONNECTED");
 	}
 
+	/**
+	 * Asks the client to do a move and sends it to the server.
+	 */
 	public void makemove() {
-		if (playerno == 1) {
-			movetobemade = game.getFirstPlayer().determineMove(game.getBoard());
-		} else {
-			movetobemade = game.getSecondPlayer()
-					.determineMove(game.getBoard());
-		}
-		this.sendMove(movetobemade);
+		UseScannerForDeterminingMoves(true);
+		printMessage("Please type your move.");
+		/*
+		 * if (playerno == 1) { movetobemade =
+		 * game.getFirstPlayer().determineMove(game.getBoard()); } else {
+		 * movetobemade = game.getSecondPlayer()
+		 * .determineMove(game.getBoard()); }
+		 */
+
 	}
 
+	/**
+	 * @param firstname
+	 *            is the name of player #1
+	 * @param secondname
+	 *            is the name of player #2
+	 */
 	public void gamestart(String firstname, String secondname) {
 		if (invites.containsKey(firstname)) {
 			this.setDimensions(invites.get(firstname)[0],
@@ -326,26 +390,28 @@ public class Client extends Thread {
 			this.setDimensions(invites.get(secondname)[0],
 					invites.get(secondname)[1]);
 		}
-
-		player = new HumanPlayer(name, Mark.X, new InputHandler());
+		
+		
 		if (gui == null) {
+			player = new HumanPlayer(name, Mark.X, this);
 			if (name.equals(firstname)) {
 				playerno = 1;
 				printMessage("Board width: " + boardwidth);
 				printMessage("Board height: " + boardheight);
 				game = new Game(player, new HumanPlayer(secondname, Mark.O,
 						new NetworkedInputHandler(this)), boardwidth,
-						boardheight);
+						boardheight, true);
 			} else {
 				playerno = 2;
 				printMessage("Board width: " + boardwidth);
 				printMessage("Board height: " + boardheight);
 				game = new Game(new HumanPlayer(secondname, Mark.O,
 						new NetworkedInputHandler(this)), player, boardwidth,
-						boardheight);
+						boardheight,true);
 			}
 			TUI thetui = new TUI(game.getBoard());
 		} else {
+			player = new HumanPlayer(name, Mark.X, new InputHandler());
 			MainGui thegui = new MainGui();
 			if (name.equals(firstname)) {
 				playerno = 1;
@@ -353,14 +419,14 @@ public class Client extends Thread {
 				printMessage("Board height: " + boardheight);
 				game = new Game(player, new HumanPlayer(secondname, Mark.O,
 						new NetworkedInputHandler(this)), thegui, boardwidth,
-						boardheight);
+						boardheight,true);
 			} else {
 				playerno = 2;
 				printMessage("Board width: " + boardwidth);
 				printMessage("Board height: " + boardheight);
 				game = new Game(new HumanPlayer(secondname, Mark.O,
 						new NetworkedInputHandler(this)), player, thegui,
-						boardwidth, boardheight);
+						boardwidth, boardheight,true);
 			}
 			// thegui.changePanel(new GameMainPanel(thegui, game, player
 			// .getInputHandler()));
@@ -395,6 +461,9 @@ public class Client extends Thread {
 	 */
 	public void setLobby(String stringArg) {
 		lobby = new HashSet<String>();
+		if (stringArg.length() == 0) {
+			lobby.add("Empty");
+		}
 		String[] splitted = stringArg.split("\\s+");
 		for (int i = 0; i < splitted.length; i++) {
 			lobby.add(splitted[i]);
@@ -406,20 +475,32 @@ public class Client extends Thread {
 		printMessage("***********");
 	}
 
+	/**
+	 * Returns the BufferedReader of a client.
+	 * 
+	 * @return the InputReader associated with this Client's socket.
+	 */
 	public BufferedReader getIn() {
 		return in;
 	}
 
+	/**
+	 * Returns the BufferedWriter of a client.
+	 * 
+	 * @return the OutputStream associated with this Client's socket.
+	 */
 	public BufferedWriter getOut() {
 		return out;
 	}
 
 	public void run() {
 		try {
+			printMessage("Ready to read new command ||||||||||||||||||||||||");
 			String tussenvar = in.readLine();
 			while (!sock.isClosed()) {
 				printMessage("Message received from server: " + tussenvar);
 				inter.whatisthatClient(tussenvar);
+				printMessage("Ready to read new command ||||||||||||||||||||||||");
 				tussenvar = in.readLine();
 			}
 		} catch (IOException e) {
@@ -436,8 +517,11 @@ public class Client extends Thread {
 		this.askLobby();
 	}
 
+	/**
+	 * Informs the Client of an invite being declined.
+	 */
 	public void inviteDeclined() {
-
+		printMessage("Your invite has been declined! Poor you :'(");
 	}
 
 	public void setDimensions(int width, int height) {
@@ -475,6 +559,9 @@ public class Client extends Thread {
 		printMessage("Type decline " + apart[0] + " to decline.");
 	}
 
+	/**
+	 * Quits the client.
+	 */
 	public void shutDown() {
 		scanner.close();
 		try {
@@ -482,6 +569,11 @@ public class Client extends Thread {
 		} catch (IOException e) {
 			printMessage("Could not close server");
 		}
+	}
+
+	public void UseScannerForDeterminingMoves(boolean b) {
+		scannerfordeterminingmoves = b;
+
 	}
 
 	/*

@@ -21,7 +21,8 @@ public class RunTextual {
 
 		System.out.println("To stay local pick A, to go online pick B");
 		String gotten = scanner.nextLine();
-		while (!gotten.equals("A") && !gotten.equals("B") && !gotten.equals("a") && !gotten.equals("b")) {
+		while (!gotten.equals("A") && !gotten.equals("B")
+				&& !gotten.equals("a") && !gotten.equals("b")) {
 			System.out.println("Pick a valid choice.");
 			gotten = scanner.nextLine();
 		}
@@ -42,7 +43,7 @@ public class RunTextual {
 			} else {
 				p2 = new HumanPlayer(gotten, Mark.O);
 			}
-			new Game(p1, p2, 7, 6);
+			new Game(p1, p2, 7, 6, false);
 
 		} else if (gotten.equals("B") || gotten.equals("b")) {
 			System.out.println("Pick one: Server(A) or Client(B)");

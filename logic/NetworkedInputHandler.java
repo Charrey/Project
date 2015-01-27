@@ -40,7 +40,7 @@ public class NetworkedInputHandler extends InputHandler implements Runnable {
 	public void run() {
 		//getMove();
 	}
-	/*
+	
 	public int getMove() {
 	
 		if (monitor==null) {
@@ -54,7 +54,7 @@ public class NetworkedInputHandler extends InputHandler implements Runnable {
 			}
 			return move;
 		}
-	} */
+	}
 	
 	public int getMove(Board board) {
 		return 5;
