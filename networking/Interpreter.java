@@ -215,6 +215,9 @@ public class Interpreter {
 						+ that.substring(KW_CONN_ERROR.length() + 1));
 				client.printMessage("!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!");
 				client.printMessage("");
+				if (client instanceof ClientBot) {
+					((ClientBot)client).retryConnection();
+				}
 				break;
 			case KW_LOBB_ACCEPTINVITE:
 				client.printMessage("Your invite was accepted by "

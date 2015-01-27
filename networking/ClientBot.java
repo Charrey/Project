@@ -1,6 +1,7 @@
 package Project.networking;
 
 import java.io.IOException;
+import java.util.Random;
 
 import Project.gui.ClientGUI;
 import Project.logic.ComputerPlayer;
@@ -66,35 +67,37 @@ public class ClientBot extends Client {
 			sendMessage(Interpreter.KW_LOBB_DECLINEINVITE + " " + apart[0]);
 		}
 	}
-	
+
 	@Override
 	public void gameend() {
 		super.gameend();
 		connected = false;
 		inviteDeclined();
 	}
-	
-	
-	
+
 	@Override
-	public void gamestart(String firstname, String secondname, boolean standardsize) {
+	public void gamestart(String firstname, String secondname,
+			boolean standardsize) {
 		super.gamestart(firstname, secondname, true);
-		connected=true;
+		connected = true;
 	}
 
 	@Override
 	public void inviteDeclined() {
-		invitemode=true;
+		invitemode = true;
+		Client.hold(100);
 		sendMessage(Interpreter.KW_LOBB_REQUEST);
 		Client.hold(550);
 		while (lobby == null) {
-			hold(2700);
+			hold(1350);
 			sendMessage("CONNECT " + this.name + " "
 					+ Interpreter.KW_FEATURE_CBOARDSIZE);
 		}
+		hold(1350);
 		while (lobby.size() < 2 && !connected) {
-			hold(5100);
+			hold(2550);
 			sendMessage(Interpreter.KW_LOBB_REQUEST);
+			hold(2550);
 		}
 		if (!connected) {
 			hold(100);
@@ -104,6 +107,18 @@ public class ClientBot extends Client {
 				}
 			}
 		}
+	}
+
+	public void retryConnection() {
+		String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		Random rng = new Random();
+		char[] text = new char[10];
+		for (int i = 0; i < 10; i++) {
+			text[i] = characters.charAt(rng.nextInt(characters.length()));
+		}
+		super.setClientname(new String(text));
+		super.sendMessage(Interpreter.KW_CONN_WELCOME + " " + name + " "
+				+ Interpreter.KW_FEATURE_CBOARDSIZE);
 	}
 
 }

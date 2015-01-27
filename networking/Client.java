@@ -315,6 +315,10 @@ public class Client extends Thread {
 		}
 	}
 
+	public void setClientname(String name) {
+		this.name = name;
+	}
+
 	// Constructor, obviously
 	/**
 	 * @param address
@@ -347,7 +351,7 @@ public class Client extends Thread {
 		}
 		sersup = new HashSet<String>();
 		invites = new HashMap<String, int[]>();
-		sendMessage("CONNECT " + this.name + " "
+		sendMessage(Interpreter.KW_CONN_WELCOME + " " + this.name + " "
 				+ Interpreter.KW_FEATURE_CBOARDSIZE);
 	}
 

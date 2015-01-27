@@ -136,6 +136,10 @@ public class ServerGUI extends JFrame{
 		textArea.append(msg + "\n");
 	}
 	
+	public void clearScreen() {
+		textArea.setText("Screen cleared.");
+	}
+	
 	public static void main(String[] args){
 		new ServerGUI();
 	}
