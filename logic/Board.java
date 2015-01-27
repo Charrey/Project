@@ -28,22 +28,25 @@ public class Board extends Observable {
 	 * @param heigth
 	 *            is the heigth of the board.
 	 */
-	/*
-	 * @ requires width>0 && height>0; ensures win == false; loop_invariant i>=0
-	 * && i<width; loop_invariant p>=0 && p<height; ensures (\forall x; x>=0 &&
-	 * x<width; \forall y; y>=0 && y<height; board[x][p].equals(Mark.EMPTY));
-	 */
+	/*@
+	  requires width>0 && height>0; 
+	  ensures win == false;
+	  ensures (\forall int x; x>=0 && x<width; \forall int y; y>=0 && y<height; getPlace(x,y).equals(Mark.EMPTY));
+	@*/
 	public Board(int width, int height) {
 		this.width = width;
 		this.height = height;
 		win = false;
 		board = new Mark[width][height];
+		//@ loop_invariant i>=0 && i < getWidth();
 		for (int i = 0; i < width; i++) {
+			//@ loop_invariant p>=0 && p<height;
 			for (int p = 0; p < height; p++) {
 				board[i][p] = Mark.EMPTY;
 			}
 		}
 	}
+	
 
 	/**
 	 * Puts a mark into the board. Taking the "gravity" into account.
@@ -55,15 +58,15 @@ public class Board extends Observable {
 	 * @return if the mark is placed into the board, returns the row, else
 	 *         return -1.
 	 */
-	/*
-	 * @ requires column >=0 && column<width && ! m==null; loop_invariant i>=0
-	 * && i<height; ensures columnFree(column) == false ==> \result == -1;
-	 * ensures columnFree(column) == true ==> \result == (\min j; j>=0 &&
-	 * j<getHeight() && getPlace(column, j).equals(Mark.Empty)); ensures
-	 * columnFree(column == true ==> win == checkWin(column, /result);
+	/*@
+		requires column >=0 && column<getWidth() && m!=null; 
+		ensures columnFree(column) == false ==> \result == -1;
+ 		ensures columnFree(column) == true ==> \result == (\min int j; j>=0 && j<getHeight() && getPlace(column, j).equals(Mark.EMPTY)); 
+ 		ensures columnFree(column) == true ==> isWin() == checkWin(column, \result);
 	 */
 	public int putMark(int column, Mark m) {
 		if (isValidInput(column)) {
+			//@ loop_invariant i>=0 && i<height;
 			for (int i = 0; i < this.height; i++) {
 				if (board[column][i].equals(Mark.EMPTY)) {
 					board[column][i] = m;
@@ -87,9 +90,11 @@ public class Board extends Observable {
 	 * @param m
 	 *            is the mark that needs to be placed.
 	 */
-	/*
-	 * @ requires width>=0 && width<getWidth(); requires height>=0 &&
-	 * height<getHeight(); requires ! m==null; ensures board[width][height] = m;
+	/*@ 
+ 		requires width>=0 && width<getWidth(); 
+ 		requires height>=0 && height<getHeight(); 
+ 		requires m!=null; 
+ 		ensures getPlace(width,height) == m;
 	 */
 	public void putMark(int width, int height, Mark m) {
 		board[width][height] = m;
@@ -130,7 +135,7 @@ public class Board extends Observable {
 	}
 
 	// Checks for all directions if this stone is part of a four-in-a-row.
-	private boolean checkWin(int a, int b) {
+	public boolean checkWin(int a, int b) {
 		if (checkDirection(a, b, 1, 0) + checkDirection(a, b, -1, 0) - 1 >= 4) {
 			return true;
 		} else if (checkDirection(a, b, 0, 1) + checkDirection(a, b, 0, -1) - 1 >= 4) {
@@ -151,11 +156,12 @@ public class Board extends Observable {
 	 * 
 	 * @return returns true if the board is full, else returns false.
 	 */
-	/*
-	 * @ loop_invariant i>=0 && i<getWidth(); ensures \result == (\exist j; j>=0
-	 * && j<getWidth() && board[j][getHeight-1].equals(Mark.EMPTY);
-	 */
+	
+	/*@ pure
+	 	ensures \result == (\exist int j; j>=0 && j<getWidth(); getPlace(j,(getHeight()-1)).equals(Mark.EMPTY));
+	 @*/
 	public boolean isFull() {
+		//@loop_invariant  i>=0 && i<getWidth();
 		for (int i = 0; i < getWidth(); i++) {
 			if (columnFree(i)) {
 				return false;
@@ -169,9 +175,7 @@ public class Board extends Observable {
 	 * 
 	 * @return true if there is a winner, else false.
 	 */
-	/*
-	 * @ pure ensures \result == win;
-	 */
+	//@	pure 
 	public boolean isWin() {
 		return win;
 	}
@@ -181,9 +185,7 @@ public class Board extends Observable {
 	 * 
 	 * @return returns (isWin() or isFull()).
 	 */
-	/*
-	 * @ pure ensures \result == isWin() || isFull();
-	 */
+	//@ pure 
 	public boolean gameOver() {
 		return isWin() || isFull();
 	}
@@ -195,10 +197,10 @@ public class Board extends Observable {
 	 *            is the column to be checked
 	 * @return true if column is free, else false.
 	 */
-	/*
-	 * @ requires input>=0 && input<getWidth(); ensures \result ==
-	 * board[input][getHeight()-1].equals(Mark.EMPTY);
-	 */
+	/*@
+		requires input>=0 && input<getWidth(); 
+		ensures \result == getPlace(input,getHeight()-1).equals(Mark.EMPTY);
+	 @*/
 	public boolean columnFree(int input) {
 		return (board[input][height - 1].equals(Mark.EMPTY));
 	}
@@ -208,14 +210,14 @@ public class Board extends Observable {
 	 * 
 	 * @return returns a copy of the current board.
 	 */
-	/*
-	 * @ loop_invariant i>=0 && i<getWidht(); loop_invartiant p>=0 &&
-	 * p<getHeight(); ensures \forall((\forall x; x>=0 && x<getWidth(); \forall
-	 * y; y>=0 && y<getHeight(); \result.getPlace(x,y).equals(getPlace(x,y))
-	 */
+	/*@
+		ensures (\forall(\forall int x; x>=0 && x<getWidth(); \forall int y; y>=0 && y<getHeight(); \result.getPlace(x,y).equals(getPlace(x,y)););
+	 @*/
 	public Board copy() {
 		Board board = new Board(width, height);
+		//@ loop_invariant i>=0 && i<getWidth();
 		for (int i = 0; i < width; i++) {
+			//@ loop_invariant p>=0 && p<getHeight();
 			for (int p = 0; p < height; p++) {
 				board.putMark(i, p, getPlace(i, p));
 			}
@@ -231,9 +233,7 @@ public class Board extends Observable {
 	 *            need to be checked
 	 * @return true if column is valid, else false.
 	 */
-	/*
-	 * @ ensures /result == column>=0 && column<getWidth();
-	 */
+	//@ pure
 	public boolean isValidInput(int column) {
 		return (column >= 0 && column < width);
 	}
@@ -245,13 +245,13 @@ public class Board extends Observable {
 	 *            that needs to be checked
 	 * @return return the amount of empty marks in the board.
 	 */
-	/*
-	 * @ requires isValidInput(column) == true; loop_invariant i>=0 &&
-	 * i<getHeight(); ensures \result == \sum(\forall y; y>=0 && y<getHeight()
-	 * && getPlace(column,y).equals(Mark.EMPTY));
-	 */
+	/*@
+	 	requires isValidInput(column) == true; 
+	 	ensures \result == (\sum(\forall int y; y>=0 && y<getHeight() && getPlace(column,y).equals(Mark.EMPTY);));
+	 @*/
 	public int emptySlotCount(int column) {
 		int count = 0;
+		//@ loop_invariant i>=0 && i<getHeight(); 
 		for (int i = 0; i < this.height; i++) {
 			if (board[column][i].equals(Mark.EMPTY)) {
 				count++;
@@ -265,9 +265,7 @@ public class Board extends Observable {
 	 * 
 	 * @return width of the board.
 	 */
-	/*
-	 * @ pure ensures \result == width;
-	 */
+	//@ pure 
 	public int getWidth() {
 		return width;
 	}
@@ -277,9 +275,7 @@ public class Board extends Observable {
 	 * 
 	 * @return height of the board.
 	 */
-	/*
-	 * @ pure ensures \result == height;
-	 */
+	//@ pure 
 	public int getHeight() {
 		return height;
 	}
@@ -289,11 +285,10 @@ public class Board extends Observable {
 	 * 
 	 * @return returns the mark represenation of the board
 	 */
-	/*
-	 * @ ensures \forall(\forall int x; x>=0 && x<getWidht(); \forall int y;
-	 * y>=0 && y<=getHeight(); \result[x][y].equals(getPlace(x,y)); ensures
-	 * \result == board;
-	 */
+	/*@ pure
+	 	ensures (\forall(\forall int x; x>=0 && x<getWidht(); \forall int y; y>=0 && y<=getHeight(); \result[x][y].equals(getPlace(x,y)););); 
+	 	ensures \result.equals(getBoard());
+	 @*/
 	public Mark[][] getBoard() {
 		return board;
 	}
@@ -307,10 +302,10 @@ public class Board extends Observable {
 	 *            of the place that needs to be checked
 	 * @return the mark allocated in the given column and row
 	 */
-	/*
-	 * @ pure requires column>=0 && column<getWidth(); requires row>=0; &&
-	 * row<getHeight(); ensures \result == board[column][row];
-	 */
+	/*@ pure 
+ 		requires column>=0 && column<getWidth() && row>=0 && row<getHeight(); ; 
+ 		ensures \result == getPlace(column,row);
+ 	@*/
 	public Mark getPlace(int column, int row) {
 		return board[column][row];
 	}
@@ -318,23 +313,23 @@ public class Board extends Observable {
 	/**
 	 * Resets the board.
 	 */
-	/*
-	 * @ ensures win = false; loop_invariant i>=0 && i<getWidth();
-	 * loop_invariant p>=0 && p<getheight(); ensures \forall(\forall int x; x>=0
-	 * && x<getWidht(); \forall int y; y>=0 && y<=getHeight();
-	 * board[x][y].equals(Mark.EMPTY));
-	 */
+	/*@
+	 	ensures isWin() == false; 
+	 	ensures (\forall(\forall int x; x>=0 && x<getWidth(); \forall int y; y>=0 && y<=getHeight(); getPlace(x,y).equals(Mark.EMPTY)));
+	 @*/
 	public void reset() {
-		win = false;
-		for (int i = 0; i < width; i++) {
-			for (int p = 0; p < height; p++) {
-				board[i][p] = Mark.EMPTY;
-			}
-		}
-		setChanged();
-		notifyObservers();
+		reset(width, height);
 	}
-
+	
+	/**
+	 * Resets the board.
+	 */
+	/*@
+	 	ensures isWin() == false; 
+	 	ensures width == getWidth();
+	 	ensures height == getHeight();
+	 	ensures (\forall(\forall int x; x>=0 && x<width; \forall int y; y>=0 && y<=getHeight(); getPlace(x,y).equals(Mark.EMPTY)));
+	 @*/
 	public void reset(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -345,6 +340,8 @@ public class Board extends Observable {
 				board[i][p] = Mark.EMPTY;
 			}
 		}
+		setChanged();
+		notifyObservers();
 	}
 
 	public String networkBoard() {
@@ -370,12 +367,12 @@ public class Board extends Observable {
 		String[] apart = nwb.split("\\s+");
 		int width = Integer.parseInt(apart[1]);
 		List<Integer> boardlist = new LinkedList<Integer>();
-		for (int i = apart.length-1; i > 2; i--) {
+		for (int i = apart.length - 1; i > 2; i--) {
 			boardlist.add(Integer.parseInt(apart[i]));
 			if (boardlist.size() == width) {
 				String result = "|";
-				for (int p = boardlist.size()-1; p>0; p--) {
-					result+=boardlist.get(p)+"|";
+				for (int p = boardlist.size() - 1; p > 0; p--) {
+					result += boardlist.get(p) + "|";
 				}
 				System.out.println(result);
 				boardlist.removeAll(boardlist);
@@ -384,15 +381,6 @@ public class Board extends Observable {
 
 	}
 
-	/*
-	 * public String networkBoard() { String result = "BOARD";
-	 * result+=" "+getWidth()+" "+getHeight(); for (int p = 0; p < getHeight();
-	 * p++) { for (int i = 0; i < getWidth(); i++) { if (getPlace(i, p) ==
-	 * Mark.X) { result += " 01"; } else if (getPlace(i, p) == Mark.O) { result
-	 * += " 02"; } else if (getPlace(i, p) == Mark.EMPTY) { result += " 00"; }
-	 * else { System.err.println("No such mark found in networkBoard()"); } }
-	 * result += " /n"; } result += " /n"; return result; }
-	 */
 
 	/**
 	 * Check the play the AI would play
@@ -402,7 +390,7 @@ public class Board extends Observable {
 	 * @return the move the AI would have made.
 	 */
 	/*
-	 * @ requires ! m==null;
+	 * @ requires m!=null;
 	 */
 	public int[] hint(Mark m) {
 		int column = new ComputerPlayer(m).determineMove(this);

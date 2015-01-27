@@ -5,14 +5,11 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
-
 import Project.gui.ServerGUI;
 import Project.logic.*;
-
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
-
 import java.math.BigInteger;
 
 public class Server extends Thread {
@@ -26,7 +23,7 @@ public class Server extends Thread {
 	private boolean running;
 	private int portNumber;
 	private ServerGUI gui;
-
+	private Scanner scanner;
 	public Map<ClientHandler, String[]> invites;
 
 	// First string = target,
@@ -44,29 +41,48 @@ public class Server extends Thread {
 		sc.start();
 	}
 
-	private Scanner scanner;
+
 
 	/**
 	 * Accepts input from System.in.
 	 */
 	
+	/*@
+	 * pure
+	 * ensures \result.equals(lobby);
+	 */
 	public Map<ClientHandler, Set<String>> getLobby() {
 		return lobby;
 	}
 	
+	/*@
+	 * pure
+	 * ensures \result.equals(playing);
+	 */
 	public Map<ClientHandler, Boolean> getPlaying() {
 		return playing;
 	}
 	
+	/*@
+	 * pure
+	 * ensures \result.equals(gamesgames);
+	 */
 	public Map<Game, Integer> getGames() {
 		return gamesgames;
 	}
 	
+	/*@
+	 * pure
+	 * ensures \result.equals(interpreter);
+	 */
 	public Interpreter getInterpreter() {
 		return interpreter;
 	}
 	
-	
+	/*@
+	 * loop_invariant true == true;
+	 * 
+	 */
 	public void watchInput() {
 		scanner = new Scanner(System.in);
 		String gotten;
@@ -290,6 +306,10 @@ public class Server extends Thread {
 	 * Gives the ServerGUI this server is using.
 	 * 
 	 * @return the ServerGUI this server is using.
+	 */
+	/*@
+	 * pure
+	 * ensures \result.equals(gui);
 	 */
 	public ServerGUI getGUI() {
 		return gui;
