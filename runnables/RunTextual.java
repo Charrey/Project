@@ -86,7 +86,7 @@ public class RunTextual {
 					ip = scanner.nextLine();
 				}
 				if (ip.equals("a")) {
-					ip = ServerGUI.getIP();
+					ip = "127.0.0.1";
 				}
 				System.out
 						.println("And what is the port of the server you'd like to connect to?");
