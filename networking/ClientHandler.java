@@ -40,7 +40,7 @@ public class ClientHandler extends Thread {
 				server.printMessage("Ready for new command.");
 				ontvangen = in.readLine();
 				server.printMessage("New command from " + clientName + ": " + ontvangen);
-				server.interpreter.whatisthatServer(ontvangen, this, false);
+				server.getInterpreter().whatisthatServer(ontvangen, this, false);
 			}
 		} catch (IOException ex) {
 			server.printMessage("IOE in CH.run");
@@ -99,13 +99,13 @@ public class ClientHandler extends Thread {
 				i.sendCommand("DECLINE_INVITE " + clientName);
 			}
 		}
-		server.lobby.remove(this);		
-		if (server.playing.get(this)) {
+		server.getLobby().remove(this);		
+		if (server.getPlaying().get(this)) {
 			if (server.getOpponent(this)!=null) {
 			server.getOpponent(this).sendCommand(Interpreter.KW_GAME_GAMEEND + " DISCONNECT"+" "+server.getOpponent(this).getClientName());}
-			server.gamesgames.remove(server.getGame(this));
+			server.getGames().remove(server.getGame(this));
 		}
-		server.playing.remove(this);
+		server.getPlaying().remove(this);
 		try {
 			sock.close();
 		} catch (IOException e) {

@@ -18,15 +18,14 @@ import java.math.BigInteger;
 public class Server extends Thread {
 
 	// Set of string contains features
-	public Map<ClientHandler, Set<String>> lobby;
-	public Map<ClientHandler, Boolean> playing;
-	public Map<Game, Integer> gamesgames;
-	Interpreter interpreter;
-	ServerSocket serversocket;
+	private Map<ClientHandler, Set<String>> lobby;
+	private Map<ClientHandler, Boolean> playing;
+	private Map<Game, Integer> gamesgames;
+	private Interpreter interpreter;
+	private ServerSocket serversocket;
 	private boolean running;
 	private int portNumber;
 	private ServerGUI gui;
-	
 
 	public Map<ClientHandler, String[]> invites;
 
@@ -45,8 +44,29 @@ public class Server extends Thread {
 		sc.start();
 	}
 
-	Scanner scanner;
+	private Scanner scanner;
 
+	/**
+	 * Accepts input from System.in.
+	 */
+	
+	public Map<ClientHandler, Set<String>> getLobby() {
+		return lobby;
+	}
+	
+	public Map<ClientHandler, Boolean> getPlaying() {
+		return playing;
+	}
+	
+	public Map<Game, Integer> getGames() {
+		return gamesgames;
+	}
+	
+	public Interpreter getInterpreter() {
+		return interpreter;
+	}
+	
+	
 	public void watchInput() {
 		scanner = new Scanner(System.in);
 		String gotten;
@@ -54,32 +74,38 @@ public class Server extends Thread {
 		while (true) {
 			printMessage("Read command: " + gotten);
 			String[] splitted = gotten.split("\\s+");
-			if (splitted[0].equals("kick")) {
+
+			switch (splitted[0]) {
+			case "kick":
 				try {
 					findClientHandler(gotten.substring(5)).getSocket().close();
 				} catch (IOException e) {
 					printMessage("Could not kick this player.");
 				}
-			} else if (splitted[0].equals("error")) {
+				break;
+			case "error":
 				sendError(findClientHandler(splitted[1]),
 						gotten.substring(6 + splitted[1].length()));
-			} else if (splitted[0].equals("help")) {
+				break;
+			case "help":
 				printMessage("----HELP--------------");
 				printMessage("kick <name> -- Kick a player");
 				printMessage("error <name> <error> -- Send an error");
 				printMessage("hello <name> <message> -- Send a message");
 				printMessage("----------------------");
-			} else if (splitted[0].equals("hello")) {
+				break;
+			case "hello":
 				findClientHandler(splitted[1]).sendCommand(
 						"CHAT " + gotten.substring(6 + splitted[1].length()));
-			} else {
+				break;
+			default:
 				printMessage("Use 'help' to view console commands.");
 			}
 			gotten = scanner.nextLine();
 		}
 	}
 
-	void printMessage(String message) {
+	public void printMessage(String message) {
 		if (gui == null) {
 			System.out.println(message);
 		} else {
@@ -438,8 +464,9 @@ public class Server extends Thread {
 			if (!Character.isDigit(array[i])) {
 				return false;
 			}
-		}	
-		return (new BigInteger(thestring).compareTo(new BigInteger(Integer.toString(Integer.MAX_VALUE)))<=0);
+		}
+		return (new BigInteger(thestring).compareTo(new BigInteger(Integer
+				.toString(Integer.MAX_VALUE))) <= 0);
 	}
 
 	/**
@@ -560,18 +587,19 @@ public class Server extends Thread {
 
 		} else {
 			if (apart.length == 1) {
-				String[] toput = {apart[0],"7","6"};
+				String[] toput = { apart[0], "7", "6" };
 				invites.put(source, toput);
 				findClientHandler(apart[0]).sendCommand(
 						Interpreter.KW_LOBB_INVITE + " "
 								+ source.getClientName() + " 7 6");
 			} else {
-				if (lobby.get(findClientHandler(apart[0])).contains(Interpreter.KW_FEATURE_CBOARDSIZE)) {
-				invites.put(source, apart);
-				findClientHandler(apart[0]).sendCommand(
-						Interpreter.KW_LOBB_INVITE + " "
-								+ source.getClientName() + " " + apart[1] + " "
-								+ apart[2]);
+				if (lobby.get(findClientHandler(apart[0])).contains(
+						Interpreter.KW_FEATURE_CBOARDSIZE)) {
+					invites.put(source, apart);
+					findClientHandler(apart[0]).sendCommand(
+							Interpreter.KW_LOBB_INVITE + " "
+									+ source.getClientName() + " " + apart[1]
+									+ " " + apart[2]);
 				} else {
 					sendError(source, "TargetNoCBoardSize");
 				}
