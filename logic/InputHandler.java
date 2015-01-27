@@ -1,6 +1,7 @@
 package Project.logic;
 
 
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -8,7 +9,7 @@ import javax.swing.JLabel;
 
 import Project.gui.game.Slot;
 
-public class InputHandler implements MouseListener{
+public class InputHandler extends MouseAdapter{
 
 	private int move;
 	private boolean clicked = false;
@@ -48,30 +49,7 @@ public class InputHandler implements MouseListener{
 		b = clicked;
 	}
 
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 
 
 
