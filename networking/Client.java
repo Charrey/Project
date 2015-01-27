@@ -22,6 +22,7 @@ import java.util.HashSet;
 
 public class Client extends Thread {
 
+	private boolean scannerfordeterminingmoves;
 	protected Interpreter inter;
 	private Game game;
 	protected String name;
@@ -46,6 +47,15 @@ public class Client extends Thread {
 	private Map<String, int[]> invites;
 	private ClientGUI gui;
 
+	public Scanner getScanner() {
+		return scanner;
+	}
+	
+	public void resumeScanner() {
+		scanner = new Scanner(System.in);
+	}
+	
+	
 	/**
 	 * Takes console input and reacts accordingly.
 	 */
@@ -62,6 +72,7 @@ public class Client extends Thread {
 				gotten = gui.waitForCommand();
 			}
 			apart = gotten.split("\\s+");
+			if (!scannerfordeterminingmoves) {
 			switch (apart[0]) {
 			case "accept":
 				if (invites.keySet().contains(apart[1])) {
@@ -119,6 +130,9 @@ public class Client extends Thread {
 				break;
 			default:
 				sendMessage(gotten);
+			}}
+			else {
+				player.determineMove(getGame().getBoard(),gotten, scanner);
 			}
 		}
 
@@ -340,13 +354,15 @@ public class Client extends Thread {
 	 * Asks the client to do a move and sends it to the server.
 	 */
 	public void makemove() {
-		if (playerno == 1) {
+		UseScannerForDeterminingMoves(true);
+		printMessage("Please type your move.");
+		/*if (playerno == 1) {
 			movetobemade = game.getFirstPlayer().determineMove(game.getBoard());
 		} else {
 			movetobemade = game.getSecondPlayer()
 					.determineMove(game.getBoard());
-		}
-		this.sendMove(movetobemade);
+		}*/
+
 	}
 
 	/**
@@ -361,9 +377,10 @@ public class Client extends Thread {
 			this.setDimensions(invites.get(secondname)[0],
 					invites.get(secondname)[1]);
 		}
-
-		player = new HumanPlayer(name, Mark.X, new InputHandler());
+		
+		
 		if (gui == null) {
+			player = new HumanPlayer(name, Mark.X, this);
 			if (name.equals(firstname)) {
 				playerno = 1;
 				printMessage("Board width: " + boardwidth);
@@ -381,6 +398,7 @@ public class Client extends Thread {
 			}
 			TUI thetui = new TUI(game.getBoard());
 		} else {
+			player = new HumanPlayer(name, Mark.X, new InputHandler());
 			MainGui thegui = new MainGui();
 			if (name.equals(firstname)) {
 				playerno = 1;
@@ -457,10 +475,12 @@ public class Client extends Thread {
 
 	public void run() {
 		try {
+			printMessage("Ready to read new command ||||||||||||||||||||||||");
 			String tussenvar = in.readLine();
 			while (!sock.isClosed()) {
 				printMessage("Message received from server: " + tussenvar);
 				inter.whatisthatClient(tussenvar);
+				printMessage("Ready to read new command ||||||||||||||||||||||||");
 				tussenvar = in.readLine();
 			}
 		} catch (IOException e) {
@@ -529,6 +549,11 @@ public class Client extends Thread {
 		} catch (IOException e) {
 			printMessage("Could not close server");
 		}
+	}
+
+	public void UseScannerForDeterminingMoves(boolean b) {
+		scannerfordeterminingmoves=b;
+		
 	}
 
 	/*
