@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 public class HumanPlayer extends Player {
 	private InputHandler inputHandler;
+	private Scanner a;
 
 	
 	public HumanPlayer(String name, Mark mark, InputHandler inputHandler) {
@@ -19,7 +20,7 @@ public class HumanPlayer extends Player {
 	public int determineMove(Board playingfield) {
 		if(inputHandler==null){
 			System.out.println("Which column would you like to pick, "+ this.getName() + "? " + "(type hint for hint)");
-			Scanner a = new Scanner(System.in);
+			a = new Scanner(System.in);
 			String pick;
 			boolean processing = true;
 			//String tussenvar = a.nextLine();

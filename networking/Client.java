@@ -43,7 +43,7 @@ public class Client extends Thread {
 	private int boardwidth;
 	private int boardheight;
 
-	Map<String, int[]> invites;
+	private Map<String, int[]> invites;
 	private ClientGUI gui;
 
 	/**
@@ -83,7 +83,7 @@ public class Client extends Thread {
 				break;
 			case "invite":
 				int[] array = new int[2];
-				System.out.println("Apart length is "+apart.length);
+				System.out.println("Apart length is " + apart.length);
 				if (apart.length == 4 && Server.representsInt(apart[1])
 						&& Server.representsInt(apart[2])) {
 					array[0] = Integer.parseInt(apart[1]);
@@ -135,6 +135,13 @@ public class Client extends Thread {
 		sendMessage(Interpreter.KW_LOBB_REQUEST);
 	}
 
+	/**
+	 * Places a mark when a move is accepted by the server
+	 * 
+	 * @param arguments
+	 *            contains both the player number and the move, separated by a
+	 *            space.
+	 */
 	public void moveok(String arguments) {
 		String[] splitted = arguments.split("\\s+");
 		if (Integer.parseInt(splitted[0]) == playerno) {
@@ -145,10 +152,19 @@ public class Client extends Thread {
 		// Refresh the visual board here!
 	}
 
+	/**
+	 * @return the Game this client is playing
+	 */
 	public Game getGame() {
 		return game;
 	}
 
+	/**
+	 * Refreshes the board based on server
+	 * 
+	 * @param stringArg
+	 *            is the board in INF-2 protocol format.
+	 */
 	public void refreshBoard(String stringArg) {
 		String[] splitted = stringArg.split("\\s+");
 		game.getBoard().reset(Integer.parseInt(splitted[0]),
@@ -156,7 +172,6 @@ public class Client extends Thread {
 		int teller = 0;
 		for (int p = 0; p < game.getBoard().getHeight(); p++) {
 			for (int i = 0; i < game.getBoard().getWidth(); i++) {
-
 				if (Integer.parseInt(splitted[teller + 2]) == 01) {
 					game.getBoard().putMark(i, Mark.X);
 				} else if (Integer.parseInt(splitted[teller + 2]) != 0) {
@@ -186,10 +201,19 @@ public class Client extends Thread {
 		}
 	}
 
+	/**
+	 * @param move is the move to be sent to the server.
+	 */
 	public void sendMove(int move) {
 		sendMessage(Interpreter.KW_GAME_MOVE + " " + move);
 	}
 
+	/**
+	 * Checks whether the server supports a certain function.
+	 * 
+	 * @param function is a by the interpreter approved function.
+	 * @return whether the server supports the given function.
+	 */
 	public Boolean hasFunction(String function) {
 		return sersup.contains(function);
 	}
@@ -207,6 +231,11 @@ public class Client extends Thread {
 		return sock;
 	}
 
+	/**
+	 * Prints a message in the gui if there is one, otherwise prints it to System.out.
+	 * 
+	 * @param message is the message to be printed
+	 */
 	void printMessage(String message) {
 		if (gui == null) {
 			System.out.println(message);
@@ -249,6 +278,11 @@ public class Client extends Thread {
 				+ Interpreter.KW_FEATURE_CBOARDSIZE);
 	}
 
+	/**
+	 * Do nothing for a specified time.
+	 * 
+	 * @param time is the number of milliseconds to wait.
+	 */
 	public static void hold(int time) {
 		try {
 			Thread.sleep(time);
@@ -259,14 +293,10 @@ public class Client extends Thread {
 
 	// Constructor, obviously
 	/**
-	 * @param address
-	 *            is the address used to create a Socket.
-	 * @param port
-	 *            is the port used to create a Socket.
-	 * @param name
-	 *            is the name of this client.
-	 * @param gui
-	 *            is the gui associated with this client.
+	 * @param address is the address used to create a Socket.
+	 * @param port is the port used to create a Socket.
+	 * @param name is the name of this client.
+	 * @param gui is the gui associated with this client.
 	 */
 	public Client(String address, int port, String name, ClientGUI gui) {
 		this.gui = gui;
@@ -296,9 +326,7 @@ public class Client extends Thread {
 	/**
 	 * Logs the features the server supports.
 	 * 
-	 * @param features
-	 *            is a String containing the features this server supports,
-	 *            separated by spaces.
+	 * @param features is a String containing the features this server supports, separated by spaces.
 	 */
 	public void connectionAccepted(String features) {
 		String[] splitted = features.split("\\s+");
@@ -308,6 +336,9 @@ public class Client extends Thread {
 		printMessage("CONNECTED");
 	}
 
+	/**
+	 * Asks the client to do a move and sends it to the server.
+	 */
 	public void makemove() {
 		if (playerno == 1) {
 			movetobemade = game.getFirstPlayer().determineMove(game.getBoard());
@@ -318,6 +349,10 @@ public class Client extends Thread {
 		this.sendMove(movetobemade);
 	}
 
+	/**
+	 * @param firstname is the name of player #1
+	 * @param secondname is the name of player #2
+	 */
 	public void gamestart(String firstname, String secondname) {
 		if (invites.containsKey(firstname)) {
 			this.setDimensions(invites.get(firstname)[0],
@@ -372,11 +407,8 @@ public class Client extends Thread {
 	}
 
 	/**
-	 * @param function
-	 *            is the function to be set.
-	 * @param setting
-	 *            is whether the function should be enabled(true) or
-	 *            disabled(false).
+	 * @param function is the function to be set.
+	 * @param setting is whether the function should be enabled(true) or disabled(false).
 	 */
 	public void SetSerSup(String function, Boolean setting) {
 		if (sersup.contains(function) && setting == false) {
@@ -390,8 +422,7 @@ public class Client extends Thread {
 	 * Sets the lobby to the given argument, then prints the lobby to the
 	 * console.
 	 * 
-	 * @param stringArg
-	 *            is the lobby received by the server.
+	 * @param stringArg is the lobby received by the server.
 	 */
 	public void setLobby(String stringArg) {
 		lobby = new HashSet<String>();
@@ -406,10 +437,20 @@ public class Client extends Thread {
 		printMessage("***********");
 	}
 
+	/**
+	 * Returns the BufferedReader of a client.
+	 * 
+	 * @return the InputReader associated with this Client's socket.
+	 */
 	public BufferedReader getIn() {
 		return in;
 	}
 
+	/**
+	 * Returns the BufferedWriter of a client.
+	 * 
+	 * @return the OutputStream associated with this Client's socket.
+	 */
 	public BufferedWriter getOut() {
 		return out;
 	}
@@ -436,8 +477,11 @@ public class Client extends Thread {
 		this.askLobby();
 	}
 
+	/**
+	 * Informs the Client of an invite being declined. 
+	 */
 	public void inviteDeclined() {
-
+		printMessage("Your invite has been declined! Poor you :'(");
 	}
 
 	public void setDimensions(int width, int height) {
@@ -475,6 +519,9 @@ public class Client extends Thread {
 		printMessage("Type decline " + apart[0] + " to decline.");
 	}
 
+	/**
+	 * Quits the client.
+	 */
 	public void shutDown() {
 		scanner.close();
 		try {
