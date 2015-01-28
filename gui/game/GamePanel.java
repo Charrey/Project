@@ -3,7 +3,10 @@ package Project.gui.game;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseListener;
+import java.io.File;
+
 import javax.swing.*;
+
 import Project.logic.Board;
 import Project.logic.Game;
 import Project.logic.Mark;
@@ -75,11 +78,11 @@ public class GamePanel extends JPanel {
 	 */
 	public Icon getIcon(Mark m){ 
 		if(m==Mark.X){
-			return new ImageIcon("bin/Project/gui/game/images/red.png");
+			return new ImageIcon("bin"+File.separator+"Project"+File.separator+"gui"+File.separator+"game"+File.separator+"images"+File.separator+"red.png");
 		}else if(m==Mark.O){
-			return new ImageIcon("bin/Project/gui/game/images/yellow.png");
+			return new ImageIcon("bin"+File.separator+"Project"+File.separator+"gui"+File.separator+"game"+File.separator+"images"+File.separator+"yellow.png");
 		}else{
-			return new ImageIcon("bin/Project/gui/game/images/empty.png");
+			return new ImageIcon("bin"+File.separator+"Project"+File.separator+"gui"+File.separator+"game"+File.separator+"images"+File.separator+"empty.png");
 		}
 		
 	}
