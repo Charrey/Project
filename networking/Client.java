@@ -46,6 +46,7 @@ public class Client extends Thread {
 	private Map<String, int[]> invites;
 	private ClientGUI gui;
 
+	//@pure
 	public Scanner getScanner() {
 		return scanner;
 	}
@@ -160,6 +161,7 @@ public class Client extends Thread {
 	/**
 	 * Requests the lobby from the server.
 	 */
+	//@ pure
 	public void askLobby() {
 		sendMessage(Interpreter.KW_LOBB_REQUEST);
 	}
@@ -184,6 +186,7 @@ public class Client extends Thread {
 	/**
 	 * @return the Game this client is playing
 	 */
+	//@pure
 	public Game getGame() {
 		return game;
 	}
@@ -194,12 +197,15 @@ public class Client extends Thread {
 	 * @param stringArg
 	 *            is the board in INF-2 protocol format.
 	 */
+	//@ requires stringArg != null;
 	public void refreshBoard(String stringArg) {
 		String[] splitted = stringArg.split("\\s+");
 		game.getBoard().reset(Integer.parseInt(splitted[0]),
 				Integer.parseInt(splitted[1]));
 		int teller = 0;
+		//@ loop_invariant p>=0 && p<game.getBoard().getHeight();
 		for (int p = 0; p < game.getBoard().getHeight(); p++) {
+			//@ loop_invariant i>=0 && game.getBoard().getWidth();
 			for (int i = 0; i < game.getBoard().getWidth(); i++) {
 				if (Integer.parseInt(splitted[teller + 2]) == 01) {
 					game.getBoard().putMark(i, Mark.X);
@@ -237,6 +243,7 @@ public class Client extends Thread {
 	 * @param move
 	 *            is the move to be sent to the server.
 	 */
+	//@requires move 1 != null;
 	public void sendMove(int move) {
 		sendMessage(Interpreter.KW_GAME_MOVE + " " + move);
 	}
@@ -248,6 +255,9 @@ public class Client extends Thread {
 	 *            is a by the interpreter approved function.
 	 * @return whether the server supports the given function.
 	 */
+	/*@	pure
+		ensures \result == sersup.contains(function);
+	@*/
 	public Boolean hasFunction(String function) {
 		return sersup.contains(function);
 	}
@@ -261,6 +271,7 @@ public class Client extends Thread {
 	 * 
 	 * @return the Socket of this Client.
 	 */
+	//@pure
 	public Socket getSocket() {
 		return sock;
 	}
@@ -313,6 +324,7 @@ public class Client extends Thread {
 		sendMessage("CONNECT " + this.name 	+ getFeatures());
 	}
 	
+	//@pure
 	public String getFeatures() {
 		return " "+Interpreter.KW_FEATURE_CBOARDSIZE;
 	}
@@ -330,7 +342,7 @@ public class Client extends Thread {
 			System.out.println("Impatient bastard");
 		}
 	}
-
+	//@ ensures name == getName();
 	public void setClientname(String name) {
 		this.name = name;
 	}
@@ -472,6 +484,8 @@ public class Client extends Thread {
 	 *            is whether the function should be enabled(true) or
 	 *            disabled(false).
 	 */
+	//@ ensures setting == true && getSersup().contains(function) ==> \old(getSersup()).contains(function);
+	//@ ensures setting == true && !(\old(getSersup().contains(function))) ==> getSersup().contains(functions);
 	public void SetSerSup(String function, Boolean setting) {
 		if (sersup.contains(function) && setting == false) {
 			sersup.remove(function);
@@ -508,6 +522,7 @@ public class Client extends Thread {
 	 * 
 	 * @return the InputReader associated with this Client's socket.
 	 */
+	//@pure
 	public BufferedReader getIn() {
 		return in;
 	}
@@ -517,6 +532,7 @@ public class Client extends Thread {
 	 * 
 	 * @return the OutputStream associated with this Client's socket.
 	 */
+	//@pure
 	public BufferedWriter getOut() {
 		return out;
 	}
@@ -525,6 +541,7 @@ public class Client extends Thread {
 		try {
 			// printMessage("Ready to read new command ||||||||||||||||||||||||");
 			String tussenvar = in.readLine();
+			//@ loop_invariant sock.isClosed() != null;
 			while (!sock.isClosed()) {
 				printMessage("Message received from server: " + tussenvar);
 				inter.whatisthatClient(tussenvar);
@@ -607,11 +624,11 @@ public class Client extends Thread {
 		scannerfordeterminingmoves = b;
 
 	}
-
+	//@pure
 	public int getBoardWidth() {
 		return boardwidth;
 	}
-
+	//@pure
 	public int getBoardHeight() {
 		return boardheight;
 	}
