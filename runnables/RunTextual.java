@@ -1,5 +1,6 @@
 package Project.runnables;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 import Project.gui.ServerGUI;
@@ -15,7 +16,7 @@ import Project.networking.Server;
 import Project.networking.ServerConsole;
 
 public class RunTextual {
-	
+
 	private static Boolean ai = false;
 
 	public static void main(String[] args) {
@@ -57,16 +58,22 @@ public class RunTextual {
 			}
 			if (gotten.equals("A") || gotten.equals("a")) {
 				System.out.println("Port?");
-				gotten = scanner.nextLine();
-				while (!Server.representsInt(gotten)
-						|| Integer.parseInt(gotten) > 65535
-						|| Integer.parseInt(gotten) < 1) {
-					System.out.println("That's not a valid port.");
-					gotten = scanner.nextLine();
+				while (true) {
+					try {
+						gotten = scanner.nextLine();
+						while (!Server.representsInt(gotten)
+								|| Integer.parseInt(gotten) > 65535
+								|| Integer.parseInt(gotten) < 1) {
+							System.out.println("That's not a valid port. Please try again.");
+							gotten = scanner.nextLine();
+						}
+						Server server = new Server(Integer.parseInt(gotten));
+						server.watchInput();
+					} catch (IOException ex) {
+						System.out.println("Port is not open! Please try again.");
+					}
 				}
 
-				Server server = new Server(Integer.parseInt(gotten));
-				server.watchInput();
 			} else {
 				System.out.println("What is your name?");
 				System.out.println("If you're an AI, type a.");

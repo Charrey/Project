@@ -38,7 +38,6 @@ public class Client extends Thread {
 	private BufferedReader in;
 	private BufferedWriter out;
 
-	private int movetobemade;
 	private Scanner scanner;
 
 	private int boardwidth;
@@ -310,8 +309,11 @@ public class Client extends Thread {
 		}
 		sersup = new HashSet<String>();
 		invites = new HashMap<String, int[]>();
-		sendMessage("CONNECT " + this.name + " "
-				+ Interpreter.KW_FEATURE_CBOARDSIZE);
+		sendMessage("CONNECT " + this.name 	+ getFeatures());
+	}
+	
+	public String getFeatures() {
+		return " "+Interpreter.KW_FEATURE_CBOARDSIZE;
 	}
 
 	/**

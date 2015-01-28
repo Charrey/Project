@@ -21,7 +21,6 @@ public class Server extends Thread {
 	private Interpreter interpreter;
 	private ServerSocket serversocket;
 	private boolean running;
-	private int portNumber;
 	private ServerGUI gui;
 	private Scanner scanner;
 	public Map<ClientHandler, String[]> invites;
@@ -33,53 +32,48 @@ public class Server extends Thread {
 	// public Map<ClientHandler, ClientHandler> invites; THIS DOES NOT SUPPORT
 	// CBOARDSIZE
 
-	public static void main(int port) {
+	/*public static void main(int port) {
 		System.out.println("Your IP is: " + ServerGUI.getIP());
 		Server server = new Server(port);
 		server.start();
 		ServerConsole sc = new ServerConsole(server);
 		sc.start();
-	}
+	}*/
 
 	/**
 	 * Accepts input from System.in.
 	 */
 
-	/*@
-	 * pure
-	 * ensures \result.equals(lobby);
+	/*
+	 * @ pure ensures \result.equals(lobby);
 	 */
 	public Map<ClientHandler, Set<String>> getLobby() {
 		return lobby;
 	}
 
-	/*@
-	 * pure
-	 * ensures \result.equals(playing);
+	/*
+	 * @ pure ensures \result.equals(playing);
 	 */
 	public Map<ClientHandler, Boolean> getPlaying() {
 		return playing;
 	}
 
-	/*@
-	 * pure
-	 * ensures \result.equals(gamesgames);
+	/*
+	 * @ pure ensures \result.equals(gamesgames);
 	 */
 	public Map<Game, Integer> getGames() {
 		return gamesgames;
 	}
 
-	/*@
-	 * pure
-	 * ensures \result.equals(interpreter);
+	/*
+	 * @ pure ensures \result.equals(interpreter);
 	 */
 	public Interpreter getInterpreter() {
 		return interpreter;
 	}
 
-	/*@
-	 * loop_invariant true == true;
-	 * 
+	/*
+	 * @ loop_invariant true == true;
 	 */
 	public void watchInput() {
 		scanner = new Scanner(System.in);
@@ -140,14 +134,14 @@ public class Server extends Thread {
 	public void run() {
 		while (running) {
 			try {
-				printMessage("Port " + portNumber + " has been opened");
+				printMessage("Port " + serversocket.getLocalPort() + " has been opened");
 				Socket socket = getServerSocket().accept();
 				printMessage("Connection from " + socket.getInetAddress()
 						+ " accepted");
 				ClientHandler clienthandler = addClientHandler(socket);
 				clienthandler.start();
 			} catch (IOException e) {
-				printMessage("Server shut down.");
+				printMessage("Server shut down. IOE in run.");
 			}
 		}
 
@@ -178,20 +172,15 @@ public class Server extends Thread {
 	 * 
 	 * @param port
 	 */
-	public Server(int port) {
-		try {
-			portNumber = port;
+	public Server(int port) throws IOException {
 			lobby = new HashMap<ClientHandler, Set<String>>();
 			playing = new HashMap<ClientHandler, Boolean>();
 			gamesgames = new HashMap<Game, Integer>();
-			serversocket = new ServerSocket(portNumber);
+			serversocket = new ServerSocket(port);
 			interpreter = new Interpreter(this);
 			invites = new HashMap<ClientHandler, String[]>();
 			running = true;
 			this.start();
-		} catch (IOException e) {
-			printMessage("Server couldn't be setup");
-		}
 	}
 
 	/**
@@ -205,11 +194,10 @@ public class Server extends Thread {
 	public Server(int port, ServerGUI gui) {
 		try {
 			this.gui = gui;
-			portNumber = port;
 			lobby = new HashMap<ClientHandler, Set<String>>();
 			playing = new HashMap<ClientHandler, Boolean>();
 			gamesgames = new HashMap<Game, Integer>();
-			serversocket = new ServerSocket(portNumber);
+			serversocket = new ServerSocket(port);
 			interpreter = new Interpreter(this);
 			invites = new HashMap<ClientHandler, String[]>();
 			running = true;
@@ -312,9 +300,8 @@ public class Server extends Thread {
 	 * 
 	 * @return the ServerGUI this server is using.
 	 */
-	/*@
-	 * pure
-	 * ensures \result.equals(gui);
+	/*
+	 * @ pure ensures \result.equals(gui);
 	 */
 	public ServerGUI getGUI() {
 		return gui;
@@ -635,13 +622,16 @@ public class Server extends Thread {
 	}
 
 	public void shutDown() {
+		running=false;
 		for (ClientHandler i : lobby.keySet()) {
 			i.shutdown();
 		}
-		try {
-			serversocket.close();
-		} catch (IOException e) {
-			printMessage("Could not close serversocket");
+		if (serversocket != null) {
+			try {
+				serversocket.close();
+			} catch (IOException e) {
+				printMessage("Could not close serversocket");
+			}
 		}
 	}
 }

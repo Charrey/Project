@@ -13,6 +13,12 @@ public class ClientBot extends Client {
 	private ComputerPlayer cplayer;
 	private boolean connected;
 	private boolean invitemode;
+	private final boolean ONLYONEGAME = false;
+	
+	@Override
+	public String getFeatures() {
+		return "";
+	}
 
 	public ClientBot(String address, int port, String name) {
 		super(address, port, NAME);
@@ -80,31 +86,36 @@ public class ClientBot extends Client {
 			boolean standardsize) {
 		super.gamestart(firstname, secondname, true);
 		connected = true;
+		invitemode = false;
 	}
 
 	@Override
 	public void inviteDeclined() {
-		invitemode = true;
-		Client.hold(100);
-		sendMessage(Interpreter.KW_LOBB_REQUEST);
-		Client.hold(550);
-		while (lobby == null) {
-			hold(1350);
-			sendMessage("CONNECT " + this.name + " "
-					+ Interpreter.KW_FEATURE_CBOARDSIZE);
-		}
-		hold(1350);
-		while (lobby.size() < 2 && !connected) {
-			hold(2550);
+		if (!invitemode) {
+			invitemode = true;
+			Client.hold(100);
 			sendMessage(Interpreter.KW_LOBB_REQUEST);
-			hold(2550);
-		}
-		if (!connected) {
-			hold(100);
-			for (String i : lobby) {
-				if (!i.equals("RoboCop")) {
-					sendMessage(Interpreter.KW_LOBB_INVITE + " " + i + " 7 6");
+			Client.hold(550);
+			while (lobby == null) {
+				hold(1350);
+				sendMessage("CONNECT " + this.name + " "
+						+ Interpreter.KW_FEATURE_CBOARDSIZE);
+			}
+			hold(1350);
+			while (lobby.size() < 2 && !connected) {
+				hold(2550);
+				sendMessage(Interpreter.KW_LOBB_REQUEST);
+				hold(2550);
+			}
+			if (!connected) {
+				hold(100);
+				for (String i : lobby) {
+					if (!i.equals("RoboCop")) {
+						sendMessage(Interpreter.KW_LOBB_INVITE + " " + i
+								+ " 7 6");
+					}
 				}
+				invitemode = false;
 			}
 		}
 	}
