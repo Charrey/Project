@@ -148,7 +148,7 @@ public class Server extends Thread {
 				ClientHandler clienthandler = addClientHandler(socket);
 				clienthandler.start();
 			} catch (IOException e) {
-				printMessage("Server shut down. IOE in run.");
+				printMessage("Server shut down.");
 			}
 		}
 
@@ -326,7 +326,7 @@ public class Server extends Thread {
 	public ClientHandler getOpponent(ClientHandler friend) {
 		Game game = getGame(friend);
 		if (game == null) {
-			printMessage("critical error in getGame");
+			printMessage("Game query: Client not in-game.");
 		}
 		for (ClientHandler i : lobby.keySet()) {
 			if (getGame(i).equals(game) && !i.equals(friend)) {
@@ -637,9 +637,6 @@ public class Server extends Thread {
 
 	public void shutDown() {
 		running=false;
-		for (ClientHandler i : lobby.keySet()) {
-			i.shutdown();
-		}
 		if (serversocket != null) {
 			try {
 				serversocket.close();
@@ -647,5 +644,14 @@ public class Server extends Thread {
 				printMessage("Could not close serversocket");
 			}
 		}
+		for (ClientHandler i : lobby.keySet()) {
+			i.shutdown();
+		}		
+	if (gui==null) {
+		printMessage("No GUI detected, terminating program.");
+		System.exit(0);
+	} else {
+		printMessage("Presence of GUI detected: Not terminating program.");
+	}
 	}
 }
