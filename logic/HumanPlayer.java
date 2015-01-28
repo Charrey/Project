@@ -63,8 +63,9 @@ public class HumanPlayer extends Player {
 				System.err.println("Invalid move: " + move);
 				move = inputHandler.getMove();
 			}
-			a.close();
-			client.resumeScanner();
+			if (a != null) {
+				a.close();
+			}
 			return move;
 		}
 

@@ -38,12 +38,12 @@ public class Interpreter {
 	public static final String KW_LOBB_ACCEPTINVITE = "ACCEPT";
 	public static final String KW_LOBB_DECLINEINVITE = "DECLINE";
 
-	Boolean areweserver;
+	private Boolean areweserver;
 
 	// server.equals(null) <=> !client.equals(null)
 	// !server.equals(null) <=> client.equals(null)
-	Server server;
-	Client client;
+	private Server server;
+	private Client client;
 
 	// IF WE'RE JUST A CLIENT
 	/**
@@ -78,7 +78,7 @@ public class Interpreter {
 	 */
 	public void whatisthatServer(String that, ClientHandler source,
 			Boolean subcommand) {
-		if (areweserver == true) {
+		if (areweserver == true && that !=null) {
 			server.printMessage("Looking up what " + that + " is.");
 			String[] splitted = that.split("\\s+");
 			switch (splitted[0]) {
@@ -149,8 +149,11 @@ public class Interpreter {
 			}
 
 		} else {
-			System.err
-					.println("We are not the client, use whatisthatClient() instead.");
+			if (that==null) {
+				server.printMessage("Kicking "+source.getClientName()+": null rapport");
+				source.shutdown();
+			} else {
+			server.printMessage("We are not the client, use whatisthatClient() instead.");}
 		}
 	}
 

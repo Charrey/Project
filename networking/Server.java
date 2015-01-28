@@ -554,6 +554,7 @@ public class Server extends Thread {
 	}
 
 	/**
+	 * 
 	 * @param arguments
 	 */
 	public void denyinvite(ClientHandler source, String arguments) {
@@ -642,9 +643,5 @@ public class Server extends Thread {
 		} catch (IOException e) {
 			printMessage("Could not close serversocket");
 		}
-		
-		
-
 	}
-
 }

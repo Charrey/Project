@@ -64,6 +64,7 @@ public class ClientTest {
 		ifExpected("breedte is 6?", 6, client1.getBoardWidth());
 		ifExpected("hoogte is 7?", 7, client1.getBoardHeight());
 		
+		Client.hold(1000);
 		client1.shutDown();
 		
 		System.err.println("Test End");

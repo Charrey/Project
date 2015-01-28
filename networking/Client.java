@@ -82,11 +82,14 @@ public class Client extends Thread {
 						sendMessage(Interpreter.KW_LOBB_ACCEPTINVITE + " "
 								+ apart[1]);
 
-						//System.out.println("boardwidth set to "+ invites.get(apart[1])[0] + " in 70 for "+ name);
-						//System.out.println("boardheight set to "+ invites.get(apart[1])[1] + " in 71" + name);
-						setDimensions(invites.get(apart[1])[0], invites.get(apart[1])[0]);
-						//boardwidth = invites.get(apart[1])[0];
-						//boardheight = invites.get(apart[1])[1];
+						// System.out.println("boardwidth set to "+
+						// invites.get(apart[1])[0] + " in 70 for "+ name);
+						// System.out.println("boardheight set to "+
+						// invites.get(apart[1])[1] + " in 71" + name);
+						setDimensions(invites.get(apart[1])[0],
+								invites.get(apart[1])[0]);
+						// boardwidth = invites.get(apart[1])[0];
+						// boardheight = invites.get(apart[1])[1];
 
 						// System.out.println("boardwidth set to "+
 						// invites.get(apart[1])[0] + " in 70 for "+ name);
@@ -217,14 +220,16 @@ public class Client extends Thread {
 	 *            is the message to be sent.
 	 */
 	public void sendMessage(String msg) {
-		try {
-			printMessage("Sending message to server (" + sock.getInetAddress()
-					+ ") : " + msg);
-			out.write(msg);
-			out.newLine();
-			out.flush();
-		} catch (IOException e) {
-			printMessage("Could not send command (" + msg + ") to server.");
+		if (msg != null) {
+			try {
+				printMessage("Sending message to server ("
+						+ sock.getInetAddress() + ") : " + msg);
+				out.write(msg);
+				out.newLine();
+				out.flush();
+			} catch (IOException e) {
+				printMessage("Could not send command (" + msg + ") to server.");
+			}
 		}
 	}
 
@@ -584,8 +589,11 @@ public class Client extends Thread {
 	 * Quits the client.
 	 */
 	public void shutDown() {
-		scanner.close();
+		if (scanner != null) {
+			scanner.close();
+		}
 		try {
+			printMessage("GOING TO BE NULL");
 			sock.close();
 		} catch (IOException e) {
 			printMessage("Could not close server");
@@ -600,8 +608,8 @@ public class Client extends Thread {
 	public int getBoardWidth() {
 		return boardwidth;
 	}
-	
-	public int getBoardHeight(){
+
+	public int getBoardHeight() {
 		return boardheight;
 	}
 
