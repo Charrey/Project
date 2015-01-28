@@ -34,6 +34,8 @@ public class Interpreter {
 	public static final String KW_FEATURE_CBOARDSIZE = "CUSTOM_BOARD_SIZE";
 	public static final String KW_FEATURE_LEADERBOARD = "LEADERBOARD";
 	public static final String KW_FEATURE_MULTIPLAYER = "MULTIPLAYER";
+	public static final String KW_FEATURE_SECURITY = "SECURITY";
+	
 	public static final String KW_LOBB_INVITE = "INVITE";
 	public static final String KW_LOBB_ACCEPTINVITE = "ACCEPT";
 	public static final String KW_LOBB_DECLINEINVITE = "DECLINE";
@@ -113,8 +115,11 @@ public class Interpreter {
 			case KW_FEATURE_CBOARDSIZE:
 				server.setFunction(source, KW_FEATURE_CBOARDSIZE, true);
 				break;
+			
 			case KW_FEATURE_MULTIPLAYER:
 				server.setFunction(source, KW_FEATURE_MULTIPLAYER, true);
+				break;
+			case "ERROR":
 				break;
 			case KW_LOBB_INVITE:
 				if (that.length() < (KW_LOBB_INVITE.length() + 2)) {
@@ -144,7 +149,9 @@ public class Interpreter {
 				break;
 			case "":
 				break;
-
+			case "PING":
+				source.sendCommand("PONG");
+				break;
 			default:
 				System.err.println("Misunderstood command: " + that);
 				server.sendError(source, "SyntaxError");
@@ -243,8 +250,8 @@ public class Interpreter {
 			}
 		} else {
 			if (that == null) {
-				client.printMessage("We have been kicked.");
-				System.exit(0);
+				//client.printMessage("We have been kicked.");
+				//System.exit(0);
 			} else {
 				System.err
 						.println("We are the server, use whatisthatClient() instead.");

@@ -110,9 +110,9 @@ public class ClientBot extends Client {
 			if (!connected) {
 				hold(100);
 				for (String i : lobby) {
-					if (!i.equals("RoboCop")) {
+					if (!i.equals(name)) {
 						sendMessage(Interpreter.KW_LOBB_INVITE + " " + i
-								+ " 7 6");
+								+ "");
 					}
 				}
 				invitemode = false;

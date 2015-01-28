@@ -56,7 +56,7 @@ public class ClientHandler extends Thread {
 					+ command);
 			out.write(command);
 			out.newLine();
-			out.newLine();
+			//out.newLine();
 			out.flush();
 		} catch (IOException ex) {
 			server.printMessage("Unable to send command");
@@ -117,6 +117,7 @@ public class ClientHandler extends Thread {
 		server.getPlaying().remove(this);
 		try {
 			sock.close();
+			server.printMessage("Socket terminated. Client in lobby: "+server.getLobby().containsKey(this)+". Client in playing: "+server.getPlaying().containsKey(this)+".");
 		} catch (IOException e) {
 			server.printMessage("Could not close socket");
 		}

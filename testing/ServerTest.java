@@ -2,6 +2,8 @@ package Project.testing;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +22,7 @@ public class ServerTest {
 	@Before
 	public void setUp() throws Exception {
 	server = new Server(49999);
-	portTakenServer = new Server(49999);
+	//portTakenServer = new Server(49999);
 
 	client1 = new Client("127.0.0.1", 49999, "client1");
 	client2 = new Client("127.0.0.1", 49999, "client2");
@@ -36,7 +38,10 @@ public class ServerTest {
 		Client.hold(2000);
 		client1.sendMessage("INVITE client2");
 		Client.hold(2000);
-
+		
+		client1.setDimensions(7, 6);
+		client2.setDimensions(7, 6);
+		
 		client2.sendMessage("ACCEPT client1");
 		Client.hold(1000);
 		ifExpected("get opponent client1", "client2", server.getOpponent(server.findClientHandler("client1")).getClientName());
@@ -49,6 +54,17 @@ public class ServerTest {
 		
 		ifExpected("3 is string", true, Server.representsInt("3"));
 		ifExpected("a is string", false, Server.representsInt("a"));
+		
+		try {
+			client2.getSocket().close();
+		} catch (IOException e) {
+			System.out.println("Can't close socket!");
+			System.exit(0);
+		}
+		Client.hold(1000);
+		
+		ifExpected("Client 2 is no longer part of the lobby", false,server.getLobby().containsKey(client2));
+		
 		System.err.println("Test End");
 		
 		server.shutDown();
