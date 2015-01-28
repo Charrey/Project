@@ -7,13 +7,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.URL;
-import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -22,28 +15,21 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SpringLayout;
 
 import Project.networking.Client;
 import Project.networking.ClientBot;
 import Project.networking.ClientConsole;
-import Project.networking.ClientHandler;
-import Project.networking.Server;
 
 public class ClientGUI extends JFrame {
-
-	
+	private static final long serialVersionUID = 6016763503029813463L;
 	private JTextArea textArea;
 	private JButton hostButton;
 	private JTextField portField;
 	private JTextField ipAdressLabel;
-	private JTextField hostAdress;
-	private Server server;
 	private JScrollPane scrollPane;
 	private ClientGUI self;
 	private Font fnt = new Font("", Font.BOLD, 20);
 	private boolean connected = false;
-	private JLabel nameLabel;
 	private JTextField nameField;
 	private JTextField commandField;
 	private JButton sentCommandButton;
@@ -162,7 +148,6 @@ public class ClientGUI extends JFrame {
 			public void mouseClicked(MouseEvent e){
 				synchronized(self){
 					clicked = true;
-					System.out.println("clicked");
 					self.notifyAll();
 				}
 			}

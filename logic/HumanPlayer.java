@@ -79,7 +79,7 @@ public class HumanPlayer extends Player {
 				if (toPick.equals("hint")) {
 					int[] hint = playingfield.hint(getMark());
 					System.out.println("Hint: " + hint[0]);
-					toPick = scan.nextLine();
+					return -2;
 				} else {
 					int move = Integer.parseInt(toPick);
 					if (move >= 0 && move < playingfield.getWidth()

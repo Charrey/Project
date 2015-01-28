@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 public class MainMenuPanel extends JPanel {
-
+	private static final long serialVersionUID = -2827389957607493093L;
 	private JLabel fourInRowLabel;
 	private JLabel localGameLabel;
 	private JLabel clientLabel;

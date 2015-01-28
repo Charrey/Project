@@ -12,7 +12,6 @@ import java.io.OutputStreamWriter;
 
 import Project.gui.ClientGUI;
 import Project.gui.MainGui;
-import Project.gui.game.GameMainPanel;
 import Project.logic.*;
 
 import java.util.Set;
@@ -126,8 +125,13 @@ public class Client extends Thread {
 					sendMessage(gotten);
 				}
 			} else {
-				sendMove(player.determineMove(getGame().getBoard(), gotten,
-						scanner));
+				int move = player.determineMove(getGame().getBoard(), gotten,
+						scanner);
+				if (move > -1) {
+					sendMove(move);
+				} else if (move == -2) {
+					printMessage("Look in the console for your hint. Please type your move.");
+				}
 				UseScannerForDeterminingMoves(false);
 			}
 		}
@@ -425,7 +429,7 @@ public class Client extends Thread {
 						new NetworkedInputHandler(this)), player, boardwidth,
 						boardheight, true);
 			}
-			TUI thetui = new TUI(game.getBoard());
+			new TUI(game.getBoard());
 		} else {
 			player = new HumanPlayer(name, Mark.X, new InputHandler());
 			MainGui thegui = new MainGui();

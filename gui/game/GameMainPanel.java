@@ -11,10 +11,9 @@ import Project.logic.Game;
 import Project.logic.InputHandler;
 
 public class GameMainPanel extends JPanel implements Observer {
-
+	private static final long serialVersionUID = -8008446042823400915L;
 	private GamePanel gamePanel;
 	private NamePanel namePanel;
-	private MessagePanel messagePanel;
 	private InfoPanel infoPanel;
 	private Game g;
 	
@@ -53,7 +52,6 @@ public class GameMainPanel extends JPanel implements Observer {
 		this.g = g;
 		gamePanel = new GamePanel(g, i);
 		namePanel = new NamePanel(g);
-		messagePanel = new MessagePanel(g);
 		infoPanel = new InfoPanel(gui, g, gamePanel);
 		setLayout(new BorderLayout());
 

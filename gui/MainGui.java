@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class MainGui extends JFrame{
-
+	private static final long serialVersionUID = -2603503564994874427L;
 	private JPanel currentPanel;
 	private MainMenuPanel mainMenuPanel;
 	private GameSelectPanel gameSelectPanel;

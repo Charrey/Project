@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class TUI implements Observer {
 
 	private Board playingfield;
+	private static Scanner in;
 	
 	public TUI(Board board){
 		playingfield = board;
@@ -51,7 +52,7 @@ public class TUI implements Observer {
 
         do {
             System.out.print("Play again? (y/n)");
-            Scanner in = new Scanner(System.in);
+            in = new Scanner(System.in);
             answer = in.hasNextLine() ? in.nextLine() : null;
         } while (answer == null || (!answer.equals("y") && !answer.equals("n")));
         return answer.equals("y");

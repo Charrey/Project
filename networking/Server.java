@@ -624,6 +624,7 @@ public class Server extends Thread {
 	 */
 	//@pure
 	//@requires source != null;
+	//@requires validInvite(source,arguments);
 	public void denyinvite(ClientHandler source, String arguments) {
 		if (!validInvite(source, arguments).equals("true")) {
 			source.sendCommand(validInvite(source, arguments));

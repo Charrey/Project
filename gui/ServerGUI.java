@@ -8,11 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.net.URL;
-import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,15 +17,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SpringLayout;
 
-import Project.networking.ClientHandler;
 import Project.networking.Server;
 import Project.networking.ServerConsole;
 
 public class ServerGUI extends JFrame{
-
-	
+	private static final long serialVersionUID = 5973191993039731672L;
 	private JTextArea textArea;
 	private JButton hostButton;
 	private JTextField portField;

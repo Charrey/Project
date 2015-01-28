@@ -10,7 +10,7 @@ import Project.logic.Mark;
 
 
 public class GamePanel extends JPanel {
-
+	private static final long serialVersionUID = -5476535170626939401L;
 	private Board b;
 	private Slot[][] slots;
 

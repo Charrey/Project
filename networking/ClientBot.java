@@ -13,7 +13,6 @@ public class ClientBot extends Client {
 	private ComputerPlayer cplayer;
 	private boolean connected;
 	private boolean invitemode;
-	private final boolean ONLYONEGAME = false;
 	
 	@Override
 	public String getFeatures() {

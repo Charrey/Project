@@ -2,8 +2,6 @@ package Project.runnables;
 
 import java.io.IOException;
 import java.util.Scanner;
-
-import Project.gui.ServerGUI;
 import Project.logic.ComputerPlayer;
 import Project.logic.Game;
 import Project.logic.HumanPlayer;
@@ -13,11 +11,11 @@ import Project.networking.Client;
 import Project.networking.ClientBot;
 import Project.networking.ClientConsole;
 import Project.networking.Server;
-import Project.networking.ServerConsole;
 
 public class RunTextual {
 
 	private static Boolean ai = false;
+	private static Scanner scanner;
 
 	/**
 	 * Creates a textual view.
@@ -25,7 +23,7 @@ public class RunTextual {
 	 * @param args does nothing, but is require for this IDE.
 	 */
 	public static void main(String[] args) {
-		Scanner scanner = new Scanner(System.in);
+		scanner = new Scanner(System.in);
 
 		System.out.println("To stay local pick A, to go online pick B");
 		String gotten = scanner.nextLine();

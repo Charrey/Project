@@ -11,7 +11,6 @@ public class Game implements Runnable {
 	private Board board;
 	private boolean running;
 	private TUI tui;
-	private MainGui gui;
 	private GameMainPanel gamePanel;
 
 	public Game(Player s0, Player s1, int widht, int height, boolean networked) {
@@ -35,7 +34,6 @@ public class Game implements Runnable {
 		players[0] = s0;
 		players[1] = s1;
 		current = 0;
-		this.gui = gui;
 
 		if (s0 instanceof HumanPlayer || s1 instanceof HumanPlayer) {
 			if (s0 instanceof HumanPlayer) {

@@ -3,9 +3,6 @@ package Project.logic;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
-import javax.swing.JLabel;
 
 import Project.gui.game.Slot;
 

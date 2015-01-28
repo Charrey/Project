@@ -11,8 +11,7 @@ import Project.logic.Game;
 import Project.logic.Mark;
 
 public class InfoPanel extends JPanel {
-
-	
+	private static final long serialVersionUID = 6143629766773819102L;
 	private Game g;
 	private JButton hintButton;
 	private JLabel hasWon;

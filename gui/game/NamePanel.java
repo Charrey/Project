@@ -9,7 +9,7 @@ import javax.swing.SwingConstants;
 import Project.logic.Game;
 
 public class NamePanel extends JPanel {
-
+	private static final long serialVersionUID = 8048800255081767657L;
 	private Game g;
 	private String name1;
 	private String name2;

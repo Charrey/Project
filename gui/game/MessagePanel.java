@@ -14,10 +14,8 @@ import javax.swing.JTextField;
 import Project.logic.Game;
 
 public class MessagePanel extends JPanel{
-
+	private static final long serialVersionUID = 2859259517350851974L;
 	private final int WIDTH = 30;
-	
-	private Game g;
 	private JPanel invoerButtonPanel;
 	private JTextArea textarea;
 	private JButton button;
@@ -30,7 +28,6 @@ public class MessagePanel extends JPanel{
 	 * Constructor van MessagePanel
 	 */
 	public MessagePanel(Game g){
-		this.g = g;
 		
 		setLayout(new BorderLayout());
 		

@@ -25,7 +25,6 @@ public abstract class Player {
 	public abstract int determineMove(Board playingfield);
 	
     public void makeMove(Board board) {
-    	System.out.println("HIER GAAT HET FOUT");
         int keuze = determineMove(board);
         board.putMark(keuze, getMark());
     }

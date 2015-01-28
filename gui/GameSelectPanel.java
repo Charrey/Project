@@ -18,7 +18,7 @@ import Project.logic.Mark;
 import Project.logic.Player;
 
 public class GameSelectPanel extends JPanel {
-	
+	private static final long serialVersionUID = 7183300383835862909L;
 	private Font fnt0 = new Font("", Font.BOLD, 15);
 	private Font fnt = new Font("Serif", Font.BOLD, 30);
 	private Font fnt1 = new Font("Serif", Font.ITALIC, 15);

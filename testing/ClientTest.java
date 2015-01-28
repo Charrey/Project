@@ -1,11 +1,8 @@
 package Project.testing;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import Project.logic.Game;
 import Project.networking.Client;
 import Project.networking.Server;
 
