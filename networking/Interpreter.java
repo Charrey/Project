@@ -142,6 +142,8 @@ public class Interpreter {
 			case KW_LOBB_REQUEST:
 				server.sendLobby(source);
 				break;
+			case "":
+				break;
 
 			default:
 				System.err.println("Misunderstood command: " + that);
@@ -178,6 +180,8 @@ public class Interpreter {
 				break;
 			case KW_GAME_GAMEEND:
 				client.gameend();
+				break;
+			case "":
 				break;
 			case KW_CONN_GAMESTART:
 				client.gamestart(splitted[1], splitted[2], false);

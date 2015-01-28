@@ -225,6 +225,7 @@ public class Client extends Thread {
 						+ sock.getInetAddress() + ") : " + msg);
 				out.write(msg);
 				out.newLine();
+				out.newLine();
 				out.flush();
 			} catch (IOException e) {
 				printMessage("Could not send command (" + msg + ") to server.");

@@ -56,6 +56,7 @@ public class ClientHandler extends Thread {
 					+ command);
 			out.write(command);
 			out.newLine();
+			out.newLine();
 			out.flush();
 		} catch (IOException ex) {
 			server.printMessage("Unable to send command");

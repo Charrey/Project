@@ -44,37 +44,41 @@ public class Server extends Thread {
 	 * Accepts input from System.in.
 	 */
 
-	/*
-	 * @ pure ensures \result.equals(lobby);
-	 */
+	/*@
+	 pure
+	 ensures \result.equals(lobby);
+	 @*/
 	public Map<ClientHandler, Set<String>> getLobby() {
 		return lobby;
 	}
 
-	/*
-	 * @ pure ensures \result.equals(playing);
-	 */
+	/*@
+	 pure
+	 ensures \result.equals(playing);
+	 @*/
 	public Map<ClientHandler, Boolean> getPlaying() {
 		return playing;
 	}
 
-	/*
-	 * @ pure ensures \result.equals(gamesgames);
-	 */
+	/*@
+	 pure
+	 ensures \result.equals(gamesgames);
+	 @*/
 	public Map<Game, Integer> getGames() {
 		return gamesgames;
 	}
 
-	/*
-	 * @ pure ensures \result.equals(interpreter);
-	 */
+	/*@
+	 pure
+	 ensures \result.equals(interpreter);
+	 @*/
 	public Interpreter getInterpreter() {
 		return interpreter;
 	}
 
-	/*
-	 * @ loop_invariant true == true;
-	 */
+	/*@
+	 loop_invariant true == true;
+	 @*/
 	public void watchInput() {
 		scanner = new Scanner(System.in);
 		String gotten;
@@ -122,6 +126,9 @@ public class Server extends Thread {
 		}
 	}
 
+	/**
+	 * @param message is the message to be printed
+	 */
 	public void printMessage(String message) {
 		if (gui == null) {
 			System.out.println(message);
@@ -394,6 +401,9 @@ public class Server extends Thread {
 		target.sendCommand(Interpreter.KW_CONN_ERROR + " " + msg);
 	}
 
+	/**
+	 * @param source is the ClientHandler to send the board to.
+	 */
 	public void sendBoard(ClientHandler source) {
 		if (getGame(source) != null) {
 			source.sendCommand(getGame(source).getBoard().networkBoard());
