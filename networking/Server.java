@@ -48,6 +48,11 @@ public class Server extends Thread {
 	 pure
 	 ensures \result.equals(lobby);
 	 @*/
+	/**
+	 * Gives the lobby keeping track of ClientHandlers and their features.
+	 * 
+	 * @return the lobby
+	 */
 	public Map<ClientHandler, Set<String>> getLobby() {
 		return lobby;
 	}
@@ -56,6 +61,11 @@ public class Server extends Thread {
 	 pure
 	 ensures \result.equals(playing);
 	 @*/
+	/**
+	 * Gives the map keeping track which ClientHandler is playing and which isn't
+	 * 
+	 * @return the map with information on who's playing.
+	 */
 	public Map<ClientHandler, Boolean> getPlaying() {
 		return playing;
 	}
@@ -64,6 +74,11 @@ public class Server extends Thread {
 	 pure
 	 ensures \result.equals(gamesgames);
 	 @*/
+	/**
+	 * Gives the map keeping track of all games an the player whose turn it is.
+	 * 
+	 * @return the map of games.
+	 */
 	public Map<Game, Integer> getGames() {
 		return gamesgames;
 	}
@@ -72,6 +87,11 @@ public class Server extends Thread {
 	 pure
 	 ensures \result.equals(interpreter);
 	 @*/
+	/**
+	 * Gives the Interpreter associated with this server.
+	 * 
+	 * @return the Interpreter.
+	 */
 	public Interpreter getInterpreter() {
 		return interpreter;
 	}
@@ -79,6 +99,9 @@ public class Server extends Thread {
 	/*@
 	 loop_invariant true == true;
 	 @*/
+	/**
+	 * Watches the console for human input, for administration purposes. 
+	 */
 	public void watchInput() {
 		scanner = new Scanner(System.in);
 		String gotten;
@@ -430,6 +453,9 @@ public class Server extends Thread {
 
 	}
 
+	/**
+	 * Does nothing yet.
+	 */
 	public void sendLeaderboard() {
 		//
 		// IMPLEMENT LEADERBOARD IF WE WANT TO
@@ -519,8 +545,10 @@ public class Server extends Thread {
 	}
 
 	/**
-	 * @param source
-	 * @param arguments
+	 * @param source is the ClientHandler whose associated client sent
+	 * 		this accept command.
+	 * @param arguments is the name of the inviter, given the client
+	 * 		is using the command correctly.
 	 */
 	public void acceptinvite(ClientHandler source, String arguments) {
 		printMessage("Start of acceptinvite");
@@ -555,8 +583,11 @@ public class Server extends Thread {
 	}
 
 	/**
+	 * @source is the ClientHandler whose associated client sent
+	 * 		this decline command.
 	 * 
-	 * @param arguments
+	 * @param arguments arguments is the name of the inviter, given the client
+	 * 		is using the command correctly.
 	 */
 	public void denyinvite(ClientHandler source, String arguments) {
 		if (!validInvite(source, arguments).equals("true")) {
@@ -635,6 +666,9 @@ public class Server extends Thread {
 		}
 	}
 
+	/**
+	 * Shuts down the server.
+	 */
 	public void shutDown() {
 		running=false;
 		if (serversocket != null) {
@@ -644,9 +678,12 @@ public class Server extends Thread {
 				printMessage("Could not close serversocket");
 			}
 		}
-		for (ClientHandler i : lobby.keySet()) {
-			i.shutdown();
-		}		
+		while(lobby.size()>0) {
+			for (ClientHandler i : lobby.keySet()) {
+				i.shutdown();
+				break;
+			}
+		}
 	if (gui==null) {
 		printMessage("No GUI detected, terminating program.");
 		System.exit(0);

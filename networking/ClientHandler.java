@@ -102,6 +102,7 @@ public class ClientHandler extends Thread {
 			}
 		}
 		if (server.getLobby() != null) {
+			System.err.println("This should happen.");
 			server.getLobby().remove(this);
 		}
 		if (server.getPlaying().containsKey(this)) {
