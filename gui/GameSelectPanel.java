@@ -41,7 +41,13 @@ public class GameSelectPanel extends JPanel {
 	private JButton startButton;
 	private InputHandler handler;
 	
-	//Contructor
+
+	/**
+	 * Creates a new GameSelectPanel.
+	 * 
+	 * @param gui is the MainGui this panel is added to.
+	 */
+
 	public GameSelectPanel(MainGui gui){
 	
 		setLayout(new BorderLayout());

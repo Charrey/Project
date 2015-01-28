@@ -25,7 +25,7 @@ public class Board extends Observable {
 	 * 
 	 * @param width
 	 *            is the width of the board.
-	 * @param heigth
+	 * @param height
 	 *            is the heigth of the board.
 	 */
 	/*@
@@ -321,15 +321,19 @@ public class Board extends Observable {
 		reset(width, height);
 	}
 	
-	/**
-	 * Resets the board.
-	 */
+
 	/*@
 	 	ensures isWin() == false; 
 	 	ensures width == getWidth();
 	 	ensures height == getHeight();
 	 	ensures (\forall(\forall int x; x>=0 && x<width; \forall int y; y>=0 && y<=getHeight(); getPlace(x,y).equals(Mark.EMPTY)));
 	 @*/
+	/**
+	 * Resets the board.
+	 * 
+	 * @param width is the width of the new board.
+	 * @param height is the height of the new board.
+	 */
 	public void reset(int width, int height) {
 		this.width = width;
 		this.height = height;

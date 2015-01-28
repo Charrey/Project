@@ -54,8 +54,11 @@ public class ClientGUI extends JFrame {
 	private Client client;
 	private boolean clicked = false;
 	
-	
-	// Constructor
+
+	/**
+	 * Creates a new ClientGUI.
+	 */
+
 	public ClientGUI(){
 	
 		JPanel topPanel = new JPanel();
@@ -166,13 +169,27 @@ public class ClientGUI extends JFrame {
 		});
 		
 	}
-	// voegt een message toe aan de tekstarea
+
+
+	
+	/**
+	 * Adds a message to the textArea of this ClientGUI.
+	 * 
+	 * @param msg is the message to be added.
+	 */
+
 	public void addMessage(String msg){
 		textArea.append(msg + "\n");
 	}
 	
-	// Deze methode wacht als er nog niet geklikt is. Op het moment dat die genotifyt wordt
-	// dan levert deze functie de inhoud van het textfield op en reset hij deze ook naar behoren.
+
+
+	/**
+	 * Waits for a command to be typed in the ClientGUI.
+	 * 
+	 * @return the String typed in the commandField and entered.
+	 */
+
 	public String waitForCommand(){
 		synchronized(this){
 			if(!clicked){

@@ -23,6 +23,13 @@ public class GameMainPanel extends JPanel implements Observer {
 	 * Constructor voor een spel zonder HumanPlayers. 
 	 * Dit is omdat de een ComputerPlayer geen Inputhandler nodig heeft.
 	 */
+	/**
+	 * Constructor for a game without human Players. 
+	 * This usage is required, as a ComputerPlayer does not require an InputHandler.
+	 * 
+	 * @param gui is the MainGui this GameMainPanel is added to.
+	 * @param g is the game to represent.
+	 */
 	public GameMainPanel(MainGui gui, Game g){
 		this.g = g;
 		gamePanel = new GamePanel(g);
@@ -34,8 +41,13 @@ public class GameMainPanel extends JPanel implements Observer {
 		add(infoPanel, BorderLayout.PAGE_END);
 	}
 	
-	/*
-	 * Constructor voor een GamePanel met een of twee HumanPlayers
+	
+	/**
+	 * Constructor for a GameMainPanel with one or more HumanPlayers.
+	 * 
+	 * @param gui is the MainGui this GameMainPanel is added to.
+	 * @param g is the game to represent.
+	 * @param i is the Inputhandler used to gain information about player's moves.
 	 */
 	public GameMainPanel(MainGui gui, Game g, InputHandler i){
 		this.g = g;
@@ -72,12 +84,25 @@ public class GameMainPanel extends JPanel implements Observer {
 		
 	}
 	
+	/**
+	 * Gives the GamePanel that's inside this GameMainPanel.
+	 * 
+	 * @return the GamePanel that's inside this GameMainPanel.
+	 */
 	public GamePanel getGamePanel(){
 		return gamePanel;
 	}
+	/**
+	 * Gives the InfoPanel that's inside this GameMainPanel.
+	 * 
+	 * @return the InfoPanel that's inside this GameMainPanel.
+	 */
 	public InfoPanel getInfoPanel(){
 		return infoPanel;
 	}
+	/**
+	 * @return the namePanel that's inside this GameMainPanel.
+	 */
 	public NamePanel getNamePanel(){
 		return namePanel;
 	}

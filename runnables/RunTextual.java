@@ -19,6 +19,11 @@ public class RunTextual {
 
 	private static Boolean ai = false;
 
+	/**
+	 * Creates a textual view.
+	 * 
+	 * @param args does nothing, but is require for this IDE.
+	 */
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
 

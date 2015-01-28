@@ -41,8 +41,11 @@ public class ServerGUI extends JFrame{
 	private ServerGUI self;
 	private Font fnt = new Font("", Font.BOLD, 20);
 	private boolean hosting = false;
-	
-	//Constructor
+
+	/**
+	 * Creates a new server.
+	 */
+
 	public ServerGUI(){
 		//begin toevoegen items
 		JPanel topPanel = new JPanel();
@@ -118,6 +121,11 @@ public class ServerGUI extends JFrame{
 		
 	}
 	
+	/**
+	 * Used to gain the external IPv4 address of a machine.
+	 * 
+	 * @return the external IP of this machine.
+	 */
 	public static String getIP(){
 		try{
 		URL whatismyip = new URL("http://checkip.amazonaws.com");
@@ -129,14 +137,25 @@ public class ServerGUI extends JFrame{
 		}
 	}
 	
+	/**
+	 * Adds a body of text to the text area in the GUI.
+	 * 
+	 * @param msg is added to the textArea.
+	 */
 	public void addMessage(String msg){
 		textArea.append(msg + "\n");
 	}
 	
+	/**
+	 * Resets the text in the text area.
+	 */
 	public void clearScreen() {
 		textArea.setText("Screen cleared.");
 	}
 	
+	/**
+	 * @param args does nothing, but is required for this IDE.
+	 */
 	public static void main(String[] args){
 		new ServerGUI();
 	}
