@@ -43,6 +43,11 @@ public class GameSelectPanel extends JPanel {
 	private InputHandler handler;
 	private MainGui gui;
 	
+	/**
+	 * Creates a new GameSelectPanel.
+	 * 
+	 * @param gui is the MainGui this panel is added to.
+	 */
 	public GameSelectPanel(MainGui gui){
 		this.gui=gui;
 	

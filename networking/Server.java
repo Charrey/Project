@@ -25,25 +25,6 @@ public class Server extends Thread {
 	private Scanner scanner;
 	public Map<ClientHandler, String[]> invites;
 
-	// First string = target,
-	// second = toString(width),
-	// third = toString(height)
-
-	// public Map<ClientHandler, ClientHandler> invites; THIS DOES NOT SUPPORT
-	// CBOARDSIZE
-
-	/*public static void main(int port) {
-		System.out.println("Your IP is: " + ServerGUI.getIP());
-		Server server = new Server(port);
-		server.start();
-		ServerConsole sc = new ServerConsole(server);
-		sc.start();
-	}*/
-
-	/**
-	 * Accepts input from System.in.
-	 */
-
 	/*@
 	 pure
 	 ensures \result.equals(lobby);
@@ -96,9 +77,7 @@ public class Server extends Thread {
 		return interpreter;
 	}
 
-	/*@
-	 loop_invariant true == true;
-	 @*/
+	
 	/**
 	 * Watches the console for human input, for administration purposes. 
 	 */
@@ -106,6 +85,9 @@ public class Server extends Thread {
 		scanner = new Scanner(System.in);
 		String gotten;
 		gotten = scanner.nextLine();
+		/*@
+		 loop_invariant true == true;
+		 @*/
 		while (true) {
 			printMessage("Read command: " + gotten);
 			String[] splitted = gotten.split("\\s+");
@@ -123,17 +105,7 @@ public class Server extends Thread {
 						gotten.substring(6 + splitted[1].length()));
 				break;
 			case "help":
-				printMessage("----HELP-------------------------------");
-				printMessage("kick <name> -- Kick a player");
-				printMessage("error <name> <error> -- Send an error");
-				printMessage("hello <name> <message> -- Send a message");
-				printMessage("clear -- Clears your GUI screen");
-				printMessage("----DISCLAIMER-------------------------");
-				printMessage("It is presumed that you as admin use");
-				printMessage("these features correctly. Failure to do");
-				printMessage("so may result in inconsistency and/or");
-				printMessage("program failure.");
-				printMessage("---------------------------------------");
+				printHelp();
 				break;
 			case "hello":
 				findClientHandler(splitted[1]).sendCommand(
@@ -148,10 +120,11 @@ public class Server extends Thread {
 			gotten = scanner.nextLine();
 		}
 	}
-
+	
 	/**
 	 * @param message is the message to be printed
 	 */
+	
 	public void printMessage(String message) {
 		if (gui == null) {
 			System.out.println(message);
@@ -159,7 +132,39 @@ public class Server extends Thread {
 			gui.addMessage(message);
 		}
 	}
+	
+	//@pure
+	/**
+	 * Prints a help document.
+	 */
+	public void printHelp() {
+		printMessage("----HELP-------------------------------");
+		printMessage("");
+		printMessage("kick <name> -- Kicks a player");
+		printMessage("> Make sure the specified player exists.");
+		printMessage("");
+		printMessage("error <name> <error> -- Sends an error");
+		printMessage("> Make sure the specified player exists.");
+		printMessage("");
+		printMessage("hello <name> <message> -- Sends a message");
+		printMessage("> Make sure the specified player exists.");
+		printMessage("");
+		printMessage("clear -- Clears your GUI screen");
+		printMessage("> Make sure you have a GUI.");
+		printMessage("");
+		printMessage("help -- Shows this help screen");
+		printMessage("");
+		printMessage("----DISCLAIMER-------------------------");
+		printMessage("It is presumed that you as admin use");
+		printMessage("these features correctly. Failure to do");
+		printMessage("so may result in inconsistency and/or");
+		printMessage("program failure.");
+		printMessage("---------------------------------------");
+	}
 
+	
+	
+	//@requires getServerSocket() != null;
 	@Override
 	public void run() {
 		while (running) {
@@ -183,6 +188,7 @@ public class Server extends Thread {
 	 * @return a new ClientHandler which represents the client associated with
 	 *         this socket.
 	 */
+	//@requires sockArg !=null;
 	public ClientHandler addClientHandler(Socket sockArg) {
 		ClientHandler clienthandler = new ClientHandler(this, sockArg);
 		return clienthandler;
@@ -193,6 +199,7 @@ public class Server extends Thread {
 	 * 
 	 * @return the ServerSocket of this server.
 	 */
+	//@pure
 	public ServerSocket getServerSocket() {
 		return serversocket;
 	}
@@ -200,8 +207,10 @@ public class Server extends Thread {
 	/**
 	 * Creates a TUI server.
 	 * 
-	 * @param port
+	 * @param port is the port this server accepts clients from.
+	 * @throws IOException if the specified port is preoccupied.
 	 */
+	//@requires port<65535 && port>0;
 	public Server(int port) throws IOException {
 			lobby = new HashMap<ClientHandler, Set<String>>();
 			playing = new HashMap<ClientHandler, Boolean>();
@@ -210,6 +219,7 @@ public class Server extends Thread {
 			interpreter = new Interpreter(this);
 			invites = new HashMap<ClientHandler, String[]>();
 			running = true;
+			printHelp();
 			this.start();
 	}
 
@@ -221,6 +231,7 @@ public class Server extends Thread {
 	 * @param gui
 	 *            is the gui this server uses as output console.
 	 */
+	//@requires port<65535 && port>0;
 	public Server(int port, ServerGUI gui) {
 		try {
 			this.gui = gui;
@@ -231,6 +242,7 @@ public class Server extends Thread {
 			interpreter = new Interpreter(this);
 			invites = new HashMap<ClientHandler, String[]>();
 			running = true;
+			printHelp();
 			this.start();
 		} catch (IOException e) {
 			printMessage("Server couldn't be setup");
@@ -246,6 +258,7 @@ public class Server extends Thread {
 	 * @param features
 	 *            is a set of features approved by the Interpreter.
 	 */
+	//@requires client !=null && features!=null;
 	public void joinServer(ClientHandler client, Set<String> features) {
 		lobby.put(client, features);
 		playing.put(client, false);
@@ -257,11 +270,10 @@ public class Server extends Thread {
 	}
 
 	/**
+	 * Handles a chat message request.
 	 * 
-	 * To do
-	 * 
-	 * @param source
-	 * @param message
+	 * @param source is the Clienthandler who sent the chat message.
+	 * @param message is the message sent.
 	 */
 	public void handlechatmessage(ClientHandler source, String message) {
 
@@ -275,6 +287,7 @@ public class Server extends Thread {
 	 * @param move
 	 *            is a String-representation of a move.
 	 */
+	//requires source !=null && move!=null;
 	public void nextMove(ClientHandler source, String move) {
 		Game game = getGame(source);
 		if (game == null) {
@@ -330,9 +343,9 @@ public class Server extends Thread {
 	 * 
 	 * @return the ServerGUI this server is using.
 	 */
-	/*
-	 * @ pure ensures \result.equals(gui);
-	 */
+	/*@ pure
+	 	ensures \result.equals(gui);
+	 @*/
 	public ServerGUI getGUI() {
 		return gui;
 	}
@@ -346,6 +359,7 @@ public class Server extends Thread {
 	 * @return the ClientHandler-opponent of 'friend' or null if he's not
 	 *         in-game.
 	 */
+	//@requires friend != null;
 	public ClientHandler getOpponent(ClientHandler friend) {
 		Game game = getGame(friend);
 		if (game == null) {
@@ -366,6 +380,8 @@ public class Server extends Thread {
 	 *            is the ClientHandler that's in the game we're looking for.
 	 * @return the Game this ClientHandler is in, or null if he's not in-game.
 	 */
+	//@pure
+	//@ensures \return == 0;
 	public Game getGame(ClientHandler clienthandler) {
 		for (Game i : gamesgames.keySet()) {
 			ClientHandler one = ((NetworkedInputHandler) ((HumanPlayer) i
@@ -389,10 +405,12 @@ public class Server extends Thread {
 	 *            is a String of all features the client supports, separated by
 	 *            spaces.
 	 */
+	//@requires source!=null && features !=null;
 	public void acceptConnection(ClientHandler source, String features) {
 		printMessage("Accepted connection command from "
 				+ source.getClientName());
 		String[] splitted = features.split("\\s+");
+		//loop_invariant lobby.keySet().contains(i);
 		for (ClientHandler i : lobby.keySet()) {
 			if (i.getClientName().equals(splitted[0])) {
 				printMessage("Connection denied due to duplicate name from "
@@ -420,6 +438,7 @@ public class Server extends Thread {
 	 * @param msg
 	 *            the description of this error.
 	 */
+	//@requires target != null;
 	public void sendError(ClientHandler target, String msg) {
 		target.sendCommand(Interpreter.KW_CONN_ERROR + " " + msg);
 	}
@@ -427,6 +446,7 @@ public class Server extends Thread {
 	/**
 	 * @param source is the ClientHandler to send the board to.
 	 */
+	//requires source != null;
 	public void sendBoard(ClientHandler source) {
 		if (getGame(source) != null) {
 			source.sendCommand(getGame(source).getBoard().networkBoard());
@@ -442,6 +462,7 @@ public class Server extends Thread {
 	 * @param target
 	 *            is the ClientHanlder the lobby will be sent to.
 	 */
+	//@ requires target != null;
 	public void sendLobby(ClientHandler target) {
 		String result = "";
 		for (ClientHandler i : lobby.keySet()) {
@@ -474,6 +495,9 @@ public class Server extends Thread {
 	 * @param bool
 	 *            is whether the function must be enabled or disabled.
 	 */
+	//@requires source != null;
+	//@ensures bool == false ==> getLobby().get(source).contains(function);
+	//@ensures bool == true ==> !getLobby().get(source).contains(function);
 	public void setFunction(ClientHandler source, String function, Boolean bool) {
 		printMessage("Function " + function + " set to " + bool
 				+ " for client " + source.getClientName());
@@ -490,6 +514,7 @@ public class Server extends Thread {
 	 * @return the ClientHandler with the given name, or null if there's no such
 	 *         ClientHandler.
 	 */
+	//@pure
 	public ClientHandler findClientHandler(String name) {
 		for (ClientHandler i : lobby.keySet()) {
 			if (i.getClientName().equals(name)) {
@@ -507,6 +532,9 @@ public class Server extends Thread {
 	 *            is the String to be examined.
 	 * @return true if the String represents a number, false if it doesn't.
 	 */
+	/*@requires thestring != null;
+	ensures ((\forall char p; thestring.contains(String.valueOf(p)); Character.isDigit(p)) && thestring.length()<=(int)(Math.log10(Integer.MAX_VALUE)+1) && Long.parseLong(thestring)<Integer.MAX_VALUE) ==> \result == true;
+	@*/ 
 	public static Boolean representsInt(String thestring) {
 		char[] array = thestring.toCharArray();
 		for (int i = 0; i < array.length; i++) {
@@ -528,6 +556,8 @@ public class Server extends Thread {
 	 * @return is "true" if the command is viable, or an error command if it's
 	 *         not.
 	 */
+	//@requires source !=null;
+	//@ensures \result.equals(true) || \result.startsWith(Interpreter.KW_CONN_ERROR);
 	public String validInvite(ClientHandler source, String arguments) {
 		String[] apart = arguments.split("\\s+");
 		if (apart.length < 1) {
@@ -550,8 +580,9 @@ public class Server extends Thread {
 	 * @param arguments is the name of the inviter, given the client
 	 * 		is using the command correctly.
 	 */
+	//@requires source != null;
+	//@ensures validInvite(source,arguments).equeals("true") ==> getGames().size() = \old(getGames()).size() + 1;
 	public void acceptinvite(ClientHandler source, String arguments) {
-		printMessage("Start of acceptinvite");
 		String[] apart = arguments.split("\\s+");
 		if (!validInvite(source, arguments).equals("true")) {
 			source.sendCommand(validInvite(source, arguments));
@@ -583,12 +614,16 @@ public class Server extends Thread {
 	}
 
 	/**
-	 * @source is the ClientHandler whose associated client sent
+	 * Registers a declination of an invite.
+	 * 
+	 * @param source is the ClientHandler whose associated client sent
 	 * 		this decline command.
 	 * 
 	 * @param arguments arguments is the name of the inviter, given the client
 	 * 		is using the command correctly.
 	 */
+	//@pure
+	//@requires source != null;
 	public void denyinvite(ClientHandler source, String arguments) {
 		if (!validInvite(source, arguments).equals("true")) {
 			source.sendCommand(validInvite(source, arguments));
@@ -601,6 +636,7 @@ public class Server extends Thread {
 
 	}
 
+	//@requires playerone!= null && playertwo != null && width > 0 && height > 0;
 	public void StartGame(ClientHandler playerone, ClientHandler playertwo,
 			int width, int height) {
 		printMessage("Start of startgame");
@@ -625,6 +661,7 @@ public class Server extends Thread {
 	 * @param source
 	 *            is the ClientHandler who sent the invite.
 	 */
+	//@requires source != null && targetandxy != null;
 	public void invite(String targetandxy, ClientHandler source) {
 		String[] apart = targetandxy.split("\\s+");
 		if (apart.length != 1) {
@@ -669,6 +706,7 @@ public class Server extends Thread {
 	/**
 	 * Shuts down the server.
 	 */
+	//@requires getLobby() != null;
 	public void shutDown() {
 		running=false;
 		if (serversocket != null) {

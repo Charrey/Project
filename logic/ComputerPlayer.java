@@ -11,7 +11,6 @@ public class ComputerPlayer extends Player {
    
 	/**
      * Creates a <code>ComputerPlayer</code> with the given name and mark.
-     * @param name is the name given to the ComputerPlayer.
      * @param m is the mark given to the ComputerPlayer
      */
 	public ComputerPlayer(Mark m) {

@@ -11,6 +11,9 @@ public class MainGui extends JFrame{
 	private GameSelectPanel gameSelectPanel;
 	
 	
+	/**
+	 * Creates a new MainGui.
+	 */
 	public MainGui(){
 		mainMenuPanel = new MainMenuPanel(this);
 		currentPanel = mainMenuPanel;
@@ -21,6 +24,11 @@ public class MainGui extends JFrame{
 		
 	}
 	
+	/**
+	 * Changes the active panel in this JFrame.
+	 * 
+	 * @param panel is the panel to change to.
+	 */
 	public void changePanel(JPanel panel){
 		remove(currentPanel);
 		currentPanel = panel;
@@ -31,10 +39,20 @@ public class MainGui extends JFrame{
 	}
 	
 	
+	/**
+	 * Gives the mainMenuPanel of this MainGui.
+	 * 
+	 * @return the mainMenuPanel.
+	 */
 	public MainMenuPanel getMainMenuPanel(){
 		return mainMenuPanel;
 	}
 	
+	/**
+	 * Gives the GameSelectPanel of this MainGui.
+	 * 
+	 * @return the gameSelectPanel.
+	 */
 	public GameSelectPanel getGameSelectPanel(){
 		return gameSelectPanel;
 	}

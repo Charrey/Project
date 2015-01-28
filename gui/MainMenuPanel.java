@@ -24,6 +24,11 @@ public class MainMenuPanel extends JPanel {
 	private MainGui g;
 	
 	
+	/**
+	 * Creates a new MainMenuPanel.
+	 * 
+	 * @param g is the MainGui to add this panel to.
+	 */
 	public MainMenuPanel(MainGui g){
 		this.g = g;
 		fourInRowLabel = new JLabel("Vier op een Rij");

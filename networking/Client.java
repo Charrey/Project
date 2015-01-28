@@ -4,8 +4,6 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-//import java.net.InetAddress;
-//import java.net.UnknownHostException;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -81,23 +79,8 @@ public class Client extends Thread {
 					if (invites.keySet().contains(apart[1])) {
 						sendMessage(Interpreter.KW_LOBB_ACCEPTINVITE + " "
 								+ apart[1]);
-
-						// System.out.println("boardwidth set to "+
-						// invites.get(apart[1])[0] + " in 70 for "+ name);
-						// System.out.println("boardheight set to "+
-						// invites.get(apart[1])[1] + " in 71" + name);
 						setDimensions(invites.get(apart[1])[0],
 								invites.get(apart[1])[0]);
-						// boardwidth = invites.get(apart[1])[0];
-						// boardheight = invites.get(apart[1])[1];
-
-						// System.out.println("boardwidth set to "+
-						// invites.get(apart[1])[0] + " in 70 for "+ name);
-						// System.out.println("boardheight set to "+
-						// invites.get(apart[1])[1] + " in 71" + name);
-						boardwidth = invites.get(apart[1])[0];
-						boardheight = invites.get(apart[1])[1];
-
 					}
 					break;
 				case "decline":
@@ -108,7 +91,6 @@ public class Client extends Thread {
 					break;
 				case "invite":
 					int[] array = new int[2];
-					// System.out.println("Apart length is " + apart.length);
 					if (apart.length == 4 && Server.representsInt(apart[1])
 							&& Server.representsInt(apart[2])) {
 						array[0] = Integer.parseInt(apart[1]);
@@ -119,8 +101,6 @@ public class Client extends Thread {
 					}
 
 					invites.put(apart[1], array);
-					// System.out.println(apart[1] + " and dimensions " +
-					// array[0] + array[1] + " in 97");
 					sendMessage("INVITE " + apart[1]);
 					break;
 				case "board":
@@ -215,7 +195,6 @@ public class Client extends Thread {
 				teller++;
 			}
 		}
-		// Refresh the visual board here!
 	}
 
 	/**
@@ -262,10 +241,6 @@ public class Client extends Thread {
 		return sersup.contains(function);
 	}
 
-	// **********************
-	// END OF USEFUL COMMANDS (I think)
-	// **********************
-
 	/**
 	 * Returns the socket of this Client.
 	 * 
@@ -298,8 +273,6 @@ public class Client extends Thread {
 	 *            is the port used to create a Socket.
 	 * @param name
 	 *            is the name of this client.
-	 * @param gui
-	 *            is the gui associated with this client.
 	 */
 	public Client(String address, int port, String name) {
 		this.name = name;
@@ -335,6 +308,7 @@ public class Client extends Thread {
 	 * @param time
 	 *            is the number of milliseconds to wait.
 	 */
+	//@ requires time > 0;
 	public static void hold(int time) {
 		try {
 			Thread.sleep(time);
@@ -347,7 +321,6 @@ public class Client extends Thread {
 		this.name = name;
 	}
 
-	// Constructor, obviously
 	/**
 	 * @param address
 	 *            is the address used to create a Socket.
@@ -390,6 +363,7 @@ public class Client extends Thread {
 	 *            is a String containing the features this server supports,
 	 *            separated by spaces.
 	 */
+	//@requires features != null;
 	public void connectionAccepted(String features) {
 		String[] splitted = features.split("\\s+");
 		for (int i = 0; i < splitted.length; i++) {
@@ -418,6 +392,8 @@ public class Client extends Thread {
 	 *            is the name of player #1
 	 * @param secondname
 	 *            is the name of player #2
+	 * @param standardsize is true if the game's dimensions are 7 by 6.        
+	 *    
 	 */
 	public void gamestart(String firstname, String secondname,
 			boolean standardsize) {
@@ -501,6 +477,8 @@ public class Client extends Thread {
 	 * @param stringArg
 	 *            is the lobby received by the server.
 	 */
+	//@requires stringArg != null;
+	//@ensures stringArg.split("\\s+").length == lobby.size();
 	public void setLobby(String stringArg) {
 		lobby = new HashSet<String>();
 		if (stringArg.length() == 0) {
@@ -557,6 +535,7 @@ public class Client extends Thread {
 	/**
 	 * Ends the game.
 	 */
+	//@pure
 	public void gameend() {
 		game.gameEnd();
 		this.askLobby();
@@ -565,14 +544,13 @@ public class Client extends Thread {
 	/**
 	 * Informs the Client of an invite being declined.
 	 */
+	//@pure
 	public void inviteDeclined() {
 		printMessage("Your invite has been declined! Poor you :'(");
 	}
 
+	//@requires width>0 && height>0;
 	public void setDimensions(int width, int height) {
-		// System.out.println("Width set to " + width + " in 438 for " + name);
-		// System.out.println("Height set to " + height + " in 439 for " +
-		// name);
 		boardwidth = width;
 		boardheight = height;
 	}
@@ -584,6 +562,8 @@ public class Client extends Thread {
 	 *            are the invite parameters as defined in protocol INF-2 v1.0
 	 *            separated by spaces.
 	 */
+	//@requires other != null;
+	//@ensures invites.size() = \old(invites).size() + 1;
 	public void invited(String other) {
 		String[] apart = other.split("\\s+");
 		int[] dimensions = new int[2];
@@ -599,8 +579,6 @@ public class Client extends Thread {
 			dimensions[1] = Integer.parseInt(apart[2]);
 		}
 		invites.put(apart[0], dimensions);
-		// System.out.println(apart[0] + " and dimensions " + dimensions[0] +
-		// dimensions[1] + " in 466");
 		printMessage("Type accept " + apart[0] + " to accept.");
 		printMessage("Type decline " + apart[0] + " to decline.");
 	}
@@ -608,17 +586,18 @@ public class Client extends Thread {
 	/**
 	 * Quits the client.
 	 */
+	//@requires getSocket() != null;
 	public void shutDown() {
 		if (scanner != null) {
 			scanner.close();
 		}
 		try {
-			printMessage("GOING TO BE NULL");
 			sock.close();
 		} catch (IOException e) {
 			printMessage("Could not close server");
 		}
 	}
+
 
 	public void UseScannerForDeterminingMoves(boolean b) {
 		scannerfordeterminingmoves = b;
@@ -632,12 +611,4 @@ public class Client extends Thread {
 	public int getBoardHeight() {
 		return boardheight;
 	}
-
-	/*
-	 * public void inviteAccepted(String name) {
-	 * this.setDimensions(invites.get(name)[0], invites.get(name)[1]);
-	 * 
-	 * }
-	 */
-
 }

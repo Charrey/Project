@@ -20,6 +20,12 @@ public class GamePanel extends JPanel {
 	 * Constructor voor een GamePanel zonder HumanPlayer
 	 * Maakt de slots aan en vult ze meteen met het juiste Icon
 	 */
+	/**
+	 * Creates a new GamePanel without HumanPlayer.
+	 * This creates all Slots and sets their icons.
+	 * 
+	 * @param g is the game this GamePanel is representing.
+	 */
 	public GamePanel(Game g){
 		this.b = g.getBoard();
 		slots = new Slot[b.getWidth()][b.getHeight()];
@@ -36,9 +42,13 @@ public class GamePanel extends JPanel {
 		setLayout(new GridLayout(b.getHeight(), b.getWidth()));
 	}
 	
-	/*
-	 * Constructor voor een GamePanel met HumanPlayer
-	 * Slots worden gemaakt, gevult en de MouseListener wordt toegevoegd aan elke Slot.
+
+	/**
+	 * Constructor for a GamePanel with one or more HumanPlayers.
+	 * It creates all slots, fills them with an Icon 
+	 * 
+	 * @param g is the game this GamePanel is representing.
+	 * @param mouseListener is the MouseListener to be used to gain move information.
 	 */
 	public GamePanel(Game g, MouseListener mouseListener){
 		this.b = g.getBoard();
@@ -57,8 +67,11 @@ public class GamePanel extends JPanel {
 		setLayout(new GridLayout(b.getHeight(), b.getWidth()));
 	}
 	
-	/*
-	 * Geeft het Icon terug die bij de meegegeven Mark hoort
+	/**
+	 * Gives the Icon used to represent given Mark.
+	 * 
+	 * @param m is the mark of which you'd like to know it's Icon.
+	 * @return the Icon associated with this Mark.
 	 */
 	public Icon getIcon(Mark m){ 
 		if(m==Mark.X){
@@ -71,9 +84,8 @@ public class GamePanel extends JPanel {
 		
 	}
 	
-	/* 
-	 * update de Slots door ieder plekje langs te gaan en deze opnieuw te zetten
-	 * het is een inefficiente manier maar het werkt prima voor borden die niet al te groot zijn
+	/**
+	 * Updates the board by resetting all Icons.
 	 */
 	public void updateBoard() {
 		for (int p = b.getHeight()-1; p >=0 ; p--) {
@@ -86,6 +98,13 @@ public class GamePanel extends JPanel {
 	 * plaatst een Icon in een specifieke plaats in het bord
 	 * Wordt gebruikt voor de hint functie; 
 	 * plaatst een icoon zichtbaar in de GUI, maar wordt niet doorgegeven aan het systeem zodat het niet als zet gezien wordt
+	 */
+	/**
+	 * Changes a certain Icon in this GamePanl.
+	 * 
+	 * @param row is the row of the Icon to refresh
+	 * @param column is the column of the Icon to refresh
+	 * @param m is the mark whose Icon should be made visible.
 	 */
 	public void setSlot(int row, int column, Mark m){
 		slots[row][column].setIcon(getIcon(m));
