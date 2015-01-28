@@ -9,7 +9,7 @@ import Project.logic.Mark;
 
 public class ClientBot extends Client {
 
-	public static final String NAME = "RoboCop";
+	public static final String NAME = "DoodAanJML";
 	private ComputerPlayer cplayer;
 	private boolean connected;
 	private boolean invitemode;

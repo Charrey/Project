@@ -518,6 +518,10 @@ public class Server extends Thread {
 		}
 	}
 
+	/**
+	 * @param source
+	 * @param arguments
+	 */
 	public void acceptinvite(ClientHandler source, String arguments) {
 		printMessage("Start of acceptinvite");
 		String[] apart = arguments.split("\\s+");
