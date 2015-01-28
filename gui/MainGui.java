@@ -10,7 +10,7 @@ public class MainGui extends JFrame{
 	private MainMenuPanel mainMenuPanel;
 	private GameSelectPanel gameSelectPanel;
 	
-	
+	//Constructor
 	public MainGui(){
 		mainMenuPanel = new MainMenuPanel(this);
 		currentPanel = mainMenuPanel;
@@ -20,7 +20,8 @@ public class MainGui extends JFrame{
 		
 		
 	}
-	
+	// Zorgt ervoor dat hetzelfde frame kan worden gebruikt, maar dat er toch steeds andere
+	// inhoud in de frame kan komen
 	public void changePanel(JPanel panel){
 		remove(currentPanel);
 		currentPanel = panel;

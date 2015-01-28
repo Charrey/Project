@@ -1,6 +1,5 @@
 package Project.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
@@ -21,21 +20,22 @@ public class MainMenuPanel extends JPanel {
 	private Font fnt = new Font("Serif", Font.BOLD, 30);
 	private EmptyBorder padding = new EmptyBorder(10,10,10,10);
 	private EmptyBorder padding2 = new EmptyBorder(40,40,40,40);
-	private MainGui g;
+
 	
 	
 	public MainMenuPanel(MainGui g){
-		this.g = g;
+		//begin labels
 		fourInRowLabel = new JLabel("Vier op een Rij");
 		localGameLabel = new JLabel("Start Local Game");
 		clientLabel = new JLabel("Join Server");
 		serverLabel = new JLabel("Start new Server");
-		
+		//eind elabels
 		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		//this.setAlignmentX(CENTER_ALIGNMENT);
 		//this.setAlignmentY(CENTER_ALIGNMENT);
 		
+		//begin toevoegen labels
 		add(fourInRowLabel);
 		fourInRowLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		fourInRowLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -75,17 +75,9 @@ public class MainMenuPanel extends JPanel {
 				new ServerGUI();
 			}
 		});
-
+		//einde toevoegen labels
 		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 }

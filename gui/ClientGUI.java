@@ -54,6 +54,8 @@ public class ClientGUI extends JFrame {
 	private Client client;
 	private boolean clicked = false;
 	
+	
+	// Constructor
 	public ClientGUI(){
 	
 		JPanel topPanel = new JPanel();
@@ -115,7 +117,12 @@ public class ClientGUI extends JFrame {
 		
 		
 		
-		
+		/* voegt een mouse lisstener toe aan de hostButton
+		 * Als de client nog niet geconnect is, dan wordt de host button gebruikt
+		 * om een verbinding proberen te maken.
+		 * Als de client al wel geconnect is, dan wordt de hosbutton 'verandert' in een
+		 * disconnect button om de client te sluiten
+		 */
 		hostButton.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e){
 				if(!connected){
@@ -145,6 +152,9 @@ public class ClientGUI extends JFrame {
 			}
 		});
 		
+		/*Als er op de sent knop gedrukt wordt, dan wordt de thread die op de input wacht
+		 * genotifyt
+		 */
 		sentCommandButton.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e){
 				synchronized(self){
@@ -156,11 +166,13 @@ public class ClientGUI extends JFrame {
 		});
 		
 	}
-	
+	// voegt een message toe aan de tekstarea
 	public void addMessage(String msg){
 		textArea.append(msg + "\n");
 	}
 	
+	// Deze methode wacht als er nog niet geklikt is. Op het moment dat die genotifyt wordt
+	// dan levert deze functie de inhoud van het textfield op en reset hij deze ook naar behoren.
 	public String waitForCommand(){
 		synchronized(this){
 			if(!clicked){

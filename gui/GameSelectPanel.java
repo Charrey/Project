@@ -39,15 +39,14 @@ public class GameSelectPanel extends JPanel {
 			private JLabel heightLabel;
 			private JTextField heightField;
 	private JButton startButton;
-	
 	private InputHandler handler;
-	private MainGui gui;
 	
+	//Contructor
 	public GameSelectPanel(MainGui gui){
-		this.gui=gui;
 	
 		setLayout(new BorderLayout());
 		
+		//begin toevoegen items
 		JPanel combinePanel = new JPanel();
 		combinePanel.setLayout(new BorderLayout()); //om playerLabels en playerSelectPanel te mergen.
 		
@@ -139,8 +138,11 @@ public class GameSelectPanel extends JPanel {
 		startButton.setFont(fnt0);
 		
 		add(startButton, BorderLayout.PAGE_END);
+		//einde toevoegen items
 		
-		
+		/* voegt mouse listener toe die ervoor zorgt dat er een nieuwe game wordt aangemaakt
+		 * met de ingevulde opties als er op de startButton geklikt wordt.
+		 */
 		startButton.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e){
 				String player1 = player1Field.getText();
@@ -169,16 +171,6 @@ public class GameSelectPanel extends JPanel {
 					p2 = new ComputerPlayer(Mark.O);
 				}
 				new Game(p1, p2, gui, width, height, false);
-				/*
-				if(handler!=null){
-					Game newGame = new Game(p1, p2, gui, width, height);
-					gui.changePanel(new GameMainPanel(newGame, handler));
-					new Thread(newGame).start();
-				}else{
-					Game newGame = new Game(p1, p2, gui, width, height);
-					gui.changePanel(new GameMainPanel(newGame));
-					new Thread(newGame).start();
-				}*/
 			}
 		});
 

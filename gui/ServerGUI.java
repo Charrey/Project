@@ -42,8 +42,9 @@ public class ServerGUI extends JFrame{
 	private Font fnt = new Font("", Font.BOLD, 20);
 	private boolean hosting = false;
 	
+	//Constructor
 	public ServerGUI(){
-	
+		//begin toevoegen items
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new GridLayout(2, 2));
 		
@@ -71,8 +72,6 @@ public class ServerGUI extends JFrame{
 		portField.setFont(fnt);
 		topPanel.add(portLabel);
 		topPanel.add(portField);
-		//topPanel.add(new JLabel());
-		//topPanel.add(hostButton);
 		
 		topButPanel.add(topPanel, BorderLayout.LINE_START);
 		topButPanel.add(hostButton, BorderLayout.LINE_END);
@@ -80,23 +79,21 @@ public class ServerGUI extends JFrame{
 		setLayout(new BorderLayout());
 		add(topButPanel, BorderLayout.PAGE_START);
 		add(scrollPane, BorderLayout.CENTER);
+		//einde toevoegen items
 		
 		
-		
-
-		
-		
-		//this.setLayout(new GridLayout(4, 1));
-		/*
-		add(ipAdressLabel);
-		add(portField);
-		add(hostButton);
-		add(scrollPane);
-		*/
 		setVisible(true);
 		Dimension d = new Dimension(500, 800);
 		setSize(d);
 		self = this;
+		
+		
+		/* voegt een mouse lisstener toe aan de hostButton
+		 * Als de sever nog niet host, dan wordt de host button gebruikt
+		 * om een server proberen op te zetten.
+		 * Als de server al host, dan wordt de hosbutton 'verandert' in een
+		 * disconnect button om de server te sluiten
+		 */
 		hostButton.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e){
 				if(!hosting){
